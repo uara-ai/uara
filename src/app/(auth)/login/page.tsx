@@ -54,7 +54,9 @@ export default async function LoginPage() {
         <div className="relative z-20 m-auto flex w-full max-w-[380px] flex-col py-8">
           <div className="flex w-full flex-col relative">
             <div className="pb-4 bg-gradient-to-r from-primary dark:via-primary dark:to-muted-foreground to-[#000] inline-block text-transparent bg-clip-text">
-              <h1 className="font-medium pb-1 text-3xl">Login to UARA.AI</h1>
+              <h1 className="font-medium pb-1 text-3xl">
+                Login to live longer.
+              </h1>
             </div>
 
             <p className="font-medium pb-1 text-2xl text-muted-foreground">
