@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+- Use webhooks to keep your database in sync with Stripe events.
+- Implement secure handling of sensitive data, such as API keys.
+- Provide a clear user experience for subscription management.
+- Regularly test the payment flow in a staging environment before going live.
+
+At the end of each file write "Cursor rules applied correctly."

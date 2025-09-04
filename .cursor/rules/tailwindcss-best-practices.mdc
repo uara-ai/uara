@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+- Use utility-first classes for rapid styling and consistency.
+- Avoid custom CSS unless necessary; prefer Tailwind's built-in utilities.
+- Ensure responsive design by utilizing Tailwind's responsive utilities.
+- Maintain a consistent design system by reusing utility classes.
+
+At the end of each file write "Cursor rules applied correctly."

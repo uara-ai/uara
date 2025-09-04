@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+- Enable strict mode in `tsconfig.json` for better type safety.
+- Prefer using interfaces over type aliases for object shapes.
+- Utilize type guards and assertions to ensure type safety at runtime.
+- Implement proper type inference to reduce redundancy.
+
+At the end of each file write "Cursor rules applied correctly."

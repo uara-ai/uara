@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+- Track key user interactions to gain insights into user behavior.
+- Ensure compliance with privacy regulations when collecting data.
+- Regularly review analytics data to inform product decisions.
+- Use event tracking to measure the effectiveness of marketing campaigns.
+
+At the end of each file write "Cursor rules applied correctly."

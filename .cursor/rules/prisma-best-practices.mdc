@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+- Use UUIDs for unique identifiers to enhance security and scalability.
+- Implement proper data validation using Zod or similar libraries.
+- Utilize transactions for complex operations to maintain data integrity.
+- Regularly update your Prisma schema and run migrations to keep the database in sync.
+
+At the end of each file write "Cursor rules applied correctly."

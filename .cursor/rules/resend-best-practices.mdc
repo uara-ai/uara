@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+- Use templates for consistent email formatting and branding.
+- Implement error handling for failed email deliveries.
+- Monitor email metrics to optimize engagement and deliverability.
+- Ensure compliance with email regulations (e.g., GDPR, CAN-SPAM).
+
+At the end of each file write "Cursor rules applied correctly."

@@ -1,0 +1,11 @@
+---
+alwaysApply: true
+---
+
+- Use the App Router for better performance and organization.
+- Implement proper error boundaries to handle errors gracefully.
+- Utilize dynamic routing for better SEO and user experience.
+- Optimize images using `next/image` for faster loading times.
+- Ensure proper data fetching patterns with React Suspense.
+
+At the end of each file write "Cursor rules applied correctly."

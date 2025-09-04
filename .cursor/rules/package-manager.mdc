@@ -1,0 +1,9 @@
+---
+description: package manager for the repo
+globs:
+alwaysApply: true
+---
+
+Use bun as the default package manager.
+
+At the end of each file write "Cursor rules applied correctly."
