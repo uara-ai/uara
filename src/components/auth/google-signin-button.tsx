@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/auth-context";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Icons } from "../ui/icons";
 
 export function GoogleSignInButton() {
@@ -41,11 +42,14 @@ export function GoogleSignInButton() {
 export function GoogleSignOutButton() {
   const { signOut, user } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const router = useRouter();
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
     try {
       await signOut();
+      // Redirect to homepage after successful sign out
+      router.push("/");
     } finally {
       setIsSigningOut(false);
     }
