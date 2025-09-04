@@ -1,3 +1,5 @@
+import { Dashboard } from "@/components/dashboard/health-os/dashboard";
+
 export default function Home() {
-  return <div>Home</div>;
+  return <Dashboard />;
 }
