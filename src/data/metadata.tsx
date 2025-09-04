@@ -28,6 +28,7 @@ export const DATA = {
     "Weekly healthspan reports",
     "Aging score & trendlines",
     "Consumer health intelligence",
+    "Consumer longevity coach",
   ],
 
   contact: {
