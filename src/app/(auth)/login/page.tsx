@@ -29,7 +29,6 @@ export default async function LoginPage() {
     (await isEU()) && !cookieStore.has(Cookies.TrackingConsent);
   const { device } = userAgent({ headers: await headers() });
 
-  let moreSignInOptions = false;
   let preferredSignInOption =
     device?.vendor === "Apple" ? (
       <div className="flex flex-col space-y-2">

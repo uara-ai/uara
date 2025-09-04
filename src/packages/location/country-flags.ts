@@ -1,4 +1,4 @@
-export const COUNTRY_FLAGS = {
+export const flags = {
   AC: {
     code: "AC",
     unicode: "U+1F1E6 U+1F1E8",
