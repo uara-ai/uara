@@ -23,11 +23,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
 
   return (
-    <Sidebar
-      collapsible="icon"
-      className="overflow-hidden bg-slate-50"
-      {...props}
-    >
+    <Sidebar collapsible="icon" className="overflow-hidden" {...props}>
       {/* This is the first sidebar */}
       {/* We disable collapsible and adjust width to icon. */}
       {/* This will make the sidebar appear as icons. */}
@@ -86,7 +82,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                           React.createElement(item.icon, {
                             className: cn(
                               "size-8",
-                              pathname.includes(item.url) && "text-blue-800"
+                              pathname.includes(item.url) &&
+                                "dark:text-white light:text-blue-800"
                             ),
                           })}
                         <span>{item.title}</span>

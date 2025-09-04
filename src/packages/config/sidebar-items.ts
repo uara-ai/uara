@@ -1,4 +1,4 @@
-import { Home } from "lucide-react";
+import { Home, Users } from "lucide-react";
 import { routes } from "./routes";
 
 // This is sample data
@@ -8,6 +8,12 @@ export const sidebarItems = {
       title: "Dashboard",
       url: routes.dashboard.home,
       icon: Home,
+      isActive: false,
+    },
+    {
+      title: "Pazienti",
+      url: routes.dashboard.healthOS,
+      icon: Users,
       isActive: false,
     },
   ],

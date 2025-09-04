@@ -5,6 +5,7 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { OpenPanelComponent } from "@openpanel/nextjs";
 import { DATA } from "@/data/metadata";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "next-themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -91,14 +92,21 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>{children}</AuthProvider>
-        <OpenPanelComponent
-          clientId={process.env.NEXT_PUBLIC_OPEN_PANEL_CLIENT_ID!}
-          clientSecret={process.env.OPEN_PANEL_CLIENT_SECRET!}
-          trackScreenViews={true}
-          disabled={process.env.NODE_ENV !== "production"}
-        />
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>{children}</AuthProvider>
+          <OpenPanelComponent
+            clientId={process.env.NEXT_PUBLIC_OPEN_PANEL_CLIENT_ID!}
+            clientSecret={process.env.OPEN_PANEL_CLIENT_SECRET!}
+            trackScreenViews={true}
+            disabled={process.env.NODE_ENV !== "production"}
+          />
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

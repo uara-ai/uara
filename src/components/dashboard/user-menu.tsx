@@ -94,8 +94,10 @@ export function UserMenu({ onlySignOut }: Props) {
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
-            <div className="flex flex-row justify-between items-center p-2">
-              <p className="text-sm">Theme</p>
+            <div className="flex flex-row justify-between items-center px-2 py-1.5">
+              <div className="flex items-center">
+                <p className="text-sm font-medium">Theme</p>
+              </div>
               <ThemeSwitch />
             </div>
             <DropdownMenuSeparator />
