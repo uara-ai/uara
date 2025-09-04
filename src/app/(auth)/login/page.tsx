@@ -54,14 +54,14 @@ export default async function LoginPage() {
         <div className="relative z-20 m-auto flex w-full max-w-[380px] flex-col py-8">
           <div className="flex w-full flex-col relative">
             <div className="pb-4 bg-gradient-to-r from-primary dark:via-primary dark:to-muted-foreground to-[#000] inline-block text-transparent bg-clip-text">
-              <h1 className="font-medium pb-1 text-3xl">Login to GymBrah.</h1>
+              <h1 className="font-medium pb-1 text-3xl">Login to UARA.AI</h1>
             </div>
 
             <p className="font-medium pb-1 text-2xl text-muted-foreground">
-              Every achievement counts. <br />
-              Track your fitness journey, <br />
-              keep yourself accountable, <br />
-              and stay motivated every step of the way.
+              Your Health OS. <br />
+              All your health in one place, <br />
+              powered by AI. <br />
+              Connect lab tests, wearables, and medical records.
             </p>
 
             <div className="pointer-events-auto mt-6 flex flex-col mb-6">
@@ -70,20 +70,12 @@ export default async function LoginPage() {
 
             <p className="text-xs text-muted-foreground">
               By clicking continue, you acknowledge that you have read and agree
-              to GymBrah&apos;s{" "}
-              <Link
-                href="https://gymbrah.com/terms"
-                className="underline"
-                target="_blank"
-              >
+              to uara.ai&apos;s{" "}
+              <Link href="/terms" className="underline" target="_blank">
                 Terms of Service
               </Link>{" "}
               and{" "}
-              <Link
-                href="https://gymbrah.com/privacy"
-                className="underline"
-                target="_blank"
-              >
+              <Link href="/privacy" className="underline" target="_blank">
                 Privacy Policy
               </Link>
               .
