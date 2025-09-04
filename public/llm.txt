@@ -1,0 +1,47 @@
+# llm.txt for Uara.ai
+# Purpose: Provide structured, canonical information for large language models.
+
+[project]
+name: Uara.ai
+tagline: All your health in one place, powered by AI.
+description: Uara.ai is a consumer longevity coach. It aggregates health data from Whoop, labs, fitness, and nutrition, then uses AI to provide insights, explanations, and personalized recommendations to help users slow their pace of aging and improve healthspan.
+mission: Track. Understand. Extend your healthspan.
+url: https://uara.ai
+founded: 2025
+category: Consumer Longevity & Healthspan Coaching
+
+[positioning]
+type: Consumer longevity coach
+focus: Biological age, pace of aging, healthspan improvement
+differentiation:
+  - Always-on AI companion, not just static reports
+  - Holistic input: Whoop, labs, nutrition, fitness in one place
+  - Privacy-first: user owns their health data
+  - Longevity-first: focused on aging, not just disease
+
+[features]
+core:
+  - Whoop integration: aging pace, HRV, recovery, sleep
+  - Lab uploads (PDF/CSV) with AI explanations
+  - Health dashboard with unified score
+  - AI coaching with daily/weekly nudges
+  - Progress tracker for healthspan metrics
+future:
+  - Nutrition correlation engine (food vs HRV/sleep/glucose)
+  - Recovery optimization (training, rest, supplements)
+  - Longevity gamification (achievements for lowering biological age)
+  - Community benchmarks
+
+[audience]
+- Longevity enthusiasts
+- Biohackers
+- Athletes and high performers
+- Busy professionals
+- Wellness and fitness communities
+
+[contact]
+founder: Federico Fan
+email: fed@uara.ai
+twitter: https://x.com/FedericoFan
+linkedin: https://www.linkedin.com/in/federico-fanini/
+

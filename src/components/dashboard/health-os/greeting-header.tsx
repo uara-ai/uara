@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/auth-context";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface GreetingHeaderProps {
   className?: string;
@@ -13,11 +14,6 @@ export function GreetingHeader({ className }: GreetingHeaderProps) {
 
   useEffect(() => {
     const updateGreeting = () => {
-      if (loading) {
-        setGreeting("Loading...");
-        return;
-      }
-
       const now = new Date();
       const hour = now.getHours();
 
@@ -30,6 +26,11 @@ export function GreetingHeader({ className }: GreetingHeaderProps) {
         timeOfDay = "Evening";
       } else {
         timeOfDay = "Night";
+      }
+
+      if (loading) {
+        setGreeting(`Good ${timeOfDay}`);
+        return;
       }
 
       // Extract user name from Supabase auth
@@ -69,20 +70,29 @@ export function GreetingHeader({ className }: GreetingHeaderProps) {
   const userName = greetingParts[1];
 
   return (
-    <h1 className={`text-2xl font-medium text-slate-900 ${className || ""}`}>
-      {timeGreeting}
-      {userName && (
-        <>
-          ,{" "}
-          <span className="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 bg-clip-text text-transparent">
-            {userName}
-          </span>
-          <p className="text-sm text-muted-foreground mt-1">
-            here is a quick look at how things are going.
-          </p>
-        </>
-      )}
-    </h1>
+    <div className={className || ""}>
+      <h1 className="text-2xl font-medium text-slate-900 dark:text-slate-100">
+        {timeGreeting}
+        {loading ? (
+          <>
+            ,{" "}
+            <Skeleton className="inline-block h-7 w-20 bg-gradient-to-r from-blue-500/20 via-blue-600/20 to-blue-700/20" />
+          </>
+        ) : (
+          userName && (
+            <>
+              ,{" "}
+              <span className="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 bg-clip-text text-transparent">
+                {userName}
+              </span>
+            </>
+          )
+        )}
+      </h1>
+      <p className="text-sm text-muted-foreground mt-1">
+        here is a quick look at how things are going.
+      </p>
+    </div>
   );
 }
 

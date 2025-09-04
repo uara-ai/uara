@@ -39,7 +39,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 asChild
                 className="md:h-8 md:p-0 mt-2"
               >
-                <Link href={routes.dashboard.home}>
+                <Link href={routes.overview.home}>
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg border border-border">
                     <Image src="/logo.svg" alt="uara" width={24} height={24} />
                   </div>

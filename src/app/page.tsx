@@ -28,7 +28,7 @@ export default async function Home() {
           <div className="space-y-4 sm:space-y-6 lg:space-y-8">
             <div className="space-y-4">
               <Image
-                src="/no-bg.png"
+                src="/logo.svg"
                 alt="Uara.ai"
                 width={100}
                 height={100}

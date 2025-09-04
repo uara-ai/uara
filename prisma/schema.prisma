@@ -20,5 +20,177 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Whoop integration
+  whoopTokens WhoopToken?
+  whoopData   WhoopUserData?
+
   @@map("users")
+}
+
+// Whoop OAuth tokens
+model WhoopToken {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime
+  scope        String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("whoop_tokens")
+}
+
+// Whoop user profile data
+model WhoopUserData {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  whoopId   String   @unique
+  email     String
+  firstName String?
+  lastName  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Related data
+  recoveries       WhoopRecovery[]
+  cycles           WhoopCycle[]
+  sleeps           WhoopSleep[]
+  workouts         WhoopWorkout[]
+  bodyMeasurements WhoopBodyMeasurement[]
+
+  @@map("whoop_user_data")
+}
+
+// Whoop Recovery data
+model WhoopRecovery {
+  id               String        @id @default(cuid())
+  whoopId          String        @unique
+  whoopUserDataId  String
+  whoopUserData    WhoopUserData @relation(fields: [whoopUserDataId], references: [id], onDelete: Cascade)
+  scoreState       String
+  userCalibrating  Boolean?
+  recoveryScore    Float?
+  restingHeartRate Float?
+  hrvRmssdMilli    Float?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  whoopCreatedAt   DateTime
+  whoopUpdatedAt   DateTime
+
+  @@map("whoop_recoveries")
+}
+
+// Whoop Cycle data
+model WhoopCycle {
+  id               String        @id @default(cuid())
+  whoopId          String        @unique
+  whoopUserDataId  String
+  whoopUserData    WhoopUserData @relation(fields: [whoopUserDataId], references: [id], onDelete: Cascade)
+  start            DateTime
+  end              DateTime?
+  timezoneOffset   String
+  scoreState       String
+  strain           Float?
+  averageHeartRate Float?
+  maxHeartRate     Float?
+  kilojoule        Float?
+  percentRecorded  Float?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  whoopCreatedAt   DateTime
+  whoopUpdatedAt   DateTime
+
+  @@map("whoop_cycles")
+}
+
+// Whoop Sleep data
+model WhoopSleep {
+  id                          String        @id @default(cuid())
+  whoopId                     String        @unique
+  whoopUserDataId             String
+  whoopUserData               WhoopUserData @relation(fields: [whoopUserDataId], references: [id], onDelete: Cascade)
+  start                       DateTime
+  end                         DateTime
+  timezoneOffset              String
+  nap                         Boolean
+  scoreState                  String
+  // Stage summary
+  totalInBedTimeMilli         Int?
+  totalAwakeTimeMilli         Int?
+  totalNoDataTimeMilli        Int?
+  totalLightSleepTimeMilli    Int?
+  totalSlowWaveSleepTimeMilli Int?
+  totalRemSleepTimeMilli      Int?
+  sleepCycleCount             Int?
+  disturbanceCount            Int?
+  // Sleep need
+  baselineMilli               Int?
+  needFromSleepDebtMilli      Int?
+  needFromRecentStrainMilli   Int?
+  needFromRecentNapMilli      Int?
+  // Other metrics
+  respiratoryRate             Float?
+  sleepPerformancePercentage  Float?
+  sleepConsistencyPercentage  Float?
+  sleepEfficiencyPercentage   Float?
+  createdAt                   DateTime      @default(now())
+  updatedAt                   DateTime      @updatedAt
+  whoopCreatedAt              DateTime
+  whoopUpdatedAt              DateTime
+
+  @@map("whoop_sleeps")
+}
+
+// Whoop Workout data
+model WhoopWorkout {
+  id                  String        @id @default(cuid())
+  whoopId             String        @unique
+  whoopUserDataId     String
+  whoopUserData       WhoopUserData @relation(fields: [whoopUserDataId], references: [id], onDelete: Cascade)
+  start               DateTime
+  end                 DateTime
+  timezoneOffset      String
+  sportId             Int
+  scoreState          String
+  strain              Float?
+  averageHeartRate    Float?
+  maxHeartRate        Float?
+  kilojoule           Float?
+  percentRecorded     Float?
+  distanceMeter       Float?
+  altitudeGainMeter   Float?
+  altitudeChangeMeter Float?
+  // Zone durations
+  zoneZeroMilli       Int?
+  zoneOneMilli        Int?
+  zoneTwoMilli        Int?
+  zoneThreeMilli      Int?
+  zoneFourMilli       Int?
+  zoneFiveMilli       Int?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  whoopCreatedAt      DateTime
+  whoopUpdatedAt      DateTime
+
+  @@map("whoop_workouts")
+}
+
+// Whoop Body Measurement data
+model WhoopBodyMeasurement {
+  id              String        @id @default(cuid())
+  whoopId         String        @unique
+  whoopUserDataId String
+  whoopUserData   WhoopUserData @relation(fields: [whoopUserDataId], references: [id], onDelete: Cascade)
+  heightMeter     Float?
+  weightKilogram  Float?
+  maxHeartRate    Float?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  whoopCreatedAt  DateTime
+  whoopUpdatedAt  DateTime
+
+  @@map("whoop_body_measurements")
 }
