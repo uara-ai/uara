@@ -20,7 +20,7 @@ export default async function LoginPage() {
   } = await supabase.auth.getSession();
 
   if (session) {
-    redirect("/business");
+    redirect("/dashboard");
   }
 
   const cookieStore = await cookies();

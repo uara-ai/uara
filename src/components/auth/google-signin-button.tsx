@@ -32,7 +32,7 @@ export function GoogleSignInButton() {
       ) : (
         <>
           <Icons.google />
-          <span>Continue with Google</span>
+          <span className="font-semibold">Continue with Google</span>
         </>
       )}
     </Button>

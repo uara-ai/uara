@@ -1,7 +1,15 @@
 import { SubscribeInput } from "@/components/subscribe-input";
+import { Cookies } from "@/packages/constants";
+import { cookies } from "next/headers";
 import Image from "next/image";
+import { isEU } from "@/packages/location/location";
+import { ConsentBanner } from "@/components/auth/consent-banner";
 
-export default function Home() {
+export default async function Home() {
+  const cookieStore = await cookies();
+  const showTrackingConsent =
+    (await isEU()) && !cookieStore.has(Cookies.TrackingConsent);
+
   return (
     <div className="min-h-screen bg-white text-slate-900 relative overflow-hidden">
       {/* Background Elements */}
@@ -99,6 +107,8 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {showTrackingConsent && <ConsentBanner />}
     </div>
   );
 }
