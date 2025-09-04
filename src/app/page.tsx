@@ -1,181 +1,100 @@
-"use client";
-
-import { useAuth } from "@/contexts/auth-context";
-import { GoogleSignInButton } from "@/components/auth/google-signin-button";
-import { UserProfile } from "@/components/auth/user-profile";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { SubscribeInput } from "@/components/subscribe-input";
+import Image from "next/image";
 
 export default function Home() {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex items-center space-x-2">
-          <Loader2 className="h-6 w-6 animate-spin" />
-          <span>Loading...</span>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Welcome to UARA.AI
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
-              {user
-                ? "You are successfully authenticated!"
-                : "Sign in to get started"}
+    <div className="min-h-screen bg-white text-slate-900 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-10 left-10 sm:top-20 sm:left-20 w-48 h-48 sm:w-96 sm:h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 right-10 sm:bottom-20 sm:right-20 w-48 h-48 sm:w-96 sm:h-96 bg-cyan-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] sm:w-[600px] sm:h-[600px] lg:w-[800px] lg:h-[800px] bg-gradient-radial from-blue-500/3 to-transparent rounded-full"></div>
+      </div>
+
+      {/* Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:30px_30px] sm:bg-[size:50px_50px]"></div>
+
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
+        <div className="text-center space-y-6 sm:space-y-8 lg:space-y-12 max-w-4xl mx-auto w-full">
+          {/* Hero Section */}
+          <div className="space-y-4 sm:space-y-6 lg:space-y-8">
+            <div className="space-y-4">
+              <Image
+                src="/logo.svg"
+                alt="Uara.ai"
+                width={80}
+                height={80}
+                className="mx-auto sm:w-[100px] sm:h-[100px]"
+              />
+
+              <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-tight">
+                Your Health OS
+              </h1>
+            </div>
+
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium px-2">
+              All your health in one place, powered by AI.
             </p>
           </div>
 
-          {/* Main Content */}
-          <div className="grid md:grid-cols-2 gap-8 items-start">
-            {/* Authentication Section */}
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-2xl">
-                    {user ? "Account Information" : "Authentication"}
-                  </CardTitle>
-                  <CardDescription>
-                    {user
-                      ? "Your account details and settings"
-                      : "Sign in with your Google account to access all features"}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {user ? (
-                    <UserProfile />
-                  ) : (
-                    <div className="space-y-4">
-                      <GoogleSignInButton />
-                      <p className="text-sm text-gray-500 text-center">
-                        Secure authentication powered by Supabase
-                      </p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+          {/* Value Proposition */}
+          <div className="space-y-4 sm:space-y-6 lg:space-y-8">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-700 max-w-2xl mx-auto leading-relaxed px-2">
+              The Notion for health. Connect lab tests, wearables, fitness apps,
+              and medical records into a
+              <span className="relative inline-block">
+                <span className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg blur-sm opacity-20"></span>
+                <span className="relative text-cyan-600 font-medium bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text px-2 py-1">
+                  {" "}
+                  unified health profile
+                </span>
+              </span>{" "}
+              with AI-powered insights and predictive guidance.
+            </p>
 
-              {/* Features Card */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Features</CardTitle>
-                  <CardDescription>
-                    What you can do with UARA.AI
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="text-sm">Google OAuth Integration</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <span className="text-sm">Secure Authentication</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <span className="text-sm">Modern UI Components</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                    <span className="text-sm">Next.js 15 with App Router</span>
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Feature Pills */}
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 lg:space-x-6 text-xs sm:text-sm text-slate-600">
+              <span className="flex items-center">
+                <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                Health Data
+              </span>
+              <span className="flex items-center">
+                <span className="w-2 h-2 bg-red-400 rounded-full mr-2"></span>
+                Lab results
+              </span>
+              <span className="flex items-center">
+                <span className="w-2 h-2 bg-cyan-400 rounded-full mr-2"></span>
+                Wearables
+              </span>
             </div>
+          </div>
 
-            {/* Info Section */}
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Getting Started</CardTitle>
-                  <CardDescription>
-                    Follow these steps to set up your environment
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <h4 className="font-medium">1. Environment Setup</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Copy{" "}
-                      <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">
-                        .env.local.example
-                      </code>{" "}
-                      to{" "}
-                      <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">
-                        .env.local
-                      </code>
-                    </p>
+          {/* Subscribe Section */}
+          <div className="space-y-4 sm:space-y-6">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-blue-500/10 rounded-2xl blur-xl"></div>
+              <div className="absolute -top-2 -left-2 w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full opacity-20 animate-pulse"></div>
+              <div className="absolute -top-1 -right-3 w-6 h-6 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full opacity-30 animate-pulse delay-150"></div>
+              <div className="absolute -bottom-2 left-4 w-4 h-4 bg-gradient-to-br from-teal-400 to-green-500 rounded-full opacity-25 animate-pulse delay-300"></div>
+              <div className="relative bg-white/85 backdrop-blur-xl border border-emerald-200/50 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg">
+                <div className="space-y-3 sm:space-y-4 lg:space-y-6 flex flex-col items-center">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse delay-75"></div>
+                    <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse delay-150"></div>
                   </div>
-                  <div className="space-y-2">
-                    <h4 className="font-medium">2. Supabase Configuration</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Add your Supabase project URL and anon key to the
-                      environment variables
-                    </p>
-                  </div>
-                  <div className="space-y-2">
-                    <h4 className="font-medium">3. Google OAuth Setup</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Configure Google OAuth in your Supabase dashboard under
-                      Authentication → Providers
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Tech Stack</CardTitle>
-                  <CardDescription>
-                    Built with modern technologies
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-black rounded-full"></div>
-                      <span>Next.js 15</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <span>Supabase</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      <span>TypeScript</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                      <span>Tailwind CSS</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                      <span>Radix UI</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                      <span>Google OAuth</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  <h3 className="text-base sm:text-lg lg:text-xl font-medium text-slate-900 text-center">
+                    <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 bg-clip-text text-transparent">
+                      Live younger for longer.
+                    </span>
+                    <br />
+                    <span className="text-slate-500 text-sm sm:text-base lg:text-md font-normal">
+                      Join the future of personalized medicine.
+                    </span>
+                  </h3>
+                  <SubscribeInput />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -183,3 +102,5 @@ export default function Home() {
     </div>
   );
 }
+
+// Cursor rules applied correctly.
