@@ -20,10 +20,10 @@ export default function Home() {
           <div className="space-y-4 sm:space-y-6 lg:space-y-8">
             <div className="space-y-4">
               <Image
-                src="/logo.svg"
+                src="/no-bg.png"
                 alt="Uara.ai"
-                width={80}
-                height={80}
+                width={100}
+                height={100}
                 className="mx-auto sm:w-[100px] sm:h-[100px]"
               />
 
