@@ -37,29 +37,41 @@ export function UserMenu({ onlySignOut }: Props) {
 
   // Extract user info from Supabase user object
   const userMetadata = user.user_metadata || {};
+
+  // Debug: Log user object structure to console
+  console.log("User object:", user);
+  console.log("User metadata:", userMetadata);
+
   const fullName =
     userMetadata.full_name ||
+    userMetadata.name ||
     `${userMetadata.first_name || ""} ${userMetadata.last_name || ""}`.trim();
   const firstName = userMetadata.first_name || "";
   const lastName = userMetadata.last_name || "";
-  const avatarUrl = userMetadata.avatar_url || userMetadata.picture;
+  const avatarUrl =
+    userMetadata.avatar_url || userMetadata.picture || userMetadata.avatar;
   const email = user.email || "";
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="rounded-full w-8 h-8 cursor-pointer border border-border">
-          {avatarUrl && (
+          {avatarUrl ? (
             <AvatarImage
               src={avatarUrl}
               alt={fullName || email}
               width={32}
               height={32}
+              onError={(e) => {
+                console.log("Avatar image failed to load:", avatarUrl);
+                e.currentTarget.style.display = "none";
+              }}
             />
-          )}
+          ) : null}
           <AvatarFallback>
             <span className="text-xs">
               {(firstName || lastName || fullName)?.charAt(0)?.toUpperCase() ||
+                email?.charAt(0)?.toUpperCase() ||
                 "U"}
             </span>
           </AvatarFallback>
