@@ -1,7 +1,7 @@
 "use client";
 
 import { subscribeAction } from "@/actions/subscribe-action";
-import { Loader2 } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { toast } from "sonner";
@@ -31,24 +31,13 @@ export function SubscribeInput() {
   const [isSubmitted, setSubmitted] = useState(false);
 
   return (
-    <div>
+    <div className="flex flex-col items-center">
       <div className="flex">
         {isSubmitted ? (
-          <div className="border border-[#2C2C2C] font-sm text-teal-300 h-11 w-full max-w-[330px] flex items-center py-1 px-3 justify-between">
+          <div className="border border-[#2C2C2C] font-sm text-green-500 h-11 w-full  flex items-center py-1 justify-between px-3 rounded-md font-semibold">
             <p>Subscribed</p>
 
-            <svg
-              width="17"
-              height="17"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <title>Check</title>
-              <path
-                d="m14.546 4.724-8 8-3.667-3.667.94-.94 2.727 2.72 7.06-7.053.94.94Z"
-                fill="#fff"
-              />
-            </svg>
+            <Check className="w-4 h-4 text-green-500" />
           </div>
         ) : (
           <form
@@ -83,6 +72,9 @@ export function SubscribeInput() {
           </form>
         )}
       </div>
+      <p className="text-sm text-muted-foreground mt-2">
+        We&apos;ll send you an email when we&apos;re ready to launch.
+      </p>
     </div>
   );
 }
