@@ -5,7 +5,7 @@ import {
   createSafeActionClient,
 } from "next-safe-action";
 
-const ratelimit = new Ratelimit({
+export const ratelimit = new Ratelimit({
   redis: RedisClient,
   limiter: Ratelimit.slidingWindow(10, "10s"),
   analytics: true,

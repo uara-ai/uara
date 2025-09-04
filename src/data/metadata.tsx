@@ -1,4 +1,3 @@
-import { Icons } from "@/components/ui/icons";
 import { Twitter, Linkedin, Mail } from "lucide-react";
 
 export const DATA = {

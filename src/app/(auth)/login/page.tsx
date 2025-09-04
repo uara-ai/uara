@@ -7,12 +7,6 @@ import Link from "next/link";
 import { userAgent } from "next/server";
 import { redirect } from "next/navigation";
 import { createClient } from "@/packages/supabase/server";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
 import { GoogleSignInButton } from "@/components/auth/google-signin-button";
 
 export const metadata: Metadata = {
