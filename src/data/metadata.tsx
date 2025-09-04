@@ -2,7 +2,7 @@ import { Twitter, Linkedin, Mail } from "lucide-react";
 
 export const DATA = {
   // Brand & positioning
-  name: "Uara.ai | Live younger for longer.",
+  name: "Uara.ai - Live younger for longer.",
   initials: "UA",
   url: "https://uara.ai",
   location: "Remote • Europe (CET)",
@@ -111,7 +111,7 @@ export const DATA = {
   // 🌐 Per-page SEO metadata (titles, descriptions, og)
   meta: {
     home: {
-      title: "Uara.ai — Live younger for longer | Track, Understand, Improve",
+      title: "Uara.ai - Live younger for longer | Track, Understand, Improve",
       description:
         "Connect Whoop, labs, fitness, and nutrition. Uara.ai uses AI to find patterns, explain results, and coach you to slow your pace of aging.",
       ogImage: "/og/opengraph-image.png",
