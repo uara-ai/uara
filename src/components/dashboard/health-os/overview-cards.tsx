@@ -50,7 +50,7 @@ export function LongevityProgressCard({ className }: CardProps) {
           </CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="space-y-2">
+      <CardContent className="space-y-2 mb-4">
         <div className="text-base font-semibold">Longevity Score</div>
         <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
           Good
