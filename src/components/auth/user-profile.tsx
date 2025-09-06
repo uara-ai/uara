@@ -1,10 +1,10 @@
 "use client";
 
-import { useAuth } from "@/contexts/auth-context";
+import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { GoogleSignOutButton } from "./google-signin-button";
+import { SignOut } from "@/components/overview/sign-out";
 import { User, Mail, Calendar } from "lucide-react";
 
 export function UserProfile() {
@@ -34,18 +34,19 @@ export function UserProfile() {
         <div className="flex justify-center mb-4">
           <Avatar className="h-20 w-20">
             <AvatarImage
-              src={user.user_metadata?.avatar_url}
-              alt={user.user_metadata?.full_name}
+              src={user.profilePictureUrl || ""}
+              alt={`${user.firstName || ""} ${user.lastName || ""}`.trim()}
             />
             <AvatarFallback className="text-lg">
-              {user.user_metadata?.full_name?.charAt(0) ||
+              {user.firstName?.charAt(0) ||
+                user.lastName?.charAt(0) ||
                 user.email?.charAt(0) ||
                 "U"}
             </AvatarFallback>
           </Avatar>
         </div>
         <CardTitle className="text-xl">
-          {user.user_metadata?.full_name || "User"}
+          {`${user.firstName || ""} ${user.lastName || ""}`.trim() || "User"}
         </CardTitle>
         <Badge variant="secondary" className="w-fit mx-auto">
           <User className="w-3 h-3 mr-1" />
@@ -60,18 +61,18 @@ export function UserProfile() {
             <span>{user.email}</span>
           </div>
 
-          {user.created_at && (
+          {user.createdAt && (
             <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
               <Calendar className="w-4 h-4" />
               <span>
-                Joined {new Date(user.created_at).toLocaleDateString()}
+                Joined {new Date(user.createdAt).toLocaleDateString()}
               </span>
             </div>
           )}
         </div>
 
         <div className="pt-4 border-t">
-          <GoogleSignOutButton />
+          <SignOut />
         </div>
       </CardContent>
     </Card>

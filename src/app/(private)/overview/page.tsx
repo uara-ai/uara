@@ -1,5 +1,7 @@
-import { Overview } from "@/components/dashboard/health-os/overview";
+import { Overview } from "@/components/overview/health-os/overview";
+import { withAuth } from "@workos-inc/authkit-nextjs";
 
-export default function Home() {
+export default async function Home() {
+  await withAuth({ ensureSignedIn: true });
   return <Overview />;
 }

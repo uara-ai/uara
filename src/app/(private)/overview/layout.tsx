@@ -1,13 +1,17 @@
-import { Header } from "@/components/dashboard/header";
+import { Header } from "@/components/overview/header";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/dashboard/sidebar";
+import { AppSidebar } from "@/components/overview/sidebar";
+import { withAuth } from "@workos-inc/authkit-nextjs";
+import { User } from "@/data/user.type";
 
 export default async function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { user } = await withAuth({ ensureSignedIn: true });
+
   return (
     <div className="relative">
       {/* Desktop Layout */}
@@ -15,7 +19,7 @@ export default async function Layout({
         <AppSidebar />
         <SidebarInset>
           <div className="hidden md:block">
-            <Header />
+            <Header user={user as User} />
           </div>
           <div className="flex flex-1 flex-col gap-4 p-6 ml-12">
             <NuqsAdapter>{children}</NuqsAdapter>
@@ -25,7 +29,7 @@ export default async function Layout({
 
       {/* Mobile Layout */}
       <div className="md:hidden">
-        <Header />
+        <Header user={user as User} />
         <div className="flex flex-1 flex-col gap-4 p-4">
           <NuqsAdapter>{children}</NuqsAdapter>
         </div>

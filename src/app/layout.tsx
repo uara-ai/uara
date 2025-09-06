@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/contexts/auth-context";
 import { OpenPanelComponent } from "@openpanel/nextjs";
 import { DATA } from "@/data/metadata";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "next-themes";
+import {
+  AuthKitProvider,
+  Impersonation,
+} from "@workos-inc/authkit-nextjs/components";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -98,7 +101,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>{children}</AuthProvider>
+          <AuthKitProvider>
+            {children}
+            <Impersonation />
+          </AuthKitProvider>
           <OpenPanelComponent
             clientId={process.env.NEXT_PUBLIC_OPEN_PANEL_CLIENT_ID!}
             clientSecret={process.env.OPEN_PANEL_CLIENT_SECRET!}

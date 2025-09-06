@@ -1,5 +1,3 @@
-"use client";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -10,46 +8,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
-import { SignOut } from "@/components/dashboard/sign-out";
-import { ThemeSwitch } from "@/components/dashboard/theme-switch";
-import { useAuth } from "@/contexts/auth-context";
+import { SignOut } from "@/components/overview/sign-out";
+import { ThemeSwitch } from "@/components/overview/theme-switch";
+import { User } from "@/data/user.type";
 
 type Props = {
+  user: User;
   onlySignOut?: boolean;
 };
 
-export function UserMenu({ onlySignOut }: Props) {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="flex items-center space-x-2">
-        <Skeleton className="h-8 w-8 rounded-full" />
-      </div>
-    );
-  }
-
+export function UserMenu({ user, onlySignOut }: Props) {
   if (!user) {
     return null;
   }
 
-  // Extract user info from Supabase user object
-  const userMetadata = user.user_metadata || {};
-
-  // Debug: Log user object structure to console
-  console.log("User object:", user);
-  console.log("User metadata:", userMetadata);
-
-  const fullName =
-    userMetadata.full_name ||
-    userMetadata.name ||
-    `${userMetadata.first_name || ""} ${userMetadata.last_name || ""}`.trim();
-  const firstName = userMetadata.first_name || "";
-  const lastName = userMetadata.last_name || "";
-  const avatarUrl =
-    userMetadata.avatar_url || userMetadata.picture || userMetadata.avatar;
+  // Extract user info from WorkOS user object
+  const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+  const firstName = user.firstName || "";
+  const lastName = user.lastName || "";
+  const avatarUrl = user.profilePictureUrl;
   const email = user.email || "";
 
   return (
@@ -62,10 +40,6 @@ export function UserMenu({ onlySignOut }: Props) {
               alt={fullName || email}
               width={32}
               height={32}
-              onError={(e) => {
-                console.log("Avatar image failed to load:", avatarUrl);
-                e.currentTarget.style.display = "none";
-              }}
             />
           ) : null}
           <AvatarFallback>
@@ -121,3 +95,5 @@ export function UserMenu({ onlySignOut }: Props) {
     </DropdownMenu>
   );
 }
+
+// Cursor rules applied correctly.
