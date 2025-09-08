@@ -118,14 +118,14 @@ const Navbar = memo(
                 isDialogOpen ? "pointer-events-auto" : ""
               )}
             >
-              <div className="flex items-center bg-muted/50 rounded-lg border border-border">
-                <span className="px-2 py-1.5 text-sm font-medium text-muted-foreground">
+              <div className="flex items-center bg-muted/50 border border-border rounded-full">
+                <span className="px-3 py-1.5 text-sm font-medium text-muted-foreground">
                   Free Plan
                 </span>
                 <Button
                   variant="default"
                   size="sm"
-                  className="rounded-md mr-1.5 h-6"
+                  className="mr-1.5 h-6 rounded-full"
                   onClick={() => router.push("/pricing")}
                 >
                   Upgrade
@@ -139,57 +139,6 @@ const Navbar = memo(
               isDialogOpen ? "pointer-events-auto" : ""
             )}
           >
-            {/* Share functionality using unified component */}
-            {chatId && (
-              <>
-                {user && isOwner ? (
-                  /* Authenticated chat owners get share functionality */
-                  <Button variant="secondary" size="sm" className="mr-1">
-                    Share
-                  </Button>
-                ) : (
-                  /*<ShareButton
-                    chatId={chatId}
-                    selectedVisibilityType={selectedVisibilityType}
-                    onVisibilityChange={async (visibility) => {
-                      await Promise.resolve(onVisibilityChange(visibility));
-                    }}
-                    isOwner={isOwner}
-                    user={user}
-                    variant="navbar"
-                    className="mr-1"
-                    disabled={false}
-                  />*/
-                  /* Non-owners (authenticated or not) just see indicator */
-                  selectedVisibilityType === "public" && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          className="pointer-events-auto bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800 opacity-80 cursor-not-allowed"
-                          disabled
-                        >
-                          <Globe
-                            size={16}
-                            className="text-blue-600 dark:text-blue-400"
-                          />
-                          <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                            Shared
-                          </span>
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" sideOffset={4}>
-                        {user
-                          ? "This is someone else's shared page"
-                          : "This is a shared page"}
-                      </TooltipContent>
-                    </Tooltip>
-                  )
-                )}
-              </>
-            )}
-
             {/* Subscription Status - show loading or Pro status only */}
             {user && isSearchWithId && (
               <>
