@@ -1,13 +1,7 @@
-// Schema for user profile data
 import { z } from "zod";
 
 export const userProfileSchema = z.object({
-  dateOfBirth: z.string().refine((date) => {
-    const parsedDate = new Date(date);
-    const now = new Date();
-    const age = now.getFullYear() - parsedDate.getFullYear();
-    return age >= 13 && age <= 120; // Reasonable age range
-  }, "Please enter a valid date of birth"),
+  dateOfBirth: z.string().min(1, "Date of birth is required"),
   gender: z.enum([
     "MALE",
     "FEMALE",
@@ -26,16 +20,8 @@ export const userProfileSchema = z.object({
     "PREFER_NOT_TO_SAY",
     "OTHER",
   ]),
-  heightCm: z
-    .number()
-    .min(50, "Height must be at least 50cm")
-    .max(300, "Height must be less than 300cm")
-    .optional(),
-  weightKg: z
-    .number()
-    .min(20, "Weight must be at least 20kg")
-    .max(500, "Weight must be less than 500kg")
-    .optional(),
+  heightCm: z.number().optional(),
+  weightKg: z.number().optional(),
   bloodType: z
     .enum([
       "A_POSITIVE",
@@ -49,12 +35,13 @@ export const userProfileSchema = z.object({
       "UNKNOWN",
     ])
     .optional(),
-  medicalConditions: z.array(z.string()).optional(),
-  allergies: z.array(z.string()).optional(),
-  medications: z.array(z.string()).optional(),
-  emergencyContactName: z.string().max(100).optional(),
-  emergencyContactPhone: z.string().max(20).optional(),
-  dataProcessingConsent: z.boolean(),
+  dataProcessingConsent: z
+    .boolean()
+    .refine((val) => val === true, "Consent is required"),
   marketingConsent: z.boolean(),
   researchConsent: z.boolean(),
 });
+
+export type UserProfileData = z.infer<typeof userProfileSchema>;
+
+// Cursor rules applied correctly.

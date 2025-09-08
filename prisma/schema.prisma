@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -33,10 +32,6 @@ model User {
   medicalConditions String? // JSON string of medical conditions
   allergies         String? // JSON string of allergies
   medications       String? // JSON string of current medications
-
-  // Emergency contact (encrypted)
-  emergencyContactName  String?
-  emergencyContactPhone String?
 
   // Consent and privacy
   dataProcessingConsent Boolean @default(false)
