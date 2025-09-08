@@ -18,7 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 
 import { useRouter, usePathname } from "next/navigation";
-import { User } from "@/data/user.type";
+import { User } from "@/lib/user.type";
 import { UserMenu } from "./auth/user-menu";
 
 type VisibilityType = "public" | "private";

@@ -3,7 +3,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/overview/sidebar";
 import { withAuth } from "@workos-inc/authkit-nextjs";
-import { User } from "@/data/user.type";
+import { User } from "@/lib/user.type";
 
 export default async function Layout({
   children,

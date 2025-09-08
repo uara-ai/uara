@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import { SignOut } from "@/components/auth/sign-out";
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { User } from "@/data/user.type";
+import { User } from "@/lib/user.type";
 
 type Props = {
   user: User;

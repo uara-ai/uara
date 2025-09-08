@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { OpenPanelComponent } from "@openpanel/nextjs";
-import { DATA } from "@/data/metadata";
+import { DATA } from "@/lib/metadata";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "next-themes";
 import {
