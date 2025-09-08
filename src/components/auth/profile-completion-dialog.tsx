@@ -57,7 +57,7 @@ export function ProfileCompletionDialog({
       ethnicity: "PREFER_NOT_TO_SAY",
       heightCm: undefined,
       weightKg: undefined,
-      bloodType: "UNKNOWN",
+      bloodType: undefined,
       dataProcessingConsent: false,
       marketingConsent: false,
       researchConsent: false,
@@ -232,6 +232,38 @@ export function ProfileCompletionDialog({
 
             <FormField
               control={form.control}
+              name="bloodType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Blood Type (optional)</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select blood type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="A_POSITIVE">A+</SelectItem>
+                      <SelectItem value="A_NEGATIVE">A-</SelectItem>
+                      <SelectItem value="B_POSITIVE">B+</SelectItem>
+                      <SelectItem value="B_NEGATIVE">B-</SelectItem>
+                      <SelectItem value="AB_POSITIVE">AB+</SelectItem>
+                      <SelectItem value="AB_NEGATIVE">AB-</SelectItem>
+                      <SelectItem value="O_POSITIVE">O+</SelectItem>
+                      <SelectItem value="O_NEGATIVE">O-</SelectItem>
+                      <SelectItem value="UNKNOWN">Unknown</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="dataProcessingConsent"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-start space-x-3 space-y-0">
@@ -263,6 +295,26 @@ export function ProfileCompletionDialog({
                   </FormControl>
                   <div className="space-y-1 leading-none">
                     <FormLabel>Marketing emails</FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="researchConsent"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Allow anonymous use of my data for longevity research
+                    </FormLabel>
                   </div>
                 </FormItem>
               )}
