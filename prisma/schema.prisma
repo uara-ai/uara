@@ -11,18 +11,37 @@ datasource db {
   // extensions = [pgvector]
 }
 
-// User model that extends Supabase auth.users
+// HIPAA-compliant User model - stores only WorkOS auth ID and essential data
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  avatarUrl String?
+  id String @id // WorkOS user ID directly
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Whoop integration
-  whoopTokens WhoopToken?
-  whoopData   WhoopUserData?
+  // Profile completion status
+  profileCompleted Boolean @default(false)
+
+  // HIPAA-compliant health profile (optional fields)
+  dateOfBirth DateTime?
+  gender      Gender?
+  ethnicity   Ethnicity?
+  heightCm    Float? // Height in centimeters
+  weightKg    Float? // Weight in kilograms
+  bloodType   BloodType?
+
+  // Medical conditions and allergies (encrypted)
+  medicalConditions String? // JSON string of medical conditions
+  allergies         String? // JSON string of allergies
+  medications       String? // JSON string of current medications
+
+  // Emergency contact (encrypted)
+  emergencyContactName  String?
+  emergencyContactPhone String?
+
+  // Consent and privacy
+  dataProcessingConsent Boolean @default(false)
+  marketingConsent      Boolean @default(false)
+  researchConsent       Boolean @default(false)
 
   // AI Chat integration
   chats Chat[]
@@ -30,172 +49,39 @@ model User {
   @@map("users")
 }
 
-// Whoop OAuth tokens
-model WhoopToken {
-  id           String   @id @default(cuid())
-  userId       String   @unique
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken  String
-  refreshToken String
-  expiresAt    DateTime
-  scope        String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  @@map("whoop_tokens")
+// Gender enum for standardized values
+enum Gender {
+  MALE
+  FEMALE
+  NON_BINARY
+  PREFER_NOT_TO_SAY
+  OTHER
 }
 
-// Whoop user profile data
-model WhoopUserData {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  whoopId   String   @unique
-  email     String
-  firstName String?
-  lastName  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Related data
-  recoveries       WhoopRecovery[]
-  cycles           WhoopCycle[]
-  sleeps           WhoopSleep[]
-  workouts         WhoopWorkout[]
-  bodyMeasurements WhoopBodyMeasurement[]
-
-  @@map("whoop_user_data")
+// Ethnicity enum based on NIH standards
+enum Ethnicity {
+  AMERICAN_INDIAN_ALASKA_NATIVE
+  ASIAN
+  BLACK_AFRICAN_AMERICAN
+  HISPANIC_LATINO
+  NATIVE_HAWAIIAN_PACIFIC_ISLANDER
+  WHITE
+  MULTIRACIAL
+  PREFER_NOT_TO_SAY
+  OTHER
 }
 
-// Whoop Recovery data
-model WhoopRecovery {
-  id               String        @id @default(cuid())
-  whoopId          String        @unique
-  whoopUserDataId  String
-  whoopUserData    WhoopUserData @relation(fields: [whoopUserDataId], references: [id], onDelete: Cascade)
-  scoreState       String
-  userCalibrating  Boolean?
-  recoveryScore    Float?
-  restingHeartRate Float?
-  hrvRmssdMilli    Float?
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
-  whoopCreatedAt   DateTime
-  whoopUpdatedAt   DateTime
-
-  @@map("whoop_recoveries")
-}
-
-// Whoop Cycle data
-model WhoopCycle {
-  id               String        @id @default(cuid())
-  whoopId          String        @unique
-  whoopUserDataId  String
-  whoopUserData    WhoopUserData @relation(fields: [whoopUserDataId], references: [id], onDelete: Cascade)
-  start            DateTime
-  end              DateTime?
-  timezoneOffset   String
-  scoreState       String
-  strain           Float?
-  averageHeartRate Float?
-  maxHeartRate     Float?
-  kilojoule        Float?
-  percentRecorded  Float?
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
-  whoopCreatedAt   DateTime
-  whoopUpdatedAt   DateTime
-
-  @@map("whoop_cycles")
-}
-
-// Whoop Sleep data
-model WhoopSleep {
-  id                          String        @id @default(cuid())
-  whoopId                     String        @unique
-  whoopUserDataId             String
-  whoopUserData               WhoopUserData @relation(fields: [whoopUserDataId], references: [id], onDelete: Cascade)
-  start                       DateTime
-  end                         DateTime
-  timezoneOffset              String
-  nap                         Boolean
-  scoreState                  String
-  // Stage summary
-  totalInBedTimeMilli         Int?
-  totalAwakeTimeMilli         Int?
-  totalNoDataTimeMilli        Int?
-  totalLightSleepTimeMilli    Int?
-  totalSlowWaveSleepTimeMilli Int?
-  totalRemSleepTimeMilli      Int?
-  sleepCycleCount             Int?
-  disturbanceCount            Int?
-  // Sleep need
-  baselineMilli               Int?
-  needFromSleepDebtMilli      Int?
-  needFromRecentStrainMilli   Int?
-  needFromRecentNapMilli      Int?
-  // Other metrics
-  respiratoryRate             Float?
-  sleepPerformancePercentage  Float?
-  sleepConsistencyPercentage  Float?
-  sleepEfficiencyPercentage   Float?
-  createdAt                   DateTime      @default(now())
-  updatedAt                   DateTime      @updatedAt
-  whoopCreatedAt              DateTime
-  whoopUpdatedAt              DateTime
-
-  @@map("whoop_sleeps")
-}
-
-// Whoop Workout data
-model WhoopWorkout {
-  id                  String        @id @default(cuid())
-  whoopId             String        @unique
-  whoopUserDataId     String
-  whoopUserData       WhoopUserData @relation(fields: [whoopUserDataId], references: [id], onDelete: Cascade)
-  start               DateTime
-  end                 DateTime
-  timezoneOffset      String
-  sportId             Int
-  scoreState          String
-  strain              Float?
-  averageHeartRate    Float?
-  maxHeartRate        Float?
-  kilojoule           Float?
-  percentRecorded     Float?
-  distanceMeter       Float?
-  altitudeGainMeter   Float?
-  altitudeChangeMeter Float?
-  // Zone durations
-  zoneZeroMilli       Int?
-  zoneOneMilli        Int?
-  zoneTwoMilli        Int?
-  zoneThreeMilli      Int?
-  zoneFourMilli       Int?
-  zoneFiveMilli       Int?
-  createdAt           DateTime      @default(now())
-  updatedAt           DateTime      @updatedAt
-  whoopCreatedAt      DateTime
-  whoopUpdatedAt      DateTime
-
-  @@map("whoop_workouts")
-}
-
-// Whoop Body Measurement data
-model WhoopBodyMeasurement {
-  id              String        @id @default(cuid())
-  whoopId         String        @unique
-  whoopUserDataId String
-  whoopUserData   WhoopUserData @relation(fields: [whoopUserDataId], references: [id], onDelete: Cascade)
-  heightMeter     Float?
-  weightKilogram  Float?
-  maxHeartRate    Float?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  whoopCreatedAt  DateTime
-  whoopUpdatedAt  DateTime
-
-  @@map("whoop_body_measurements")
+// Blood type enum
+enum BloodType {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+  UNKNOWN
 }
 
 // AI Chat models

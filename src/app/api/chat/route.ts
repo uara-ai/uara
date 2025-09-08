@@ -26,21 +26,13 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Find or create user in our database
-    let dbUser = await prisma.user.findUnique({
-      where: { email: user.email },
+    // Find user in our database (user should already exist from auth callback)
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
     });
 
     if (!dbUser) {
-      dbUser = await prisma.user.create({
-        data: {
-          email: user.email,
-          name: user.firstName
-            ? `${user.firstName} ${user.lastName}`
-            : user.email.split("@")[0],
-          avatarUrl: user.profilePictureUrl,
-        },
-      });
+      return Response.json({ error: "User not found" }, { status: 404 });
     }
 
     let currentChatId = chatId;

@@ -18,7 +18,7 @@ export async function GET(
 
     // Find user in our database
     const dbUser = await prisma.user.findUnique({
-      where: { email: user.email },
+      where: { id: user.id },
     });
 
     if (!dbUser) {
@@ -68,7 +68,7 @@ export async function DELETE(
 
     // Find user in our database
     const dbUser = await prisma.user.findUnique({
-      where: { email: user.email },
+      where: { id: user.id },
     });
 
     if (!dbUser) {
