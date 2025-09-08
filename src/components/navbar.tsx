@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Plus, Globe } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { UserProfile, NavigationMenu } from "@/components/user-profile";
+import { NavigationMenu } from "@/components/navigation-menu";
 // import { ChatHistoryButton } from "@/components/chat-history-dialog";
 import {
   Tooltip,
@@ -18,7 +18,8 @@ import {
 import { cn } from "@/lib/utils";
 
 import { useRouter, usePathname } from "next/navigation";
-import { ComprehensiveUserData } from "@/lib/user-data-server";
+import { User } from "@/data/user.type";
+import { UserMenu } from "./auth/user-menu";
 
 type VisibilityType = "public" | "private";
 
@@ -28,7 +29,7 @@ interface NavbarProps {
   selectedVisibilityType: VisibilityType;
   onVisibilityChange: (visibility: VisibilityType) => void | Promise<void>;
   status: string;
-  user: ComprehensiveUserData | null;
+  user: User | null;
   onHistoryClick: () => void;
   isOwner?: boolean;
   subscriptionData?: any;
@@ -45,16 +46,10 @@ const Navbar = memo(
     isDialogOpen,
     chatId,
     selectedVisibilityType,
-    onVisibilityChange,
     status,
     user,
-    onHistoryClick,
     isOwner = true,
-    subscriptionData,
-    isProUser,
     isProStatusLoading,
-    isCustomInstructionsEnabled,
-    setIsCustomInstructionsEnabled,
   }: NavbarProps) => {
     const router = useRouter();
     const pathname = usePathname();
@@ -64,7 +59,7 @@ const Navbar = memo(
     );
 
     // Use passed Pro status directly
-    const hasActiveSubscription = isProUser;
+    const hasActiveSubscription = false;
     const showProLoading = isProStatusLoading;
 
     return (
@@ -232,14 +227,7 @@ const Navbar = memo(
             {/* Navigation Menu - settings icon for general navigation */}
             <NavigationMenu />
             {/* User Profile - focused on authentication and account management */}
-            <UserProfile
-              user={user}
-              subscriptionData={subscriptionData}
-              isProUser={isProUser}
-              isProStatusLoading={isProStatusLoading}
-              isCustomInstructionsEnabled={isCustomInstructionsEnabled}
-              setIsCustomInstructionsEnabled={setIsCustomInstructionsEnabled}
-            />
+            <UserMenu user={user!} />
           </div>
         </div>
       </>

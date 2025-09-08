@@ -9,6 +9,10 @@ import {
   AuthKitProvider,
   Impersonation,
 } from "@workos-inc/authkit-nextjs/components";
+import { cookies } from "next/headers";
+import { isEU } from "@/packages/location/location";
+import { Cookies } from "@/packages/constants";
+import { ConsentBanner } from "@/components/auth/consent-banner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -77,11 +81,15 @@ export const metadata: Metadata = {
   category: "Technology",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const showTrackingConsent =
+    (await isEU()) && !cookieStore.has(Cookies.TrackingConsent);
+
   return (
     <html lang="en" suppressContentEditableWarning>
       <head>
@@ -112,6 +120,7 @@ export default function RootLayout({
             disabled={process.env.NODE_ENV !== "production"}
           />
           <Toaster />
+          {showTrackingConsent && <ConsentBanner />}
         </ThemeProvider>
       </body>
     </html>

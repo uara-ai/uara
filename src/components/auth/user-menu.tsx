@@ -9,8 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { SignOut } from "@/components/overview/sign-out";
-import { ThemeSwitch } from "@/components/overview/theme-switch";
+import { SignOut } from "@/components/auth/sign-out";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 import { User } from "@/data/user.type";
 
 type Props = {
@@ -84,7 +84,7 @@ export function UserMenu({ user, onlySignOut }: Props) {
               <div className="flex items-center">
                 <p className="text-sm font-medium">Theme</p>
               </div>
-              <ThemeSwitch />
+              <ThemeSwitcher />
             </div>
             <DropdownMenuSeparator />
           </>
