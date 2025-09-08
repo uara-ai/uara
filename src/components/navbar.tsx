@@ -176,7 +176,7 @@ const Navbar = memo(
             {/* Navigation Menu - settings icon for general navigation */}
             <NavigationMenu />
             {/* User Profile - focused on authentication and account management */}
-            <UserMenu user={user!} />
+            <UserMenu user={user} />
           </div>
         </div>
       </>

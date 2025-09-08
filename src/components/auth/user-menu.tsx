@@ -8,19 +8,36 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { LogIn } from "lucide-react";
 import { SignOut } from "@/components/auth/sign-out";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { User } from "@/lib/user.type";
 
 type Props = {
-  user: User;
+  user: User | null;
   onlySignOut?: boolean;
 };
 
 export function UserMenu({ user, onlySignOut }: Props) {
+  // If user is not logged in, show login button
   if (!user) {
-    return null;
+    return (
+      <Link href="/login">
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          className="rounded-lg bg-accent hover:bg-accent/80 group transition-all hover:scale-105"
+        >
+          <LogIn size={16} className="group-hover:rotate-12 transition-all" />
+          <span className="text-sm ml-1.5 group-hover:block hidden animate-in fade-in duration-300">
+            Login
+          </span>
+        </Button>
+      </Link>
+    );
   }
 
   // Extract user info from WorkOS user object
