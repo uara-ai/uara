@@ -2,12 +2,9 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { chatId: string } }
-) {
+export async function GET({ params }: { params: Promise<{ chatId: string }> }) {
   try {
-    const { chatId } = params;
+    const { chatId } = await params;
 
     // Get user from WorkOS
     const { user } = await withAuth();
@@ -54,10 +51,10 @@ export async function GET(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { chatId: string } }
+  { params }: { params: Promise<{ chatId: string }> }
 ) {
   try {
-    const { chatId } = params;
+    const { chatId } = await params;
 
     // Get user from WorkOS
     const { user } = await withAuth();

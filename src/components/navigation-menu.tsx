@@ -32,7 +32,7 @@ import {
 import { Icons } from "./ui/icons";
 
 // Navigation Menu Component - contains all the general navigation items
-export const NavigationMenu = memo(() => {
+export const NavigationMenu = memo(function NavigationMenu() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (

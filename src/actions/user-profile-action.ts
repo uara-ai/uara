@@ -125,55 +125,51 @@ export async function initializeUserAction(workosUser: {
 }
 
 // Action to get user profile completion status
-export const getUserProfileStatusAction = actionClient
-  .schema(z.object({}))
-  .action(
-    async (): Promise<
-      ActionResponse<{
-        profileCompleted: boolean;
-        user: any;
-      }>
-    > => {
-      try {
-        const { user } = await withAuth();
+export async function getUserProfileStatusAction(): Promise<
+  ActionResponse<{
+    profileCompleted: boolean;
+    user: any;
+  }>
+> {
+  try {
+    const { user } = await withAuth();
 
-        if (!user?.id) {
-          return {
-            success: false,
-            error: appErrors.UNAUTHORIZED,
-          };
-        }
-
-        const dbUser = await prisma.user.findUnique({
-          where: { id: user.id },
-          select: {
-            id: true,
-            profileCompleted: true,
-            dataProcessingConsent: true,
-            createdAt: true,
-          },
-        });
-
-        if (!dbUser) {
-          return {
-            success: false,
-            error: appErrors.NOT_FOUND,
-          };
-        }
-
-        return {
-          success: true,
-          data: {
-            profileCompleted: dbUser.profileCompleted,
-            user: dbUser,
-          },
-        };
-      } catch (error) {
-        console.error("Get user profile status error:", error);
-        return {
-          success: false,
-          error: appErrors.DATABASE_ERROR,
-        };
-      }
+    if (!user?.id) {
+      return {
+        success: false,
+        error: appErrors.UNAUTHORIZED,
+      };
     }
-  );
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: {
+        id: true,
+        profileCompleted: true,
+        dataProcessingConsent: true,
+        createdAt: true,
+      },
+    });
+
+    if (!dbUser) {
+      return {
+        success: false,
+        error: appErrors.NOT_FOUND,
+      };
+    }
+
+    return {
+      success: true,
+      data: {
+        profileCompleted: dbUser.profileCompleted,
+        user: dbUser,
+      },
+    };
+  } catch (error) {
+    console.error("Get user profile status error:", error);
+    return {
+      success: false,
+      error: appErrors.DATABASE_ERROR,
+    };
+  }
+}
