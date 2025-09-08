@@ -24,6 +24,9 @@ model User {
   whoopTokens WhoopToken?
   whoopData   WhoopUserData?
 
+  // AI Chat integration
+  chats Chat[]
+
   @@map("users")
 }
 
@@ -193,4 +196,49 @@ model WhoopBodyMeasurement {
   whoopUpdatedAt  DateTime
 
   @@map("whoop_body_measurements")
+}
+
+// AI Chat models
+model Chat {
+  id        String   @id @default(cuid())
+  title     String   @default("New Chat")
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Chat messages
+  messages ChatMessage[]
+
+  @@map("chats")
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  role      String // 'user', 'assistant', 'system'
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Tool invocations for future AI tools support
+  toolInvocations ToolInvocation[]
+
+  @@map("chat_messages")
+}
+
+model ToolInvocation {
+  id         String      @id @default(cuid())
+  messageId  String
+  message    ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  toolCallId String
+  toolName   String
+  args       Json
+  result     Json?
+  state      String // 'partial-call', 'call', 'result'
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@map("tool_invocations")
 }
