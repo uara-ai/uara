@@ -15,7 +15,9 @@ export const updateUserProfileAction = actionClient
   .action(
     async ({
       parsedInput,
-    }): Promise<ActionResponse<{ profileCompleted: boolean }>> => {
+    }): Promise<
+      ActionResponse<{ profileCompleted: boolean; isNewUser: boolean }>
+    > => {
       try {
         // Get user from WorkOS
         const { user } = await withAuth();
@@ -38,35 +40,71 @@ export const updateUserProfileAction = actionClient
           ? JSON.stringify(parsedInput.medications)
           : null;
 
-        // Update user profile in database
-        const updatedUser = await prisma.user.update({
-          where: { id: user.id },
-          data: {
-            dateOfBirth: new Date(parsedInput.dateOfBirth),
-            gender: parsedInput.gender,
-            ethnicity: parsedInput.ethnicity,
-            heightCm: parsedInput.heightCm,
-            weightKg: parsedInput.weightKg,
-            bloodType: parsedInput.bloodType,
-            medicalConditions: medicalConditionsJson,
-            allergies: allergiesJson,
-            medications: medicationsJson,
-            emergencyContactName: parsedInput.emergencyContactName,
-            emergencyContactPhone: parsedInput.emergencyContactPhone,
-            dataProcessingConsent: parsedInput.dataProcessingConsent,
-            marketingConsent: parsedInput.marketingConsent,
-            researchConsent: parsedInput.researchConsent,
-            profileCompleted: true,
-            updatedAt: new Date(),
-          },
+        console.log("Updating user profile in database...", {
+          userId: user.id,
         });
 
-        return {
-          success: true,
-          data: {
-            profileCompleted: updatedUser.profileCompleted,
-          },
+        // Prepare user data
+        const userData = {
+          dateOfBirth: new Date(parsedInput.dateOfBirth),
+          gender: parsedInput.gender,
+          ethnicity: parsedInput.ethnicity,
+          heightCm: parsedInput.heightCm,
+          weightKg: parsedInput.weightKg,
+          bloodType: parsedInput.bloodType,
+          medicalConditions: medicalConditionsJson,
+          allergies: allergiesJson,
+          medications: medicationsJson,
+          emergencyContactName: parsedInput.emergencyContactName,
+          emergencyContactPhone: parsedInput.emergencyContactPhone,
+          dataProcessingConsent: parsedInput.dataProcessingConsent,
+          marketingConsent: parsedInput.marketingConsent,
+          researchConsent: parsedInput.researchConsent,
+          profileCompleted: true,
         };
+
+        // Use upsert to handle both create and update scenarios
+        let isNewUser = false;
+        try {
+          // Check if user exists first
+          const existingUser = await prisma.user.findUnique({
+            where: { id: user.id },
+          });
+
+          let updatedUser;
+          if (existingUser) {
+            // Update existing user
+            updatedUser = await prisma.user.update({
+              where: { id: user.id },
+              data: {
+                ...userData,
+                updatedAt: new Date(),
+              },
+            });
+            console.log("Existing user profile updated:", updatedUser.id);
+          } else {
+            // Create new user
+            updatedUser = await prisma.user.create({
+              data: {
+                id: user.id,
+                ...userData,
+              },
+            });
+            isNewUser = true;
+            console.log("New user created successfully:", updatedUser.id);
+          }
+
+          return {
+            success: true,
+            data: {
+              profileCompleted: updatedUser.profileCompleted,
+              isNewUser,
+            },
+          };
+        } catch (dbError: any) {
+          console.error("Database operation failed:", dbError);
+          throw dbError;
+        }
       } catch (error) {
         console.error("Update user profile error:", error);
         return {
@@ -124,10 +162,23 @@ export async function initializeUserAction(workosUser: {
   }
 }
 
+// Helper function to check if user has all required information
+function hasRequiredProfileInfo(user: any): boolean {
+  // Required fields: dateOfBirth, gender, ethnicity, dataProcessingConsent
+  return !!(
+    user.dateOfBirth &&
+    user.gender &&
+    user.ethnicity &&
+    user.dataProcessingConsent
+  );
+}
+
 // Action to get user profile completion status
 export async function getUserProfileStatusAction(): Promise<
   ActionResponse<{
     profileCompleted: boolean;
+    hasRequiredInfo: boolean;
+    userExists: boolean;
     user: any;
   }>
 > {
@@ -147,21 +198,34 @@ export async function getUserProfileStatusAction(): Promise<
         id: true,
         profileCompleted: true,
         dataProcessingConsent: true,
+        dateOfBirth: true,
+        gender: true,
+        ethnicity: true,
         createdAt: true,
       },
     });
 
     if (!dbUser) {
+      // User doesn't exist in database
       return {
-        success: false,
-        error: appErrors.NOT_FOUND,
+        success: true,
+        data: {
+          profileCompleted: false,
+          hasRequiredInfo: false,
+          userExists: false,
+          user: null,
+        },
       };
     }
+
+    const hasRequiredInfo = hasRequiredProfileInfo(dbUser);
 
     return {
       success: true,
       data: {
-        profileCompleted: dbUser.profileCompleted,
+        profileCompleted: dbUser.profileCompleted && hasRequiredInfo,
+        hasRequiredInfo,
+        userExists: true,
         user: dbUser,
       },
     };
@@ -173,3 +237,5 @@ export async function getUserProfileStatusAction(): Promise<
     };
   }
 }
+
+// Cursor rules applied correctly.

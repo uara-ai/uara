@@ -1,69 +1,76 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
 import { ProfileCompletionDialog } from "./profile-completion-dialog";
-import {
-  getUserProfileStatusAction,
-  initializeUserAction,
-} from "@/actions/user-profile-action";
+import { getUserProfileStatusAction } from "@/actions/user-profile-action";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
+import { toast } from "sonner";
 
 export function ProfileCompletionHandler() {
   const [showDialog, setShowDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const searchParams = useSearchParams();
-  const router = useRouter();
   const { user } = useAuth();
 
   useEffect(() => {
     const checkProfileStatus = async () => {
       try {
+        console.log("ProfileCompletionHandler: Starting check", {
+          userId: user?.id,
+        });
+
         // Only proceed if user is authenticated
         if (!user?.id) {
+          console.log("ProfileCompletionHandler: No user found");
           setIsLoading(false);
           return;
         }
 
-        const showProfileDialog = searchParams.get("showProfileDialog");
+        // Always check profile status for authenticated users
+        console.log(
+          "ProfileCompletionHandler: Checking profile status for user"
+        );
 
-        if (showProfileDialog === "true") {
-          // Check if user actually needs to complete profile
+        // Check if user needs to complete profile (handle database errors gracefully)
+        try {
           const statusResult = await getUserProfileStatusAction();
 
-          // If user not found in database, initialize them first
-          if (
-            !statusResult.success &&
-            statusResult.error === "Resource not found"
-          ) {
-            console.log("User not found in database, initializing...");
-            const initResult = await initializeUserAction({ id: user.id });
+          if (statusResult.success && statusResult.data) {
+            const { profileCompleted, hasRequiredInfo, userExists } =
+              statusResult.data;
 
-            if (initResult.success) {
-              console.log("User initialized successfully");
-              setShowDialog(true);
+            if (profileCompleted && hasRequiredInfo) {
+              console.log("User profile already completed - no dialog needed");
             } else {
-              console.error("Failed to initialize user:", initResult.error);
+              // Show dialog if user doesn't exist, incomplete profile, or missing required info
+              if (!userExists) {
+                console.log(
+                  "User doesn't exist in database - showing profile dialog"
+                );
+                toast.info(
+                  "Welcome! Let's set up your health profile to get started."
+                );
+              } else if (!hasRequiredInfo) {
+                console.log(
+                  "User missing required info - showing profile dialog"
+                );
+                toast.info("Please complete your health profile to continue.");
+              } else {
+                console.log("User profile incomplete - showing profile dialog");
+                toast.info("Please complete your health profile to continue.");
+              }
+              setShowDialog(true);
             }
-          } else if (
-            statusResult.success &&
-            !statusResult.data?.profileCompleted
-          ) {
-            console.log("User found but profile not completed");
-            setShowDialog(true);
-          } else if (
-            statusResult.success &&
-            statusResult.data?.profileCompleted
-          ) {
-            console.log("User profile already completed");
           } else {
-            console.error("Error checking profile status:", statusResult.error);
+            // Show dialog for database errors or other issues
+            console.log("Status check failed, showing profile dialog");
+            toast.info("Please complete your health profile to continue.");
+            setShowDialog(true);
           }
-
-          // Clean up URL parameter
-          const url = new URL(window.location.href);
-          url.searchParams.delete("showProfileDialog");
-          router.replace(url.pathname + url.search, { scroll: false });
+        } catch (error) {
+          // If database check fails (no table, etc.), show dialog anyway
+          console.log("Database check failed, showing profile dialog:", error);
+          toast.info("Welcome! Let's set up your health profile.");
+          setShowDialog(true);
         }
       } catch (error) {
         console.error("Error in profile completion handler:", error);
@@ -73,7 +80,7 @@ export function ProfileCompletionHandler() {
     };
 
     checkProfileStatus();
-  }, [searchParams, router, user]);
+  }, [user]);
 
   const handleDialogClose = (open: boolean) => {
     if (!open) {
@@ -86,6 +93,11 @@ export function ProfileCompletionHandler() {
     // Optionally refresh the page or show a success message
     window.location.reload();
   };
+
+  console.log("ProfileCompletionHandler: Render state", {
+    isLoading,
+    showDialog,
+  });
 
   if (isLoading) {
     return null; // Don't render anything while loading

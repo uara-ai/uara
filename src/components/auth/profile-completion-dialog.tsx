@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Calendar } from "lucide-react";
-import { format } from "date-fns";
+import { toast } from "sonner";
 
 import {
   Dialog,
@@ -29,17 +28,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 
 import {
   updateUserProfileAction,
@@ -162,8 +154,16 @@ export function ProfileCompletionDialog({
     data: UserProfileData
   ) => {
     setIsSubmitting(true);
+    toast.loading("Saving your health profile...");
 
     try {
+      console.log("Submitting profile data:", {
+        ...data,
+        medicalConditions,
+        allergies,
+        medications,
+      });
+
       const result = await updateUserProfileAction({
         ...data,
         medicalConditions,
@@ -171,17 +171,43 @@ export function ProfileCompletionDialog({
         medications,
       });
 
-      if (result?.data?.success) {
+      console.log("Profile update result:", result);
+
+      if (result?.data) {
+        toast.dismiss();
+        toast.success("🎉 Health profile completed successfully!");
         onComplete();
         onOpenChange(false);
       } else {
+        toast.dismiss();
         console.error(
           "Profile update failed:",
           result?.serverError || result?.validationErrors
         );
+
+        // If it's a database table error, show helpful message
+        if (result?.serverError?.includes("does not exist")) {
+          toast.error(
+            "Database not set up. Please contact support or set up the database."
+          );
+        } else {
+          toast.error(
+            `Failed to save profile: ${result?.serverError || "Unknown error"}`
+          );
+        }
       }
     } catch (error) {
+      toast.dismiss();
       console.error("Profile update error:", error);
+
+      // Handle database table not existing
+      if (error instanceof Error && error.message.includes("does not exist")) {
+        toast.error(
+          "Database not set up. Please contact support or set up the database."
+        );
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -225,47 +251,140 @@ export function ProfileCompletionDialog({
                 <FormField
                   control={form.control}
                   name="dateOfBirth"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Date of Birth *</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(new Date(field.value), "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <Calendar className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <CalendarComponent
-                            mode="single"
-                            selected={
-                              field.value ? new Date(field.value) : undefined
+                  render={({ field }) => {
+                    const currentYear = new Date().getFullYear();
+                    const startYear = currentYear - 120; // 120 years ago
+                    const endYear = currentYear - 13; // 13 years ago (minimum age)
+
+                    const years = Array.from(
+                      { length: endYear - startYear + 1 },
+                      (_, i) => endYear - i
+                    );
+
+                    const months = Array.from({ length: 12 }, (_, i) => ({
+                      value: i + 1,
+                      label: new Date(2000, i).toLocaleString("default", {
+                        month: "long",
+                      }),
+                    }));
+
+                    const selectedDate = field.value
+                      ? new Date(field.value)
+                      : null;
+                    const selectedYear = selectedDate?.getFullYear();
+                    const selectedMonth = selectedDate
+                      ? selectedDate.getMonth() + 1
+                      : undefined;
+                    const selectedDay = selectedDate?.getDate();
+
+                    // Get days in selected month/year
+                    const daysInMonth =
+                      selectedYear && selectedMonth
+                        ? new Date(selectedYear, selectedMonth, 0).getDate()
+                        : 31;
+                    const days = Array.from(
+                      { length: daysInMonth },
+                      (_, i) => i + 1
+                    );
+
+                    const updateDate = (
+                      year?: number,
+                      month?: number,
+                      day?: number
+                    ) => {
+                      const newYear = year ?? selectedYear;
+                      const newMonth = month ?? selectedMonth;
+                      const newDay = day ?? selectedDay;
+
+                      if (newYear && newMonth && newDay) {
+                        const date = new Date(newYear, newMonth - 1, newDay);
+                        field.onChange(date.toISOString().split("T")[0]);
+                      }
+                    };
+
+                    return (
+                      <FormItem>
+                        <FormLabel>Date of Birth *</FormLabel>
+                        <div className="grid grid-cols-3 gap-2">
+                          <Select
+                            value={selectedYear?.toString()}
+                            onValueChange={(value) =>
+                              updateDate(
+                                parseInt(value),
+                                selectedMonth,
+                                selectedDay
+                              )
                             }
-                            onSelect={(date) =>
-                              field.onChange(date?.toISOString().split("T")[0])
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Year" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="max-h-[200px]">
+                              {years.map((year) => (
+                                <SelectItem key={year} value={year.toString()}>
+                                  {year}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+
+                          <Select
+                            value={selectedMonth?.toString()}
+                            onValueChange={(value) =>
+                              updateDate(
+                                selectedYear,
+                                parseInt(value),
+                                selectedDay
+                              )
                             }
-                            disabled={(date) =>
-                              date > new Date() || date < new Date("1900-01-01")
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Month" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {months.map((month) => (
+                                <SelectItem
+                                  key={month.value}
+                                  value={month.value.toString()}
+                                >
+                                  {month.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+
+                          <Select
+                            value={selectedDay?.toString()}
+                            onValueChange={(value) =>
+                              updateDate(
+                                selectedYear,
+                                selectedMonth,
+                                parseInt(value)
+                              )
                             }
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Day" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {days.map((day) => (
+                                <SelectItem key={day} value={day.toString()}>
+                                  {day}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
                 />
 
                 <div className="grid grid-cols-2 gap-4">
