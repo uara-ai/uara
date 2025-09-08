@@ -4,6 +4,7 @@ import { z } from "zod";
 import { actionClient } from "./safe-action";
 import { prisma } from "@/lib/prisma";
 import { withAuth } from "@workos-inc/authkit-nextjs";
+import { revalidateTag } from "next/cache";
 
 // Simple schema
 const createUserSchema = z.object({
@@ -92,6 +93,10 @@ export const createUserAction = actionClient
     });
 
     console.log("User created successfully:", newUser.id);
+
+    // Invalidate user profile cache
+    revalidateTag("user-profile");
+
     return { success: true, userId: newUser.id };
   });
 

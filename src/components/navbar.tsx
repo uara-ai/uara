@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { useRouter, usePathname } from "next/navigation";
 import { User } from "@/lib/user.type";
 import { UserMenu } from "./auth/user-menu";
+import { UserSummaryBadge } from "./auth/user-summary-badge";
 
 type VisibilityType = "public" | "private";
 
@@ -135,13 +136,13 @@ const Navbar = memo(
           )}
           <div
             className={cn(
-              "flex items-center gap-1",
+              "flex items-center gap-2",
               isDialogOpen ? "pointer-events-auto" : ""
             )}
           >
             {/* Subscription Status - show loading or Pro status only */}
             {user && isSearchWithId && (
-              <>
+              <div>
                 {showProLoading ? (
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -168,11 +169,13 @@ const Navbar = memo(
                     </TooltipContent>
                   </Tooltip>
                 ) : null}
-              </>
+              </div>
             )}
 
             {/* Chat History Button 
             {user && <ChatHistoryButton onClickAction={onHistoryClick} />}*/}
+            {/* User Summary Badge - health profile overview */}
+            {user && <UserSummaryBadge />}
             {/* Navigation Menu - settings icon for general navigation */}
             <NavigationMenu />
             {/* User Profile - focused on authentication and account management */}

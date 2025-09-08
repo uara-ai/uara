@@ -8,7 +8,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ThemeSwitcher } from "./theme-switcher";
 import {
   Tooltip,
   TooltipContent,
@@ -17,17 +16,14 @@ import {
 import Link from "next/link";
 
 import {
-  Binoculars,
   Book,
   Bug,
-  Code,
   FileText,
   Github,
   Info,
   Instagram,
-  Settings,
+  Menu,
   Shield,
-  Sun,
 } from "lucide-react";
 import { Icons } from "./ui/icons";
 
@@ -41,7 +37,7 @@ export const NavigationMenu = memo(function NavigationMenu() {
         <TooltipTrigger asChild>
           <DropdownMenuTrigger asChild>
             <div className="flex items-center justify-center mr-4 hover:bg-accent hover:text-accent-foreground rounded-md transition-colors cursor-pointer">
-              <Settings className="size-4 " />
+              <Menu className="size-4 " />
             </div>
           </DropdownMenuTrigger>
         </TooltipTrigger>
@@ -49,7 +45,7 @@ export const NavigationMenu = memo(function NavigationMenu() {
           Menu
         </TooltipContent>
       </Tooltip>
-      <DropdownMenuContent className="w-[240px] z-[110] mr-5">
+      <DropdownMenuContent className="w-[240px] z-[110] mr-10 mt-2">
         {/* About and Information */}
         <DropdownMenuItem className="cursor-pointer" asChild>
           <Link href="/about" className="w-full flex items-center gap-2">
