@@ -12,12 +12,44 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, Bot, User, Sparkles } from "lucide-react";
+import {
+  Send,
+  Bot,
+  User,
+  Sparkles,
+  Bed,
+  Brain,
+  FlaskConical,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface ChatInterfaceProps {
   className?: string;
 }
+
+const suggestions = [
+  {
+    title: "Analyze my sleep patterns",
+    subtitle: "Get insights from your sleep data and wearables",
+    icon: <Bed />,
+  },
+  {
+    title: "Optimize my recovery",
+    subtitle: "Improve HRV and recovery metrics",
+    icon: <Sparkles />,
+  },
+  {
+    title: "Plan longevity routine",
+    subtitle: "Create a personalized anti-aging protocol",
+    icon: <Brain />,
+  },
+  {
+    title: "Review lab results",
+    subtitle: "Understand your biomarkers and health metrics",
+    icon: <FlaskConical />,
+  },
+];
 
 // Helper function to render health-specific tools
 const renderHealthTool = (part: any, addToolResult: any) => {
@@ -257,113 +289,110 @@ export function ChatInterface({ className }: ChatInterfaceProps) {
   };
 
   return (
-    <div className={cn("relative w-full", className)}>
+    <div className={cn("relative w-full mt-24", className)}>
       <AnimatePresence mode="wait">
         {!isExpanded ? (
-          // Initial state - center of homepage
+          // Initial state - center of homepage with ChatGPT-style design
           <motion.div
             key="initial"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto px-4"
+            className="flex flex-col items-center justify-center min-h-[70vh] max-w-3xl mx-auto px-4"
           >
+            {/* Header */}
             <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.3 }}
-              className="text-center mb-8"
+              className="text-center mb-12 flex flex-col items-center justify-center"
             >
-              <div className="flex items-center justify-center mb-4">
-                <div className="relative">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{
-                      duration: 20,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                    className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-20 blur-xl"
-                  />
-                  <Avatar className="h-16 w-16 border-2 border-white/20 backdrop-blur-sm">
-                    <AvatarImage src="/uaraai.jpg" alt="Uara AI" />
-                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                      <Bot className="h-8 w-8" />
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
-              </div>
-              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Meet Uara
+              <Image src="/logo.svg" alt="Uara AI" width={100} height={100} />
+              <h1 className="text-4xl font-medium text-gray-900 dark:text-gray-100 mb-2">
+                uara<span className="text-blue-500">.ai</span>
               </h1>
-              <p className="text-xl text-muted-foreground mb-4">
-                Your AI Longevity Coach
-              </p>
-              <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                Get personalized health insights, optimize your biomarkers, and
-                extend your healthspan with evidence-based guidance.
-              </p>
             </motion.div>
 
+            {/* Input Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.3 }}
-              className="w-full max-w-lg"
+              className="w-full max-w-2xl"
             >
-              <Card className="p-6 backdrop-blur-sm bg-white/50 dark:bg-gray-900/50 border-white/20">
-                <form onSubmit={handleChatSubmit} className="space-y-4">
-                  <div className="relative">
-                    <Input
-                      ref={inputRef}
-                      value={input}
-                      onChange={handleInputChange}
-                      placeholder="Ask about your health, biomarkers, or longevity..."
-                      className="pr-12 bg-white/70 dark:bg-gray-800/70 border-white/30"
-                      disabled={isLoading}
-                    />
+              <form onSubmit={handleChatSubmit} className="relative">
+                <div className="relative group">
+                  <Input
+                    ref={inputRef}
+                    value={input}
+                    onChange={handleInputChange}
+                    placeholder="Ask anything"
+                    className="w-full h-14 pl-4 pr-16 text-base rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:border-gray-300 dark:hover:border-gray-600 focus:border-gray-400 dark:focus:border-gray-500 transition-all duration-200 resize-none"
+                    disabled={isLoading}
+                  />
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
                     <Button
                       type="submit"
                       size="sm"
-                      className="absolute right-1 top-1 h-8 w-8"
+                      className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-30"
+                      variant="ghost"
                       disabled={!input.trim() || isLoading}
                     >
                       <Send className="h-4 w-4" />
                     </Button>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      "Analyze my sleep data",
-                      "Optimize my recovery",
-                      "Plan longevity routine",
-                      "Review lab results",
-                    ].map((suggestion) => (
-                      <Button
-                        key={suggestion}
-                        variant="outline"
-                        size="sm"
-                        type="button"
-                        onClick={() => handleSuggestionClick(suggestion)}
-                        className="text-xs bg-white/50 dark:bg-gray-800/50 border-white/30 hover:bg-white/70 dark:hover:bg-gray-800/70"
-                      >
-                        {suggestion}
-                      </Button>
-                    ))}
-                  </div>
-                </form>
-              </Card>
+                </div>
+              </form>
+            </motion.div>
+
+            {/* Suggestions */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.3 }}
+              className="w-full max-w-4xl mt-8"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {suggestions.map((suggestion) => (
+                  <motion.button
+                    key={suggestion.title}
+                    type="button"
+                    onClick={() => handleSuggestionClick(suggestion.title)}
+                    className="group p-4 text-left rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200 cursor-pointer"
+                    whileHover={{ y: -2 }}
+                    whileTap={{ y: 0 }}
+                  >
+                    <div className="flex items-start space-x-3">
+                      {suggestion.icon && (
+                        <suggestion.icon.type
+                          {...suggestion.icon.props}
+                          className="size-5 text-muted-foreground"
+                        />
+                      )}
+                      <div className="flex-1">
+                        <h3 className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-gray-700 dark:group-hover:text-gray-200">
+                          {suggestion.title}
+                        </h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                          {suggestion.subtitle}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
             </motion.div>
           </motion.div>
         ) : (
-          // Expanded state - full chat interface
+          // Expanded state - full chat interface with ChatGPT-style design
           <motion.div
             key="expanded"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 bg-background"
+            className="fixed inset-0 z-50 bg-white dark:bg-gray-900"
           >
             <div className="flex flex-col h-full max-w-4xl mx-auto">
               {/* Header */}
@@ -371,18 +400,20 @@ export function ChatInterface({ className }: ChatInterfaceProps) {
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1 }}
-                className="flex items-center justify-between p-4 border-b"
+                className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800"
               >
                 <div className="flex items-center space-x-3">
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-9 w-9">
                     <AvatarImage src="/uaraai.jpg" alt="Uara AI" />
                     <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                      <Bot className="h-4 w-4" />
+                      <Bot className="h-5 w-5" />
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <h2 className="font-semibold">Uara AI</h2>
-                    <p className="text-xs text-muted-foreground">
+                    <h2 className="font-semibold text-gray-900 dark:text-gray-100">
+                      Uara AI
+                    </h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       Your Longevity Coach
                     </p>
                   </div>
@@ -391,6 +422,7 @@ export function ChatInterface({ className }: ChatInterfaceProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsExpanded(false)}
+                  className="h-8 w-8 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   ←
                 </Button>
@@ -408,14 +440,14 @@ export function ChatInterface({ className }: ChatInterfaceProps) {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
                         className={cn(
-                          "flex space-x-3",
+                          "flex space-x-4 w-full",
                           message.role === "user"
                             ? "justify-end"
                             : "justify-start"
                         )}
                       >
                         {message.role === "assistant" && (
-                          <Avatar className="h-8 w-8 mt-1">
+                          <Avatar className="h-8 w-8 mt-1 flex-shrink-0">
                             <AvatarImage src="/uaraai.jpg" alt="Uara AI" />
                             <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
                               <Bot className="h-4 w-4" />
@@ -425,10 +457,10 @@ export function ChatInterface({ className }: ChatInterfaceProps) {
 
                         <div
                           className={cn(
-                            "max-w-lg p-3 rounded-lg",
+                            "max-w-3xl p-4 rounded-2xl",
                             message.role === "user"
-                              ? "bg-primary text-primary-foreground ml-auto"
-                              : "bg-muted"
+                              ? "bg-blue-500 text-white ml-auto"
+                              : "bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                           )}
                         >
                           <div className="whitespace-pre-wrap text-sm">
@@ -506,13 +538,13 @@ export function ChatInterface({ className }: ChatInterfaceProps) {
                               }
                             )}
                           </div>
-                          <div className="text-xs opacity-50 mt-1">
+                          <div className="text-xs opacity-60 mt-2">
                             {formatTime(new Date())}
                           </div>
                         </div>
 
                         {message.role === "user" && (
-                          <Avatar className="h-8 w-8 mt-1">
+                          <Avatar className="h-8 w-8 mt-1 flex-shrink-0">
                             <AvatarFallback className="bg-gradient-to-br from-green-500 to-blue-600 text-white">
                               <User className="h-4 w-4" />
                             </AvatarFallback>
@@ -526,15 +558,15 @@ export function ChatInterface({ className }: ChatInterfaceProps) {
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="flex space-x-3"
+                      className="flex space-x-4"
                     >
-                      <Avatar className="h-8 w-8 mt-1">
+                      <Avatar className="h-8 w-8 mt-1 flex-shrink-0">
                         <AvatarImage src="/uaraai.jpg" alt="Uara AI" />
                         <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
                           <Bot className="h-4 w-4" />
                         </AvatarFallback>
                       </Avatar>
-                      <div className="bg-muted p-3 rounded-lg">
+                      <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl max-w-3xl">
                         <div className="flex items-center space-x-2">
                           <motion.div
                             animate={{ rotate: 360 }}
@@ -544,9 +576,11 @@ export function ChatInterface({ className }: ChatInterfaceProps) {
                               ease: "linear",
                             }}
                           >
-                            <Sparkles className="h-4 w-4" />
+                            <Sparkles className="h-4 w-4 text-blue-500" />
                           </motion.div>
-                          <span className="text-sm">Thinking...</span>
+                          <span className="text-sm text-gray-700 dark:text-gray-300">
+                            Thinking...
+                          </span>
                         </div>
                       </div>
                     </motion.div>
@@ -556,9 +590,9 @@ export function ChatInterface({ className }: ChatInterfaceProps) {
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="flex space-x-3"
+                      className="flex space-x-4"
                     >
-                      <div className="bg-red-100 border border-red-300 text-red-700 p-3 rounded-lg">
+                      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 p-4 rounded-2xl max-w-3xl">
                         <div className="text-sm">
                           Sorry, I encountered an error. Please try again.
                         </div>
@@ -573,20 +607,30 @@ export function ChatInterface({ className }: ChatInterfaceProps) {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="p-4 border-t"
+                className="p-4 border-t border-gray-200 dark:border-gray-800"
               >
-                <form onSubmit={handleChatSubmit} className="flex space-x-2">
-                  <Input
-                    ref={inputRef}
-                    value={input}
-                    onChange={handleInputChange}
-                    placeholder="Ask about your health..."
-                    className="flex-1"
-                    disabled={isLoading}
-                  />
-                  <Button type="submit" disabled={!input.trim() || isLoading}>
-                    <Send className="h-4 w-4" />
-                  </Button>
+                <form onSubmit={handleChatSubmit} className="max-w-4xl mx-auto">
+                  <div className="relative group">
+                    <Input
+                      ref={inputRef}
+                      value={input}
+                      onChange={handleInputChange}
+                      placeholder="Ask about your health..."
+                      className="w-full h-12 pl-4 pr-14 text-base rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 focus:border-gray-400 dark:focus:border-gray-500 transition-all duration-200"
+                      disabled={isLoading}
+                    />
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <Button
+                        type="submit"
+                        size="sm"
+                        className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-30"
+                        variant="ghost"
+                        disabled={!input.trim() || isLoading}
+                      >
+                        <Send className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
                 </form>
               </motion.div>
             </div>
