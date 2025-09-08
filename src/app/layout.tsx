@@ -91,15 +91,7 @@ export default async function RootLayout({
     (await isEU()) && !cookieStore.has(Cookies.TrackingConsent);
 
   return (
-    <html lang="en" suppressContentEditableWarning>
-      <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(DATA.schemaOrg.organization),
-          }}
-        />
-      </head>
+    <html lang="en" className="light" style={{ colorScheme: "light" }}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
