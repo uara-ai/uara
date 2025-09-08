@@ -40,8 +40,8 @@ export const NavigationMenu = memo(() => {
       <Tooltip>
         <TooltipTrigger asChild>
           <DropdownMenuTrigger asChild>
-            <div className="flex items-center justify-center hover:bg-accent hover:text-accent-foreground rounded-md transition-colors cursor-pointer !size-6 !p-0 !m-0">
-              <Settings />
+            <div className="flex items-center justify-center mr-4 hover:bg-accent hover:text-accent-foreground rounded-md transition-colors cursor-pointer">
+              <Settings className="size-4 " />
             </div>
           </DropdownMenuTrigger>
         </TooltipTrigger>
@@ -50,39 +50,6 @@ export const NavigationMenu = memo(() => {
         </TooltipContent>
       </Tooltip>
       <DropdownMenuContent className="w-[240px] z-[110] mr-5">
-        <DropdownMenuItem className="cursor-pointer" asChild>
-          <Link href="/lookout" className="w-full flex items-center gap-2">
-            <Binoculars size={16} />
-            <span>Lookout</span>
-          </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem className="cursor-pointer" asChild>
-          <Link
-            href={"https://api.scira.ai/"}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center gap-2"
-          >
-            <Code size={16} />
-            <span>API</span>
-          </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem className="cursor-pointer py-1 hover:bg-transparent!">
-          <div
-            className="flex items-center justify-between w-full px-0"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center gap-2">
-              <Sun size={16} />
-              <span className="text-sm">Theme</span>
-            </div>
-            <ThemeSwitcher />
-          </div>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-
         {/* About and Information */}
         <DropdownMenuItem className="cursor-pointer" asChild>
           <Link href="/about" className="w-full flex items-center gap-2">

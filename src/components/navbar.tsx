@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { memo, useMemo } from "react";
 import Link from "next/link";
-import { Plus, Globe } from "lucide-react";
+import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { NavigationMenu } from "@/components/navigation-menu";
