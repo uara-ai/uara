@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { NavigationMenu } from "@/components/navigation-menu";
-// import { ChatHistoryButton } from "@/components/chat-history-dialog";
+import { ChatHistory } from "@/components/ai/chat-history";
 import {
   Tooltip,
   TooltipContent,
@@ -172,8 +172,8 @@ const Navbar = memo(
               </div>
             )}
 
-            {/* Chat History Button 
-            {user && <ChatHistoryButton onClickAction={onHistoryClick} />}*/}
+            {/* Chat History Button */}
+            {user && <ChatHistory />}
             {/* User Summary Badge - health profile overview */}
             {user && <UserSummaryBadge />}
             {/* Navigation Menu - settings icon for general navigation */}

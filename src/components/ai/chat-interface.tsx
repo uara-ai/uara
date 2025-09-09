@@ -17,11 +17,27 @@ import { ChatInput } from "./chat-input";
 interface ChatInterfaceProps {
   className?: string;
   user?: User | null;
+  initialChatId?: string;
+  initialMessages?: Array<{
+    id: string;
+    role: string;
+    content: string;
+    createdAt: Date;
+  }>;
+  initialTitle?: string;
 }
 
-export function ChatInterface({ className, user }: ChatInterfaceProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [currentChatId, setCurrentChatId] = useState<string | null>(null);
+export function ChatInterface({
+  className,
+  user,
+  initialChatId,
+  initialMessages,
+  initialTitle,
+}: ChatInterfaceProps) {
+  const [isExpanded, setIsExpanded] = useState(!!initialChatId);
+  const [currentChatId, setCurrentChatId] = useState<string | null>(
+    initialChatId || null
+  );
   const [input, setInput] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -36,8 +52,9 @@ export function ChatInterface({ className, user }: ChatInterfaceProps) {
     stop,
     addToolResult,
   } = useChat({
+    id: currentChatId || undefined,
     transport: new DefaultChatTransport({
-      api: "/api/chat",
+      api: currentChatId ? `/api/chat/${currentChatId}` : "/api/chat",
     }),
 
     // Automatically submit when all tool results are available
@@ -80,6 +97,19 @@ export function ChatInterface({ className, user }: ChatInterfaceProps) {
       }, 100);
     },
   });
+
+  // Load initial messages if provided
+  useEffect(() => {
+    if (initialMessages && initialMessages.length > 0) {
+      const formattedMessages = initialMessages.map((msg) => ({
+        id: msg.id,
+        role: msg.role as "user" | "assistant" | "system",
+        content: msg.content,
+        parts: [{ type: "text" as const, text: msg.content }],
+      }));
+      setMessages(formattedMessages);
+    }
+  }, [initialMessages, setMessages]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {

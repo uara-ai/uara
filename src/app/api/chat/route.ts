@@ -54,6 +54,11 @@ export async function POST(req: NextRequest) {
         },
       });
       currentChatId = currentChat.id;
+
+      // Invalidate chat history cache when new chat is created
+      const { revalidateTag } = await import("next/cache");
+      revalidateTag("chat-history");
+      revalidateTag(`user-${dbUser.id}`);
     } else {
       // Verify chat exists and belongs to user
       currentChat = await prisma.chat.findFirst({
@@ -198,6 +203,11 @@ export async function POST(req: NextRequest) {
             where: { id: currentChatId },
             data: { updatedAt: new Date() },
           });
+
+          // Invalidate cache when chat is updated
+          const { revalidateTag } = await import("next/cache");
+          revalidateTag("chat-history");
+          revalidateTag(`user-${dbUser.id}`);
         } catch (error) {
           console.error("Error saving assistant message:", error);
         }
