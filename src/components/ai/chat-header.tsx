@@ -40,7 +40,7 @@ export function ChatHeader({ messages, onClose }: ChatHeaderProps) {
           </AvatarFallback>
         </Avatar>
         <div>
-          <h2 className="font-medium text-gray-900 dark:text-gray-100 text-sm">
+          <h2 className="font-medium text-gray-900 dark:text-gray-100 text-sm capitalize">
             {getChatTitle()}
           </h2>
         </div>

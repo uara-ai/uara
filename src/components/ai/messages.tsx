@@ -260,7 +260,7 @@ export function Messages({
                     src={user?.profilePictureUrl || user?.avatarUrl || ""}
                     alt={user?.name || user?.firstName || "User"}
                   />
-                  <AvatarFallback className="bg-gradient-to-br from-green-500 to-blue-600 text-white">
+                  <AvatarFallback className="bg-primary text-white">
                     {user?.name?.charAt(0) || user?.firstName?.charAt(0) || (
                       <UserIcon className="h-4 w-4" />
                     )}
