@@ -30,7 +30,7 @@ export function ChatHeader({ messages, onClose }: ChatHeaderProps) {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.1 }}
-      className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900"
+      className="flex items-center justify-between p-2 border-b border-gray-200 dark:border-gray-800 "
     >
       <div className="flex items-center space-x-3">
         <Avatar className="h-8 w-8">
