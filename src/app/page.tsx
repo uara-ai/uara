@@ -19,7 +19,7 @@ export default function Home() {
         user={user.user}
         onHistoryClick={() => {}}
       />
-      <ChatInterface />
+      <ChatInterface user={user.user} />
     </div>
   );
 }
