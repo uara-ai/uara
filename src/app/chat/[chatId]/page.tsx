@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { getChatDetailsAction } from "@/actions/chat-history-action";
 import { ChatInterface } from "@/components/ai/chat-interface";
+import { Navbar } from "@/components/navbar";
 
 interface ChatPageProps {
   params: Promise<{ chatId: string }>;
@@ -28,6 +29,13 @@ export default async function ChatPage({ params }: ChatPageProps) {
 
     return (
       <div className="flex flex-col h-screen">
+        <Navbar
+          isDialogOpen={false}
+          chatId={chat.id}
+          selectedVisibilityType="public"
+          status="ready"
+          user={user}
+        />
         <ChatInterface
           initialChatId={chat.id}
           initialMessages={chat.messages}

@@ -28,10 +28,10 @@ interface NavbarProps {
   isDialogOpen: boolean;
   chatId: string | null;
   selectedVisibilityType: VisibilityType;
-  onVisibilityChange: (visibility: VisibilityType) => void | Promise<void>;
+  onVisibilityChange?: (visibility: VisibilityType) => void | Promise<void>;
   status: string;
   user: User | null;
-  onHistoryClick: () => void;
+  onHistoryClick?: () => void;
   isOwner?: boolean;
   subscriptionData?: any;
   isProUser?: boolean;

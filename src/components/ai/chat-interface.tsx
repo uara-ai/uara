@@ -7,6 +7,7 @@ import {
   DefaultChatTransport,
   lastAssistantMessageIsCompleteWithToolCalls,
 } from "ai";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { User } from "@/lib/user.type";
 import { WelcomeScreen } from "./welcome-screen";
@@ -34,6 +35,7 @@ export function ChatInterface({
   initialMessages,
   initialTitle,
 }: ChatInterfaceProps) {
+  const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(!!initialChatId);
   const [currentChatId, setCurrentChatId] = useState<string | null>(
     initialChatId || null
@@ -144,7 +146,13 @@ export function ChatInterface({
   };
 
   const handleCloseChat = () => {
-    setIsExpanded(false);
+    // If we're on a specific chat page (have initialChatId), navigate to homepage
+    if (initialChatId) {
+      router.push("/");
+    } else {
+      // Otherwise just collapse the chat interface
+      setIsExpanded(false);
+    }
   };
 
   return (

@@ -14,10 +14,8 @@ export default function Home() {
         isDialogOpen={false}
         chatId={null}
         selectedVisibilityType="public"
-        onVisibilityChange={() => {}}
         status="ready"
         user={user.user}
-        onHistoryClick={() => {}}
       />
       <ChatInterface user={user.user} />
     </div>
