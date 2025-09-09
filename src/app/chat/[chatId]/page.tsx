@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { getChatDetailsAction } from "@/actions/chat-history-action";
-import { ChatPageWrapper } from "@/components/chat-page-wrapper";
+import { ChatPageWrapper } from "@/components/ai/chat-page-wrapper";
 
 interface ChatPageProps {
   params: Promise<{ chatId: string }>;
