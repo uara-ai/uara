@@ -21,6 +21,8 @@ import { useRouter, usePathname } from "next/navigation";
 import { User } from "@/lib/user.type";
 import { UserMenu } from "./auth/user-menu";
 import { UserSummaryBadge } from "./auth/user-summary-badge";
+import { useRateLimitContext } from "@/hooks/use-rate-limit-context";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 type VisibilityType = "public" | "private";
 
@@ -63,6 +65,13 @@ const Navbar = memo(
     const hasActiveSubscription = false;
     const showProLoading = isProStatusLoading;
 
+    // Get rate limit status with animation support from context
+    const {
+      status: rateLimitStatus,
+      isLoading: rateLimitLoading,
+      isAnimating: rateLimitAnimating,
+    } = useRateLimitContext();
+
     return (
       <>
         <div
@@ -97,6 +106,42 @@ const Navbar = memo(
                 </span>
               </Button>
             </Link>
+
+            {/* Rate Limit Display */}
+            {user && rateLimitStatus && !rateLimitLoading && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-muted/50 border border-border rounded-lg text-xs pointer-events-auto">
+                    <AnimatedCounter
+                      value={rateLimitStatus.remaining}
+                      isAnimating={rateLimitAnimating}
+                      className={cn(
+                        "font-medium",
+                        rateLimitStatus.remaining <= 1
+                          ? "text-destructive"
+                          : rateLimitStatus.remaining <= 3
+                          ? "text-orange-500"
+                          : "text-muted-foreground"
+                      )}
+                    />
+                    <span className="text-muted-foreground/70">
+                      / {rateLimitStatus.limit}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" sideOffset={4}>
+                  <div className="text-sm">
+                    <div>
+                      Messages remaining today: {rateLimitStatus.remaining}
+                    </div>
+                    <div className="text-muted-foreground text-xs mt-1">
+                      Resets:{" "}
+                      {new Date(rateLimitStatus.resetTime).toLocaleTimeString()}
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            )}
 
             {/* Mobile-only Upgrade (avoids overlap with share on small screens) */}
             {user && !hasActiveSubscription && !showProLoading && (

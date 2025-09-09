@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { getChatDetailsAction } from "@/actions/chat-history-action";
-import { ChatInterface } from "@/components/ai/chat-interface";
-import { Navbar } from "@/components/navbar";
+import { ChatPageWrapper } from "@/components/chat-page-wrapper";
 
 interface ChatPageProps {
   params: Promise<{ chatId: string }>;
@@ -27,22 +26,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
 
     const chat = result.data;
 
-    return (
-      <div className="flex flex-col h-screen">
-        <Navbar
-          isDialogOpen={false}
-          chatId={chat.id}
-          selectedVisibilityType="public"
-          status="ready"
-          user={user}
-        />
-        <ChatInterface
-          initialChatId={chat.id}
-          initialMessages={chat.messages}
-          initialTitle={chat.title}
-        />
-      </div>
-    );
+    return <ChatPageWrapper user={user} chat={chat} />;
   } catch (error) {
     console.error("Error loading chat:", error);
     notFound();

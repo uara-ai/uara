@@ -1,6 +1,7 @@
-// Search limits for free users
-export const SEARCH_LIMITS = {
-  DAILY_SEARCH_LIMIT: 5,
+// limits for free users
+export const MESSAGE_LIMITS = {
+  FREE_DAILY_LIMIT: 5,
+  PRO_DAILY_LIMIT: 50,
 } as const;
 
 export const PRICING = {

@@ -14,6 +14,7 @@ import { WelcomeScreen } from "./welcome-screen";
 import { ChatHeader } from "./chat-header";
 import { Messages } from "./messages";
 import { ChatInput } from "./chat-input";
+import { useRateLimitContext } from "@/hooks/use-rate-limit-context";
 
 interface ChatInterfaceProps {
   className?: string;
@@ -45,6 +46,21 @@ export function ChatInterface({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Get rate limit context for real-time updates
+  const { updateFromHeaders, decrementCounter } = useRateLimitContext();
+
+  // Custom fetch function to capture rate limit headers
+  const customFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+    const response = await fetch(input, init);
+
+    // Extract rate limit headers and update context
+    if (response.headers.has("X-Rate-Limit-Remaining")) {
+      updateFromHeaders(response.headers);
+    }
+
+    return response;
+  };
+
   const {
     messages,
     status,
@@ -57,6 +73,7 @@ export function ChatInterface({
     id: currentChatId || undefined,
     transport: new DefaultChatTransport({
       api: currentChatId ? `/api/chat/${currentChatId}` : "/api/chat",
+      fetch: customFetch,
     }),
 
     // Automatically submit when all tool results are available
@@ -132,6 +149,9 @@ export function ChatInterface({
     // Always expand to chat mode when sending a message
     setIsExpanded(true);
 
+    // Immediately decrement counter for instant feedback
+    decrementCounter();
+
     sendMessage({ text: input });
     setInput("");
   };
@@ -142,6 +162,10 @@ export function ChatInterface({
 
   const handleSuggestionClick = (suggestion: string) => {
     setIsExpanded(true);
+
+    // Immediately decrement counter for instant feedback
+    decrementCounter();
+
     sendMessage({ text: suggestion });
   };
 

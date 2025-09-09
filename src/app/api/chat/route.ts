@@ -9,6 +9,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { z } from "zod";
+import { RateLimiter } from "@/packages/redis/rate-limiter";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -33,6 +34,26 @@ export async function POST(req: NextRequest) {
 
     if (!dbUser) {
       return Response.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Check rate limits before processing
+    // TODO: Add subscription check here when subscription system is implemented
+    const isProUser = false; // Will be: dbUser.subscription?.status === 'active'
+    const rateLimitResult = await RateLimiter.checkAndIncrement(
+      dbUser.id,
+      isProUser
+    );
+
+    if (!rateLimitResult.success) {
+      return Response.json(
+        {
+          error: "Rate limit exceeded",
+          remaining: rateLimitResult.remaining,
+          resetTime: rateLimitResult.resetTime,
+          limit: rateLimitResult.limit,
+        },
+        { status: 429 }
+      );
     }
 
     let currentChatId = chatId;
@@ -217,6 +238,9 @@ export async function POST(req: NextRequest) {
     return result.toUIMessageStreamResponse({
       headers: {
         "X-Chat-Id": currentChatId,
+        "X-Rate-Limit-Remaining": rateLimitResult.remaining.toString(),
+        "X-Rate-Limit-Reset": rateLimitResult.resetTime.toISOString(),
+        "X-Rate-Limit-Limit": rateLimitResult.limit.toString(),
       },
     });
   } catch (error) {
