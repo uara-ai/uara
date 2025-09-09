@@ -8,16 +8,27 @@ import { UserInfoTab } from "@/components/account/user-info-tab";
 import { HealthDataTab } from "@/components/account/health-data-tab";
 import { BillingTab } from "@/components/account/billing-tab";
 import { User, Settings, CreditCard } from "lucide-react";
+import { Navbar } from "@/components/navbar";
+import { useAuth } from "@workos-inc/authkit-nextjs/components";
+import { RateLimitProvider } from "@/hooks/use-rate-limit-context";
 
 function AccountPageContent() {
   const [tab, setTab] = useQueryState(
     "tab",
     parseAsString.withDefault("user-info")
   );
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <Navbar
+        isDialogOpen={false}
+        chatId={null}
+        selectedVisibilityType="public"
+        status="ready"
+        user={user}
+      />
+      <div className="container mx-auto px-4 py-8 max-w-4xl pt-20">
         <div className="mb-8">
           <h1 className="text-3xl font-semibold text-foreground mb-2">
             Account Settings
@@ -84,7 +95,9 @@ function AccountPageContent() {
 export default function AccountPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <AccountPageContent />
+      <RateLimitProvider enabled={true}>
+        <AccountPageContent />
+      </RateLimitProvider>
     </Suspense>
   );
 }
