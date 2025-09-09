@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { memo, useMemo } from "react";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Brain, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { NavigationMenu } from "@/components/navigation-menu";
@@ -76,7 +76,7 @@ const Navbar = memo(
       <>
         <div
           className={cn(
-            "fixed left-0 right-0 z-30 top-0 flex justify-between items-center p-3 transition-colors duration-200",
+            "fixed left-0 right-0 z-30 top-0 flex justify-between items-center px-2 py-2 sm:p-3 transition-colors duration-200",
             isDialogOpen
               ? "bg-transparent pointer-events-none"
               : status === "streaming" || status === "ready"
@@ -86,7 +86,7 @@ const Navbar = memo(
         >
           <div
             className={cn(
-              "flex items-center gap-3",
+              "flex items-center gap-1.5 sm:gap-3",
               isDialogOpen ? "pointer-events-auto" : ""
             )}
           >
@@ -95,13 +95,13 @@ const Navbar = memo(
                 type="button"
                 variant="secondary"
                 size="sm"
-                className="rounded-lg bg-accent hover:bg-accent/80 group transition-all hover:scale-105 pointer-events-auto"
+                className="rounded-lg bg-accent hover:bg-accent/80 group transition-all hover:scale-105 pointer-events-auto h-8 w-8 sm:w-auto p-0 sm:px-3"
               >
                 <Plus
                   size={16}
                   className="group-hover:rotate-90 transition-all"
                 />
-                <span className="text-sm ml-1.5 group-hover:block hidden animate-in fade-in duration-300">
+                <span className="text-sm ml-1.5 group-hover:block hidden sm:inline animate-in fade-in duration-300">
                   New
                 </span>
               </Button>
@@ -111,12 +111,12 @@ const Navbar = memo(
             {user && rateLimitStatus && !rateLimitLoading && (
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-muted/50 border border-border rounded-lg text-xs pointer-events-auto">
+                  <div className="flex items-center gap-1 sm:gap-1.5 px-1.5 py-1 sm:px-2.5 sm:py-1.5 bg-muted/50 border border-border rounded-lg text-xs pointer-events-auto">
                     <AnimatedCounter
                       value={rateLimitStatus.remaining}
                       isAnimating={rateLimitAnimating}
                       className={cn(
-                        "font-medium",
+                        "font-medium text-xs",
                         rateLimitStatus.remaining <= 1
                           ? "text-destructive"
                           : rateLimitStatus.remaining <= 3
@@ -124,17 +124,17 @@ const Navbar = memo(
                           : "text-muted-foreground"
                       )}
                     />
-                    <span className="text-muted-foreground/70">
+                    <span className="text-muted-foreground/70 text-xs">
                       / {rateLimitStatus.limit}
                     </span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" sideOffset={4}>
-                  <div className="text-sm">
+                  <div className="text-xs">
                     <div>
                       Messages remaining today: {rateLimitStatus.remaining}
                     </div>
-                    <div className="text-muted-foreground text-xs mt-1">
+                    <div className="text-xs mt-1">
                       Resets:{" "}
                       {new Date(rateLimitStatus.resetTime).toLocaleTimeString()}
                     </div>
@@ -148,9 +148,10 @@ const Navbar = memo(
               <Button
                 variant="default"
                 size="sm"
-                className="rounded-md h-7 px-2 text-xs sm:hidden"
+                className="rounded-md h-7 px-2 text-xs sm:hidden min-w-0"
                 onClick={() => router.push("/pricing")}
               >
+                <Brain className="size-3.5" />
                 Upgrade
               </Button>
             )}
@@ -160,18 +161,18 @@ const Navbar = memo(
           {user && !hasActiveSubscription && !showProLoading && (
             <div
               className={cn(
-                "hidden sm:flex items-center justify-center absolute left-1/2 transform -translate-x-1/2",
+                "hidden md:flex items-center justify-center absolute left-1/2 transform -translate-x-1/2",
                 isDialogOpen ? "pointer-events-auto" : ""
               )}
             >
               <div className="flex items-center bg-muted/50 border border-border rounded-full">
-                <span className="px-3 py-1.5 text-sm font-medium text-muted-foreground">
+                <span className="px-2 py-1 md:px-3 md:py-1.5 text-xs md:text-sm font-medium text-muted-foreground">
                   Free Plan
                 </span>
                 <Button
                   variant="default"
                   size="sm"
-                  className="mr-1.5 h-6 rounded-full"
+                  className="mr-1.5 h-5 md:h-6 rounded-full text-xs px-2 md:px-3"
                   onClick={() => router.push("/pricing")}
                 >
                   Upgrade
@@ -181,7 +182,7 @@ const Navbar = memo(
           )}
           <div
             className={cn(
-              "flex items-center gap-2",
+              "flex items-center gap-1 sm:gap-2",
               isDialogOpen ? "pointer-events-auto" : ""
             )}
           >
