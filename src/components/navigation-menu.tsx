@@ -24,6 +24,7 @@ import {
   Instagram,
   Menu,
   Shield,
+  UserCheck2,
 } from "lucide-react";
 import { Icons } from "./ui/icons";
 
@@ -48,9 +49,9 @@ export const NavigationMenu = memo(function NavigationMenu() {
       <DropdownMenuContent className="w-[240px] z-[110] mr-10 mt-2">
         {/* About and Information */}
         <DropdownMenuItem className="cursor-pointer" asChild>
-          <Link href="/about" className="w-full flex items-center gap-2">
-            <Info size={16} />
-            <span>About</span>
+          <Link href="/account" className="w-full flex items-center gap-2">
+            <UserCheck2 size={16} />
+            <span>Account</span>
           </Link>
         </DropdownMenuItem>
         {/* Blog */}

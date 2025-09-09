@@ -32,6 +32,7 @@ const getCachedUserProfile = unstable_cache(
 
     return {
       age,
+      dateOfBirth: user.dateOfBirth,
       gender: user.gender,
       ethnicity: user.ethnicity,
       heightCm: user.heightCm,
