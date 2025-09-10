@@ -81,6 +81,12 @@ export function WipBanner({ className }: WipBannerProps) {
           <FeaturePill label="Wearables integration" status="soon" />
         </div>
 
+        <div className="flex items-center justify-center mt-4 mb-2">
+          <div className="flex-1 h-px bg-muted-foreground/20"></div>
+          <span className="px-3 text-xs text-muted-foreground">OR</span>
+          <div className="flex-1 h-px bg-muted-foreground/20"></div>
+        </div>
+
         <div className="w-full sm:w-auto mt-4">
           <SubscribeInput />
         </div>
