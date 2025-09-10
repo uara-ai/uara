@@ -39,7 +39,9 @@ model User {
   researchConsent       Boolean @default(false)
 
   // AI Chat integration
-  chats Chat[]
+  chats           Chat[]
+  BillingCustomer BillingCustomer?
+  Subscription    Subscription?
 
   @@map("users")
 }
@@ -122,4 +124,39 @@ model ToolInvocation {
   updatedAt  DateTime    @updatedAt
 
   @@map("tool_invocations")
+}
+
+// Stripe Billing models
+model BillingCustomer {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  stripeCustomerId String  @unique
+  email            String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("billing_customers")
+}
+
+model Subscription {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  stripeCustomerId     String
+  stripeSubscriptionId String?   @unique
+  status               String
+  priceId              String?
+  cancelAtPeriodEnd    Boolean   @default(false)
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([stripeCustomerId])
+  @@map("subscriptions")
 }

@@ -51,16 +51,14 @@ export function BillingTab() {
   const handleManageBilling = async () => {
     setIsManaging(true);
     try {
-      // In a real app, you would redirect to Stripe Customer Portal or similar
-      toast.success(
-        "Please wait while we redirect you to manage your billing..."
-      );
-
-      // Simulate redirect delay
-      setTimeout(() => {
+      const res = await fetch("/api/stripe/portal", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || "Failed to access billing portal");
         setIsManaging(false);
-        toast.success("Billing management portal will be available soon.");
-      }, 2000);
+        return;
+      }
+      window.location.href = data.url;
     } catch {
       setIsManaging(false);
       toast.error("Failed to access billing portal");

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
-import { Check, Zap, Brain, Clock, ArrowLeft } from "lucide-react";
+import { Check, Sparkles, Zap, Brain, Clock, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -14,22 +14,6 @@ import Link from "next/link";
 interface PricingCardProps {
   className?: string;
 }
-
-// Mock Stripe integration - will be replaced with real implementation
-const mockSubscribe = async (): Promise<{
-  success: boolean;
-  error?: string;
-}> => {
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  // Mock success response (90% success rate for demo)
-  if (Math.random() > 0.1) {
-    return { success: true };
-  } else {
-    return { success: false, error: "Payment failed. Please try again." };
-  }
-};
 
 const features = [
   "Unlimited AI health insights",
@@ -55,33 +39,34 @@ export function PricingCard({ className }: PricingCardProps) {
   const router = useRouter();
 
   const handleSubscribe = async () => {
-    // If user is not logged in, redirect to login first
+    // If user is not logged in, redirect to login first, then come back to checkout
     if (!user) {
-      router.push("/login?redirect=/account?billing");
+      router.push("/login?redirect=/pricing?startCheckout=1");
       return;
     }
 
     setIsLoading(true);
-    toast.loading("Processing your subscription...");
+    toast.loading("Redirecting to checkout...");
 
     try {
-      const result = await mockSubscribe();
-
-      if (result.success) {
-        toast.dismiss();
-        toast.success("Welcome to Pro! 🎉");
-        // Redirect to account billing page
-        router.push("/account?billing");
-      } else {
-        toast.dismiss();
-        toast.error(result.error || "Something went wrong. Please try again.");
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      toast.dismiss();
+      if (!res.ok) {
+        toast.error(data.error || "Unable to start checkout");
+        setIsLoading(false);
+        return;
       }
+      window.location.href = data.url;
     } catch (error) {
       toast.dismiss();
       toast.error("An unexpected error occurred. Please try again.");
       console.error("Subscription error:", error);
     } finally {
-      setIsLoading(false);
+      // keep loading state until redirect happens
     }
   };
 

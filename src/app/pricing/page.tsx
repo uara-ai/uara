@@ -1,4 +1,5 @@
 import { PricingCard } from "@/components/pricing-card";
+import { AutoCheckout } from "@/components/AutoCheckout";
 
 export default async function PricingPage() {
   return (
@@ -16,6 +17,7 @@ export default async function PricingPage() {
 
       {/* Pricing card */}
       <PricingCard />
+      <AutoCheckout />
     </div>
   );
 }
