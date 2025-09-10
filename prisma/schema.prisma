@@ -146,13 +146,31 @@ model Subscription {
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  stripeCustomerId     String
-  stripeSubscriptionId String?   @unique
-  status               String
-  priceId              String?
-  cancelAtPeriodEnd    Boolean   @default(false)
-  currentPeriodStart   DateTime?
-  currentPeriodEnd     DateTime?
+  stripeCustomerId             String
+  stripeSubscriptionId         String?   @unique
+  status                       String
+  priceId                      String?
+  productId                    String?
+  currency                     String?
+  amount                       Int?
+  interval                     String?
+  intervalCount                Int?
+  cancelAtPeriodEnd            Boolean   @default(false)
+  currentPeriodStart           DateTime?
+  currentPeriodEnd             DateTime?
+  startDate                    DateTime?
+  trialStart                   DateTime?
+  trialEnd                     DateTime?
+  cancelAt                     DateTime?
+  canceledAt                   DateTime?
+  endedAt                      DateTime?
+  latestInvoiceId              String?
+  collectionMethod             String?
+  defaultPaymentMethodId       String?
+  defaultPaymentMethodBrand    String?
+  defaultPaymentMethodLast4    String?
+  defaultPaymentMethodExpMonth Int?
+  defaultPaymentMethodExpYear  Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

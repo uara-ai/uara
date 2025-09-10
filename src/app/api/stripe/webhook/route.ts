@@ -5,6 +5,90 @@ import { stripe } from "@/lib/stripe";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+function toDate(seconds?: number | null) {
+  return seconds ? new Date(seconds * 1000) : null;
+}
+
+async function upsertSubscriptionFromStripeObject(
+  subscription: any,
+  userId: string,
+  customerId: string
+) {
+  const item = subscription.items?.data?.[0];
+  const price = item?.price;
+  const plan = price?.recurring;
+  const defaultPaymentMethod = subscription.default_payment_method as any;
+  let pm: any = null;
+  if (defaultPaymentMethod && typeof defaultPaymentMethod === "string") {
+    try {
+      pm = await stripe.paymentMethods.retrieve(defaultPaymentMethod);
+    } catch {
+      pm = null;
+    }
+  } else if (defaultPaymentMethod && typeof defaultPaymentMethod === "object") {
+    pm = defaultPaymentMethod;
+  }
+
+  await prisma.subscription.upsert({
+    where: { userId },
+    update: {
+      stripeCustomerId: customerId,
+      stripeSubscriptionId: subscription.id,
+      status: subscription.status,
+      priceId: price?.id ?? null,
+      productId: price?.product ?? null,
+      currency: price?.currency ?? null,
+      amount: price?.unit_amount ?? null,
+      interval: plan?.interval ?? null,
+      intervalCount: plan?.interval_count ?? null,
+      cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
+      currentPeriodStart: toDate(subscription.current_period_start),
+      currentPeriodEnd: toDate(subscription.current_period_end),
+      startDate: toDate(subscription.start_date),
+      trialStart: toDate(subscription.trial_start),
+      trialEnd: toDate(subscription.trial_end),
+      cancelAt: toDate(subscription.cancel_at),
+      canceledAt: toDate(subscription.canceled_at),
+      endedAt: toDate(subscription.ended_at),
+      latestInvoiceId: subscription.latest_invoice ?? null,
+      collectionMethod: subscription.collection_method ?? null,
+      defaultPaymentMethodId: pm?.id ?? null,
+      defaultPaymentMethodBrand: pm?.card?.brand ?? null,
+      defaultPaymentMethodLast4: pm?.card?.last4 ?? null,
+      defaultPaymentMethodExpMonth: pm?.card?.exp_month ?? null,
+      defaultPaymentMethodExpYear: pm?.card?.exp_year ?? null,
+    },
+    create: {
+      userId,
+      stripeCustomerId: customerId,
+      stripeSubscriptionId: subscription.id,
+      status: subscription.status,
+      priceId: price?.id ?? null,
+      productId: price?.product ?? null,
+      currency: price?.currency ?? null,
+      amount: price?.unit_amount ?? null,
+      interval: plan?.interval ?? null,
+      intervalCount: plan?.interval_count ?? null,
+      cancelAtPeriodEnd: !!subscription.cancel_at_period_end,
+      currentPeriodStart: toDate(subscription.current_period_start),
+      currentPeriodEnd: toDate(subscription.current_period_end),
+      startDate: toDate(subscription.start_date),
+      trialStart: toDate(subscription.trial_start),
+      trialEnd: toDate(subscription.trial_end),
+      cancelAt: toDate(subscription.cancel_at),
+      canceledAt: toDate(subscription.canceled_at),
+      endedAt: toDate(subscription.ended_at),
+      latestInvoiceId: subscription.latest_invoice ?? null,
+      collectionMethod: subscription.collection_method ?? null,
+      defaultPaymentMethodId: pm?.id ?? null,
+      defaultPaymentMethodBrand: pm?.card?.brand ?? null,
+      defaultPaymentMethodLast4: pm?.card?.last4 ?? null,
+      defaultPaymentMethodExpMonth: pm?.card?.exp_month ?? null,
+      defaultPaymentMethodExpYear: pm?.card?.exp_year ?? null,
+    },
+  });
+}
+
 export async function POST(req: NextRequest) {
   const sig = req.headers.get("stripe-signature");
   if (!sig) {
@@ -32,7 +116,6 @@ export async function POST(req: NextRequest) {
         const customerId = session.customer as string;
         const subscriptionId = session.subscription as string | null;
         if (userId) {
-          // Ensure billing customer exists
           await prisma.billingCustomer.upsert({
             where: { userId },
             update: {
@@ -47,39 +130,14 @@ export async function POST(req: NextRequest) {
           });
 
           if (subscriptionId) {
-            const subscription = (await stripe.subscriptions.retrieve(
+            const subscription = await stripe.subscriptions.retrieve(
               subscriptionId
-            )) as any;
-            await prisma.subscription.upsert({
-              where: { userId },
-              update: {
-                stripeCustomerId: customerId,
-                stripeSubscriptionId: subscription.id,
-                status: subscription.status,
-                priceId: subscription.items.data[0]?.price?.id ?? null,
-                cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
-                currentPeriodStart: (subscription as any).current_period_start
-                  ? new Date(subscription.current_period_start * 1000)
-                  : null,
-                currentPeriodEnd: (subscription as any).current_period_end
-                  ? new Date(subscription.current_period_end * 1000)
-                  : null,
-              },
-              create: {
-                userId,
-                stripeCustomerId: customerId,
-                stripeSubscriptionId: subscription.id,
-                status: subscription.status,
-                priceId: subscription.items.data[0]?.price?.id ?? null,
-                cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
-                currentPeriodStart: (subscription as any).current_period_start
-                  ? new Date(subscription.current_period_start * 1000)
-                  : null,
-                currentPeriodEnd: (subscription as any).current_period_end
-                  ? new Date(subscription.current_period_end * 1000)
-                  : null,
-              },
-            });
+            );
+            await upsertSubscriptionFromStripeObject(
+              subscription,
+              userId,
+              customerId
+            );
           }
         }
         break;
@@ -93,36 +151,11 @@ export async function POST(req: NextRequest) {
           where: { stripeCustomerId: customerId },
         });
         if (billing) {
-          await prisma.subscription.upsert({
-            where: { userId: billing.userId },
-            update: {
-              stripeCustomerId: customerId,
-              stripeSubscriptionId: subscription.id,
-              status: subscription.status,
-              priceId: subscription.items?.data?.[0]?.price?.id ?? null,
-              cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
-              currentPeriodStart: subscription.current_period_start
-                ? new Date(subscription.current_period_start * 1000)
-                : null,
-              currentPeriodEnd: subscription.current_period_end
-                ? new Date(subscription.current_period_end * 1000)
-                : null,
-            },
-            create: {
-              userId: billing.userId,
-              stripeCustomerId: customerId,
-              stripeSubscriptionId: subscription.id,
-              status: subscription.status,
-              priceId: subscription.items?.data?.[0]?.price?.id ?? null,
-              cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
-              currentPeriodStart: subscription.current_period_start
-                ? new Date(subscription.current_period_start * 1000)
-                : null,
-              currentPeriodEnd: subscription.current_period_end
-                ? new Date(subscription.current_period_end * 1000)
-                : null,
-            },
-          });
+          await upsertSubscriptionFromStripeObject(
+            subscription,
+            billing.userId,
+            customerId
+          );
         }
         break;
       }

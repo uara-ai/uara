@@ -11,7 +11,7 @@ import {
 } from "@workos-inc/authkit-nextjs/components";
 import { cookies } from "next/headers";
 import { isEU } from "@/packages/location/location";
-import { Cookies } from "@/packages/constants";
+import { Cookies } from "@/packages/config/constants";
 import { ConsentBanner } from "@/components/auth/consent-banner";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
