@@ -14,6 +14,24 @@ import { RateLimiter } from "@/packages/redis/rate-limiter";
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
+function isProFromStatus(sub?: {
+  status: string | null;
+  cancelAtPeriodEnd: boolean | null;
+  currentPeriodEnd: Date | null;
+  endedAt: Date | null;
+}) {
+  if (!sub) return false;
+  const status = (sub.status || "").toLowerCase();
+  if (status === "active" || status === "trialing" || status === "past_due") {
+    if (sub.cancelAtPeriodEnd && sub.currentPeriodEnd) {
+      return sub.currentPeriodEnd.getTime() > Date.now();
+    }
+    if (sub.endedAt && sub.endedAt.getTime() <= Date.now()) return false;
+    return true;
+  }
+  return false;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -30,6 +48,17 @@ export async function POST(req: NextRequest) {
     // Find user in our database (user should already exist from auth callback)
     const dbUser = await prisma.user.findUnique({
       where: { id: user.id },
+      select: {
+        id: true,
+        Subscription: {
+          select: {
+            status: true,
+            cancelAtPeriodEnd: true,
+            currentPeriodEnd: true,
+            endedAt: true,
+          },
+        },
+      },
     });
 
     if (!dbUser) {
@@ -37,8 +66,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Check rate limits before processing
-    // TODO: Add subscription check here when subscription system is implemented
-    const isProUser = false; // Will be: dbUser.subscription?.status === 'active'
+    const isProUser = isProFromStatus(dbUser.Subscription || undefined);
     const rateLimitResult = await RateLimiter.checkAndIncrement(
       dbUser.id,
       isProUser
