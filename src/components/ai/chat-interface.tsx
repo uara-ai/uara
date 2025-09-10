@@ -52,6 +52,11 @@ export function ChatInterface({
   const customFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
     const response = await fetch(input, init);
 
+    // Redirect unauthenticated users to login
+    if (response.status === 401) {
+      router.push("/login");
+    }
+
     // Extract rate limit headers and update context
     if (response.headers.has("X-Rate-Limit-Remaining")) {
       updateFromHeaders(response.headers);
