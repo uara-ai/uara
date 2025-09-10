@@ -2,6 +2,7 @@
 export { PricingCard } from "./pricing-card";
 export { Navbar } from "./navbar";
 export { Bg } from "./bg";
+export { Footer } from "./footer";
 
 // AI components
 export * from "./ai";

@@ -160,7 +160,9 @@ export function ChatInterface({
     setInput("");
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setInput(e.target.value);
   };
 

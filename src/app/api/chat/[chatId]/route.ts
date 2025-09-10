@@ -10,12 +10,30 @@ import { RateLimiter } from "@/packages/redis/rate-limiter";
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
+function isProFromStatus(sub?: {
+  status: string | null;
+  cancelAtPeriodEnd: boolean | null;
+  currentPeriodEnd: Date | null;
+  endedAt: Date | null;
+}) {
+  if (!sub) return false;
+  const status = (sub.status || "").toLowerCase();
+  if (status === "active" || status === "trialing" || status === "past_due") {
+    if (sub.cancelAtPeriodEnd && sub.currentPeriodEnd) {
+      return sub.currentPeriodEnd.getTime() > Date.now();
+    }
+    if (sub.endedAt && sub.endedAt.getTime() <= Date.now()) return false;
+    return true;
+  }
+  return false;
+}
+
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ chatId: string }> }
 ) {
   try {
-    const resolvedParams = await params;
+    const { chatId } = await params;
     const body = await req.json();
     const { messages }: { messages: UIMessage[] } = body;
 
@@ -29,15 +47,37 @@ export async function POST(
     // Find user in our database
     const dbUser = await prisma.user.findUnique({
       where: { id: user.id },
+      select: {
+        id: true,
+        Subscription: {
+          select: {
+            status: true,
+            cancelAtPeriodEnd: true,
+            currentPeriodEnd: true,
+            endedAt: true,
+          },
+        },
+      },
     });
 
     if (!dbUser) {
       return Response.json({ error: "User not found" }, { status: 404 });
     }
 
+    // Verify chat exists and belongs to user
+    const chat = await prisma.chat.findFirst({
+      where: {
+        id: chatId,
+        userId: dbUser.id,
+      },
+    });
+
+    if (!chat) {
+      return Response.json({ error: "Chat not found" }, { status: 404 });
+    }
+
     // Check rate limits before processing
-    // TODO: Add subscription check here when subscription system is implemented
-    const isProUser = false; // Will be: dbUser.subscription?.status === 'active'
+    const isProUser = isProFromStatus(dbUser.Subscription || undefined);
     const rateLimitResult = await RateLimiter.checkAndIncrement(
       dbUser.id,
       isProUser
@@ -55,18 +95,6 @@ export async function POST(
       );
     }
 
-    // Verify chat exists and belongs to user
-    const currentChat = await prisma.chat.findFirst({
-      where: {
-        id: resolvedParams.chatId,
-        userId: dbUser.id,
-      },
-    });
-
-    if (!currentChat) {
-      return Response.json({ error: "Chat not found" }, { status: 404 });
-    }
-
     // Save user message to database
     const lastUserMessage = messages[messages.length - 1];
     if (lastUserMessage?.role === "user") {
@@ -76,12 +104,26 @@ export async function POST(
       const messageContent = textPart?.text || "";
       await prisma.chatMessage.create({
         data: {
-          chatId: resolvedParams.chatId,
+          chatId: chatId,
           role: "user",
           content: messageContent,
         },
       });
     }
+
+    // Get existing messages from database for context
+    const existingMessages = await prisma.chatMessage.findMany({
+      where: { chatId },
+      orderBy: { createdAt: "asc" },
+      take: 50, // Limit context to last 50 messages for performance
+    });
+
+    // Convert existing messages to UI format
+    const contextMessages: UIMessage[] = existingMessages.map((msg) => ({
+      id: msg.id,
+      role: msg.role as "user" | "assistant",
+      parts: [{ type: "text", text: msg.content }],
+    }));
 
     // Stream AI response with health and longevity tools
     const result = streamText({
@@ -92,7 +134,7 @@ export async function POST(
           parts: [{ type: "text", text: LONGEVITY_SYSTEM_PROMPT }],
           id: "system",
         },
-        ...messages,
+        ...contextMessages,
       ]),
       temperature: 0.7,
       tools: {
@@ -186,7 +228,7 @@ export async function POST(
         try {
           await prisma.chatMessage.create({
             data: {
-              chatId: resolvedParams.chatId,
+              chatId: chatId,
               role: "assistant",
               content: result.text,
             },
@@ -194,7 +236,7 @@ export async function POST(
 
           // Update chat timestamp
           await prisma.chat.update({
-            where: { id: resolvedParams.chatId },
+            where: { id: chatId },
             data: { updatedAt: new Date() },
           });
 
@@ -210,7 +252,7 @@ export async function POST(
 
     return result.toUIMessageStreamResponse({
       headers: {
-        "X-Chat-Id": resolvedParams.chatId,
+        "X-Chat-Id": chatId,
         "X-Rate-Limit-Remaining": rateLimitResult.remaining.toString(),
         "X-Rate-Limit-Reset": rateLimitResult.resetTime.toISOString(),
         "X-Rate-Limit-Limit": rateLimitResult.limit.toString(),

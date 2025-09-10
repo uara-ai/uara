@@ -2,13 +2,17 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Send } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Send, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useEffect, useRef } from "react";
 
 interface ChatInputProps {
   input: string;
   status: string;
-  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   onSubmit: (e: React.FormEvent) => void;
   inputRef: React.RefObject<HTMLInputElement | null>;
 }
@@ -20,37 +24,68 @@ export function ChatInput({
   onSubmit,
   inputRef,
 }: ChatInputProps) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const isLoading = status === "submitted";
+
+  // Auto-resize textarea based on content
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`;
+    }
+  }, [input]);
+
+  // Handle key down for submission
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      onSubmit(e as any);
+    }
+  };
+
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onInputChange(e);
+  };
+
   return (
-    <motion.div
-      initial={{ y: 20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ delay: 0.2 }}
-      className="p-4 border-t border-gray-200 dark:border-gray-800"
-    >
+    <div className="p-4">
       <form onSubmit={onSubmit} className="max-w-4xl mx-auto">
-        <div className="relative group">
-          <Input
-            ref={inputRef}
+        <div className="relative flex items-end gap-2 rounded-2xl border border-border bg-background p-2 shadow-sm focus-within:ring-2 focus-within:ring-ring">
+          <Textarea
+            ref={textareaRef}
             value={input}
-            onChange={onInputChange}
-            placeholder="Ask about your health..."
-            className="w-full h-12 pl-4 pr-14 text-base rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 focus:border-gray-400 dark:focus:border-gray-500 transition-all duration-200"
-            disabled={false}
+            onChange={handleTextareaChange}
+            onKeyDown={handleKeyDown}
+            placeholder="Message Uara AI..."
+            className="min-h-[44px] resize-none border-0 bg-transparent p-2 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+            rows={1}
+            disabled={isLoading}
           />
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <Button
-              type="submit"
-              size="sm"
-              className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-30"
-              variant="ghost"
-              disabled={!input.trim() || status === "submitted"}
-            >
+          <Button
+            type="submit"
+            size="sm"
+            disabled={!input.trim() || isLoading}
+            className={cn(
+              "shrink-0 rounded-xl h-10 w-10 p-0 transition-all",
+              input.trim() && !isLoading
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "bg-muted text-muted-foreground"
+            )}
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
               <Send className="h-4 w-4" />
-            </Button>
-          </div>
+            )}
+            <span className="sr-only">Send message</span>
+          </Button>
+        </div>
+        <div className="mt-2 text-xs text-muted-foreground text-center">
+          Press Enter to send, Shift + Enter for new line
         </div>
       </form>
-    </motion.div>
+    </div>
   );
 }
 

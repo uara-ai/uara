@@ -1,4 +1,5 @@
 export { ChatInterface } from "./chat-interface";
+export { ChatLayout } from "./chat-layout";
 export { Messages } from "./messages";
 export { ChatHeader } from "./chat-header";
 export { ChatInput } from "./chat-input";

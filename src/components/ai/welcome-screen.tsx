@@ -9,7 +9,9 @@ import Image from "next/image";
 interface WelcomeScreenProps {
   input: string;
   status: string;
-  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   onSubmit: (e: React.FormEvent) => void;
   onSuggestionClick: (suggestion: string) => void;
   inputRef: React.RefObject<HTMLInputElement | null>;
@@ -53,7 +55,7 @@ export function WelcomeScreen({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      className="flex flex-col items-center justify-center min-h-[70vh] max-w-3xl mx-auto px-4"
+      className="flex flex-col items-center justify-center min-h-[70vh] max-w-3xl mx-auto px-4 mt-16"
     >
       {/* Header */}
       <motion.div
@@ -73,29 +75,27 @@ export function WelcomeScreen({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.3 }}
-        className="w-full max-w-2xl"
+        className="w-full max-w-3xl"
       >
         <form onSubmit={onSubmit} className="relative">
-          <div className="relative group">
+          <div className="relative flex items-center gap-2 rounded-2xl border border-border bg-background/80 backdrop-blur-sm p-2 shadow-lg focus-within:ring-2 focus-within:ring-ring focus-within:border-transparent">
             <Input
               ref={inputRef}
               value={input}
               onChange={onInputChange}
-              placeholder="Ask anything"
-              className="w-full h-14 pl-4 pr-16 text-base rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:border-gray-300 dark:hover:border-gray-600 focus:border-gray-400 dark:focus:border-gray-500 transition-all duration-200 resize-none"
-              disabled={false}
+              placeholder="Ask anything about your health and longevity..."
+              className="flex-1 border-0 bg-transparent text-lg py-3 px-4 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground"
+              disabled={status === "submitted"}
             />
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
-              <Button
-                type="submit"
-                size="sm"
-                className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 disabled:opacity-30"
-                variant="ghost"
-                disabled={!input.trim() || status === "submitted"}
-              >
-                <Send className="h-4 w-4" />
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              size="sm"
+              disabled={!input.trim() || status === "submitted"}
+              className="shrink-0 rounded-xl h-12 w-12 p-0 bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-all"
+            >
+              <Send className="h-5 w-5" />
+              <span className="sr-only">Send message</span>
+            </Button>
           </div>
         </form>
       </motion.div>
@@ -107,28 +107,33 @@ export function WelcomeScreen({
         transition={{ delay: 0.5, duration: 0.3 }}
         className="w-full max-w-4xl mt-8"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {suggestions.map((suggestion) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {suggestions.map((suggestion, index) => (
             <motion.button
               key={suggestion.title}
               type="button"
               onClick={() => onSuggestionClick(suggestion.title)}
-              className="group p-4 text-left rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200 cursor-pointer"
-              whileHover={{ y: -2 }}
-              whileTap={{ y: 0 }}
+              className="group p-5 text-left rounded-2xl border border-border bg-card/50 backdrop-blur-sm hover:bg-card hover:border-primary/20 hover:shadow-md transition-all duration-300 cursor-pointer"
+              whileHover={{ y: -3, scale: 1.02 }}
+              whileTap={{ y: 0, scale: 0.98 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 + index * 0.1 }}
             >
-              <div className="flex items-start space-x-3">
+              <div className="flex items-start space-x-4">
                 {suggestion.icon && (
-                  <suggestion.icon.type
-                    {...suggestion.icon.props}
-                    className="size-5 text-muted-foreground"
-                  />
+                  <div className="p-2 rounded-xl bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
+                    <suggestion.icon.type
+                      {...suggestion.icon.props}
+                      className="size-5"
+                    />
+                  </div>
                 )}
                 <div className="flex-1">
-                  <h3 className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-gray-700 dark:group-hover:text-gray-200">
+                  <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
                     {suggestion.title}
                   </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-sm text-muted-foreground mt-1 group-hover:text-foreground/80 transition-colors">
                     {suggestion.subtitle}
                   </p>
                 </div>
