@@ -68,10 +68,7 @@ export const NavigationMenu = memo(function NavigationMenu() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer" asChild>
-          <Link
-            href="/privacy-policy"
-            className="w-full flex items-center gap-2"
-          >
+          <Link href="/privacy" className="w-full flex items-center gap-2">
             <Shield size={16} />
             <span>Privacy</span>
           </Link>
@@ -79,17 +76,7 @@ export const NavigationMenu = memo(function NavigationMenu() {
         <DropdownMenuSeparator />
 
         {/* Social and External Links */}
-        <DropdownMenuItem className="cursor-pointer" asChild>
-          <a
-            href={"https://git.new/scira"}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center gap-2"
-          >
-            <Github size={16} />
-            <span>Github</span>
-          </a>
-        </DropdownMenuItem>
+
         <DropdownMenuItem className="cursor-pointer" asChild>
           <a
             href={"https://x.com/uaradotai"}
@@ -99,29 +86,6 @@ export const NavigationMenu = memo(function NavigationMenu() {
           >
             <Icons.x />
             <span>X/Twitter</span>
-          </a>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer" asChild>
-          <a
-            href={"https://www.instagram.com/scira.ai"}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center gap-2"
-          >
-            <Instagram size={16} />
-            <span>Instagram</span>
-          </a>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem className="cursor-pointer" asChild>
-          <a
-            href={"https://scira.userjot.com"}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center gap-2"
-          >
-            <Bug className="size-4" />
-            <span>Feature/Bug Request</span>
           </a>
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -10,6 +10,7 @@ import { User, CreditCard, ScanHeart } from "lucide-react";
 import { Navbar } from "@/components/navbar";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { RateLimitProvider } from "@/hooks/use-rate-limit-context";
+import { redirect } from "next/navigation";
 
 function AccountPageContent() {
   const [tab, setTab] = useQueryState(
@@ -17,6 +18,10 @@ function AccountPageContent() {
     parseAsString.withDefault("user-info")
   );
   const { user } = useAuth();
+
+  if (!user) {
+    redirect("/login");
+  }
 
   return (
     <div className="min-h-screen bg-background">

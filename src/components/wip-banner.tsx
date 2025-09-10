@@ -13,7 +13,7 @@ export function WipBanner({ className }: WipBannerProps) {
   return (
     <div
       className={cn(
-        "relative mx-auto mt-10 sm:mt-16 lg:mt-20 max-w-3xl lg:max-w-4xl px-4 sm:px-6",
+        "relative mx-auto mt-10 sm:mt-16 lg:mt-20 max-w-3xl lg:max-w-4xl px-4 sm:px-6 mb-2",
         className
       )}
     >
