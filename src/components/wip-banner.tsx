@@ -75,9 +75,9 @@ export function WipBanner({ className }: WipBannerProps) {
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-2 sm:mt-5 sm:grid-cols-2 md:grid-cols-3">
-          <FeaturePill label="Wearables integration" status="soon" />
+          <FeaturePill label="AI health coach" status="beta" />
           <FeaturePill label="Lab uploads (CSV/PDF)" status="wip" />
-          <FeaturePill label="AI health coach" status="soon" />
+          <FeaturePill label="Wearables integration" status="soon" />
         </div>
       </div>
     </div>

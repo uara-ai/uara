@@ -1,5 +1,6 @@
 import { PricingCard } from "@/components/pricing-card";
 import { AutoCheckout } from "@/components/AutoCheckout";
+import { ProfileCompletionHandler } from "@/components";
 
 export default async function PricingPage() {
   return (
