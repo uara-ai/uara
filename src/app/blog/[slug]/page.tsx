@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { MarkdownParser } from "@/components/markdown-parser";
-import { ArrowLeft, BookOpen, Sparkles } from "lucide-react";
+import { ArrowLeft, BookOpen, Brain, Sparkles } from "lucide-react";
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
@@ -143,16 +143,26 @@ export default async function Blog({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
 
-        {/* Home Button - Top Left */}
-        <div className="fixed top-4 left-4 z-50">
+        {/* Navigation Buttons - Top Left */}
+        <div className="fixed top-4 left-4 z-50 flex items-center gap-2">
           <Link href="/">
             <Button
               variant="outline"
               size="sm"
               className="rounded-full bg-background/80 backdrop-blur-sm border-border/60 hover:bg-background/90 shadow-sm ring-1 ring-ring/35 transition-all duration-200"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
+              <Brain className="w-4 h-4 mr-2" />
               Home
+            </Button>
+          </Link>
+          <Link href="/blog">
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full bg-background/80 backdrop-blur-sm border-border/60 hover:bg-background/90 shadow-sm ring-1 ring-ring/35 transition-all duration-200"
+            >
+              <BookOpen className="w-4 h-4 mr-2" />
+              Back to Blog
             </Button>
           </Link>
         </div>
