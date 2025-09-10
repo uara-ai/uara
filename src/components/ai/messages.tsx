@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bot, User as UserIcon, Sparkles, Ellipsis } from "lucide-react";
+import { Bot, User as UserIcon, Ellipsis } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { User } from "@/lib/user.type";
 import { renderHealthTool } from "./health-tools";

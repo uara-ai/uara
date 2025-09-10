@@ -20,7 +20,6 @@ import {
   Bug,
   FileText,
   Github,
-  Info,
   Instagram,
   Menu,
   Shield,

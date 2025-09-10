@@ -34,7 +34,6 @@ export function ChatInterface({
   user,
   initialChatId,
   initialMessages,
-  initialTitle,
 }: ChatInterfaceProps) {
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(!!initialChatId);

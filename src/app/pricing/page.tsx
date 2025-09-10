@@ -1,7 +1,4 @@
 import { PricingCard } from "@/components/pricing-card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 
 export default async function PricingPage() {
   return (
