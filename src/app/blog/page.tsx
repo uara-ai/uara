@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DATA } from "@/lib/metadata";
 import { formatDate } from "@/lib/utils";
 import { ArrowLeft, BookOpen, Sparkles } from "lucide-react";
+import Image from "next/image";
 
 export const metadata = {
   title: "Blog — Longevity, Healthspan & AI Insights | Uara.ai",
@@ -169,6 +170,20 @@ export default async function BlogPage() {
                       <div className="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full bg-primary/5 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                       <div className="relative z-10">
+                        {/* Post Image */}
+                        {post.metadata.image && (
+                          <div className="relative w-full mb-4 overflow-hidden rounded-xl bg-gradient-to-br from-secondary/10 to-accent/10">
+                            <Image
+                              src={post.metadata.image}
+                              alt={post.metadata.title}
+                              width={100}
+                              height={100}
+                              className="w-full h-32 sm:h-40 object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                          </div>
+                        )}
+
                         <div className="flex items-start gap-3 sm:gap-4">
                           <div className="flex-shrink-0 mt-1">
                             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
