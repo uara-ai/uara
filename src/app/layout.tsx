@@ -1,11 +1,21 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/contexts/auth-context";
 import { OpenPanelComponent } from "@openpanel/nextjs";
-import { DATA } from "@/data/metadata";
+import { DATA } from "@/lib/metadata";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "next-themes";
+import {
+  AuthKitProvider,
+  Impersonation,
+} from "@workos-inc/authkit-nextjs/components";
+import { cookies } from "next/headers";
+import { isEU } from "@/packages/location/location";
+import { Cookies } from "@/packages/config/constants";
+import { ConsentBanner } from "@/components/auth/consent-banner";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Be_Vietnam_Pro, Inter, Baumans } from "next/font/google";
+import { Footer } from "@/components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,6 +25,30 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  preload: true,
+  weight: "variable",
+  display: "swap",
+});
+
+const beVietnamPro = Be_Vietnam_Pro({
+  subsets: ["latin"],
+  variable: "--font-be-vietnam-pro",
+  preload: true,
+  display: "swap",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
+
+const baumans = Baumans({
+  subsets: ["latin"],
+  variable: "--font-baumans",
+  preload: true,
+  display: "swap",
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -74,31 +108,34 @@ export const metadata: Metadata = {
   category: "Technology",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const showTrackingConsent =
+    (await isEU()) && !cookieStore.has(Cookies.TrackingConsent);
+
   return (
-    <html lang="en" suppressContentEditableWarning>
-      <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(DATA.schemaOrg.organization),
-          }}
-        />
-      </head>
+    <html lang="en" className="light" style={{ colorScheme: "light" }}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${beVietnamPro.variable} ${baumans.variable} ${inter.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>{children}</AuthProvider>
+          <AuthKitProvider>
+            <NuqsAdapter>
+              {children}
+
+              <Footer />
+            </NuqsAdapter>
+            <Impersonation />
+          </AuthKitProvider>
           <OpenPanelComponent
             clientId={process.env.NEXT_PUBLIC_OPEN_PANEL_CLIENT_ID!}
             clientSecret={process.env.OPEN_PANEL_CLIENT_SECRET!}
@@ -106,6 +143,7 @@ export default function RootLayout({
             disabled={process.env.NODE_ENV !== "production"}
           />
           <Toaster />
+          {showTrackingConsent && <ConsentBanner />}
         </ThemeProvider>
       </body>
     </html>

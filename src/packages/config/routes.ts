@@ -1,5 +1,11 @@
 export const routes = {
-  api: {},
+  api: {
+    stripe: {
+      checkout: "/api/stripe/checkout",
+      portal: "/api/stripe/portal",
+      webhook: "/api/stripe/webhook",
+    },
+  },
   overview: {
     home: "/overview",
     healthOS: "/overview/health-os",

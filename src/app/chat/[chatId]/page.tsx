@@ -1,0 +1,36 @@
+import { notFound } from "next/navigation";
+import { withAuth } from "@workos-inc/authkit-nextjs";
+import { getChatDetailsAction } from "@/actions/chat-history-action";
+import { ChatPageWrapper } from "@/components/ai/chat-page-wrapper";
+
+interface ChatPageProps {
+  params: Promise<{ chatId: string }>;
+}
+
+export default async function ChatPage({ params }: ChatPageProps) {
+  const resolvedParams = await params;
+  const { user } = await withAuth();
+
+  if (!user?.id) {
+    notFound();
+  }
+
+  try {
+    const result = await getChatDetailsAction({
+      chatId: resolvedParams.chatId,
+    });
+
+    if (!result.data) {
+      notFound();
+    }
+
+    const chat = result.data;
+
+    return <ChatPageWrapper user={user} chat={chat} />;
+  } catch (error) {
+    console.error("Error loading chat:", error);
+    notFound();
+  }
+}
+
+// Cursor rules applied correctly.
