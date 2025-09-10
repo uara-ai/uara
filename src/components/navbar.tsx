@@ -183,16 +183,18 @@ const Navbar = memo(
           {user && hasActiveSubscription && !showProLoading && (
             <div
               className={cn(
-                "hidden md:flex items-center justify-center absolute left-1/2 transform -translate-x-1/2",
+                "flex items-center justify-center",
                 isDialogOpen ? "pointer-events-auto" : ""
               )}
             >
-              <div className="pointer-events-auto">
+              <Link href="/healthspan" className="pointer-events-auto">
                 <span className="font-baumans! px-3 py-1 inline-flex items-center gap-1.5 rounded-full shadow-sm ring-1 ring-ring/35 ring-offset-1 ring-offset-background bg-gradient-to-br from-secondary/25 via-primary/20 to-accent/25 text-foreground dark:bg-gradient-to-br dark:from-primary dark:via-secondary dark:to-primary dark:text-foreground">
                   <Brain className="size-3.5" />
-                  <span className="uppercase tracking-wide text-xs">pro</span>
+                  <span className="uppercase tracking-wide text-xs hidden md:inline">
+                    healthspan
+                  </span>
                 </span>
-              </div>
+              </Link>
             </div>
           )}
           <div
