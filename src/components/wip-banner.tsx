@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Brain, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { SubscribeInput } from "./subscribe-input";
 
 interface WipBannerProps {
   className?: string;
@@ -78,6 +79,10 @@ export function WipBanner({ className }: WipBannerProps) {
           <FeaturePill label="AI health coach" status="beta" />
           <FeaturePill label="Lab uploads (CSV/PDF)" status="wip" />
           <FeaturePill label="Wearables integration" status="soon" />
+        </div>
+
+        <div className="w-full sm:w-auto mt-4">
+          <SubscribeInput />
         </div>
       </div>
     </div>

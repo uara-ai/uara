@@ -65,15 +65,15 @@ export function SubscribeInput() {
                 autoComplete="email"
                 aria-label="Email address"
                 required
-                className="bg-transparent font-sm text-primary outline-none py-1 px-3 w-full min-w-[300px] placeholder-[#606060] h-11 border border-border rounded-md"
+                className="bg-white font-sm text-primary outline-none py-1 px-3 w-full min-w-[300px] placeholder-[#606060] h-11 border border-border rounded-md"
               />
               <SubmitButton />
             </fieldset>
           </form>
         )}
       </div>
-      <p className="text-sm text-muted-foreground mt-2">
-        We&apos;ll send you an email when we&apos;re ready to launch.
+      <p className="text-xs text-muted-foreground mt-2">
+        We&apos;ll send you an email when we&apos;re live with early access.
       </p>
     </div>
   );
