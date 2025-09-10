@@ -2,6 +2,7 @@
 
 import { Navbar } from "@/components/navbar";
 import { ChatInterface } from "@/components/ai";
+import { WipBanner } from "@/components";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { ProfileCompletionHandler } from "@/components/auth/profile-completion-handler";
 import { RateLimitProvider } from "@/hooks/use-rate-limit-context";
@@ -20,6 +21,7 @@ export default function Home() {
           user={user.user}
         />
         <ChatInterface user={user.user} />
+        <WipBanner />
       </div>
     </RateLimitProvider>
   );

@@ -20,5 +20,6 @@ export { ThemeSwitcher } from "./theme-switcher";
 export { SubscribeInput } from "./subscribe-input";
 export { GreetingHeader } from "./greeting-header";
 export { ChatPageWrapper } from "./ai/chat-page-wrapper";
+export { WipBanner } from "./wip-banner";
 
 // Cursor rules applied correctly.
