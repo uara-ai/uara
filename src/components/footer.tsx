@@ -13,7 +13,6 @@ export function Footer({ fullWidth = false }: { fullWidth?: boolean }) {
   const otherLinks = [
     { href: "/privacy", label: "Privacy Policy" },
     { href: "/terms", label: "Terms of Service" },
-    { href: "/subprocessors", label: "Subprocessors" },
   ];
 
   const socialLinks = [

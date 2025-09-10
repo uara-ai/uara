@@ -1,11 +1,5 @@
 import Link from "next/link";
-import {
-  Brain,
-  CheckCircle2,
-  ArrowRight,
-  ScanHeart,
-  Sparkles,
-} from "lucide-react";
+import { Brain, CheckCircle2, ScanHeart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CelebrationConfetti } from "@/components/ui/confetti";
 
