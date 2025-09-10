@@ -130,7 +130,7 @@ export default async function BlogPage() {
           <div className="relative overflow-hidden p-6 sm:p-8 lg:p-10 mb-12">
             <div className="relative z-10">
               <div className="flex items-center justify-center gap-2 mb-4">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-br from-secondary/25 via-primary/20 to-accent/25 px-3 py-2 text-xs font-medium uppercase tracking-wide text-foreground ring-1 ring-ring/35 ring-offset-1 ring-offset-background">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-br from-secondary/25 via-primary/20 to-accent/25 px-3 py-2 text-xs font-medium uppercase tracking-wide text-primary ring-1 ring-ring/35 ring-offset-1 ring-offset-background">
                   <BookOpen className="size-3.5" />
                   blog
                 </span>
@@ -152,8 +152,7 @@ export default async function BlogPage() {
           {/* Blog Posts */}
           <div className="space-y-6">
             <div className="text-center">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-br from-secondary/25 via-primary/20 to-accent/25 px-3 py-2 text-xs font-medium uppercase tracking-wide text-foreground ring-1 ring-ring/35 ring-offset-1 ring-offset-background mb-4">
-                <Sparkles className="size-3.5" />
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-br from-secondary/25 via-primary/20 to-accent/25 px-3 py-2 text-xs font-medium uppercase tracking-wide text-primary ring-1 ring-ring/35 ring-offset-1 ring-offset-background mb-4">
                 latest posts
               </span>
               <h2 className="text-lg sm:text-xl font-semibold text-foreground">
@@ -176,23 +175,15 @@ export default async function BlogPage() {
                             <Image
                               src={post.metadata.image}
                               alt={post.metadata.title}
-                              width={100}
-                              height={100}
+                              width={1000}
+                              height={1000}
                               className="w-full h-32 sm:h-40 object-cover transition-transform duration-300 group-hover:scale-105"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-blue-400/20 via-transparent to-transparent" />
                           </div>
                         )}
 
                         <div className="flex items-start gap-3 sm:gap-4">
-                          <div className="flex-shrink-0 mt-1">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                              <span className="text-primary text-sm font-mono">
-                                ◇
-                              </span>
-                            </div>
-                          </div>
-
                           <div className="flex-1 space-y-3 sm:space-y-4">
                             <div>
                               <h2 className="text-sm sm:text-base font-medium text-foreground group-hover:text-primary transition-colors duration-200 leading-tight">

@@ -92,13 +92,13 @@ export const NavigationMenu = memo(function NavigationMenu() {
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer" asChild>
           <a
-            href={"https://x.com/sciraai"}
+            href={"https://x.com/uaradotai"}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full flex items-center gap-2"
           >
-            <Icons.twitter />
-            <span>X.com</span>
+            <Icons.x />
+            <span>X/Twitter</span>
           </a>
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer" asChild>

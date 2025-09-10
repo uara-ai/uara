@@ -15,6 +15,7 @@ import { Cookies } from "@/packages/config/constants";
 import { ConsentBanner } from "@/components/auth/consent-banner";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Be_Vietnam_Pro, Inter, Baumans } from "next/font/google";
+import { Footer } from "@/components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -128,7 +129,11 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <AuthKitProvider>
-            <NuqsAdapter>{children}</NuqsAdapter>
+            <NuqsAdapter>
+              {children}
+
+              <Footer />
+            </NuqsAdapter>
             <Impersonation />
           </AuthKitProvider>
           <OpenPanelComponent
