@@ -94,7 +94,7 @@ function HeroFeatureCard({
 
   return (
     <div
-      className={`group relative overflow-hidden rounded-2xl border border-border/20 bg-gradient-to-br from-background/80 to-background/40 p-6 sm:p-8 transition-all duration-500 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 delay-${
+      className={`group relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-background/80 to-background/40 p-6 sm:p-8 transition-all duration-500 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 delay-${
         index * 100
       }`}
     >

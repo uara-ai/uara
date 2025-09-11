@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Avatars } from "./avatars";
 
 interface PricingProps {
   className?: string;
@@ -41,7 +42,7 @@ const plans = [
     period: "lifetime",
     description: "Jump in early, own it forever",
     popular: true,
-    priceId: "price_lifetime",
+    priceId: "price_1S6CWaH7JERdDkEOj0vsRPcR",
     betaNote: "Limited time: Beta access with lifetime ownership",
     gradient: "from-primary/5 to-primary/10",
     borderColor: "border-primary/30",
@@ -151,29 +152,7 @@ export function Pricing({ className }: PricingProps) {
         </div>
 
         {/* Social Proof */}
-        <div className="mt-12 sm:mt-16">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="flex -space-x-2">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                <div
-                  key={i}
-                  className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 border-2 border-background flex items-center justify-center shadow-sm"
-                >
-                  <span className="text-xs font-medium text-foreground/70">
-                    {String.fromCharCode(64 + i)}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <Users className="w-5 h-5 text-primary/70 ml-2" />
-          </div>
-
-          <p className="text-sm text-muted-foreground">
-            Loved by{" "}
-            <span className="font-semibold text-foreground">1,200+</span>{" "}
-            health-conscious founders
-          </p>
-        </div>
+        <Avatars />
 
         {/* Bottom Spacing */}
         <div className="mt-24 sm:mt-32 lg:mt-40" />

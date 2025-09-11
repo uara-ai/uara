@@ -5,7 +5,7 @@ import { Hero } from "@/components/landing/hero";
 import { Problem } from "@/components/landing/problem";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { Features } from "@/components/landing/features";
-import { Pricing } from "@/components/landing/pricing";
+import { PricingCard } from "@/components/landing/pricing-card";
 
 export default function Home() {
   return (
@@ -18,7 +18,7 @@ export default function Home() {
       {/* Demo section like datafast */}
       <Problem />
       <Features />
-      <Pricing />
+      <PricingCard hidden />
       <Footer />
     </div>
   );
