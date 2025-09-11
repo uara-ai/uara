@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Brain, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { NavigationMenu } from "@/components/navigation-menu";
+import { NavigationMenu } from "@/components/old/navigation-menu";
 import {
   Tooltip,
   TooltipContent,
@@ -18,8 +18,8 @@ import { cn } from "@/lib/utils";
 
 import { useRouter, usePathname } from "next/navigation";
 import { User } from "@/lib/user.type";
-import { UserMenu } from "./auth/user-menu";
-import { UserSummaryBadge } from "./auth/user-summary-badge";
+import { UserMenu } from "../auth/user-menu";
+import { UserSummaryBadge } from "../auth/user-summary-badge";
 import { useRateLimitContext } from "@/hooks/use-rate-limit-context";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 

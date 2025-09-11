@@ -7,7 +7,7 @@ import { UserInfoTab } from "@/components/account/user-info-tab";
 import { HealthDataTab } from "@/components/account/health-data-tab";
 import { BillingTab } from "@/components/account/billing-tab";
 import { User, CreditCard, ScanHeart } from "lucide-react";
-import { Navbar } from "@/components/navbar";
+import { Navbar } from "@/components/old/navbar";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { RateLimitProvider } from "@/hooks/use-rate-limit-context";
 import { redirect } from "next/navigation";

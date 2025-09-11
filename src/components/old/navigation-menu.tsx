@@ -25,7 +25,7 @@ import {
   Shield,
   UserCheck2,
 } from "lucide-react";
-import { Icons } from "./ui/icons";
+import { Icons } from "@/components/ui/icons";
 
 // Navigation Menu Component - contains all the general navigation items
 export const NavigationMenu = memo(function NavigationMenu() {

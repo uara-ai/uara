@@ -1,7 +1,7 @@
-import { Logo } from "./logo";
+import { Logo } from "@/components/logo";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Icons } from "./ui/icons";
+import { Icons } from "@/components/ui/icons";
 import { Heart } from "lucide-react";
 
 export function Footer({ fullWidth = false }: { fullWidth?: boolean }) {

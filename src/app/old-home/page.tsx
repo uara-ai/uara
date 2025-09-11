@@ -1,4 +1,4 @@
-import { SubscribeInput } from "@/components/subscribe-input";
+import { SubscribeInput } from "@/components/landing/subscribe-input";
 import { Cookies } from "@/packages/config/constants";
 import { cookies } from "next/headers";
 import Image from "next/image";

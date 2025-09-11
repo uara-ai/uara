@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Brain, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SubscribeInput } from "./subscribe-input";
+import { SubscribeInput } from "@/components/landing/subscribe-input";
 
 interface WipBannerProps {
   className?: string;

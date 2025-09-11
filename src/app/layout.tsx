@@ -15,7 +15,6 @@ import { Cookies } from "@/packages/config/constants";
 import { ConsentBanner } from "@/components/auth/consent-banner";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Be_Vietnam_Pro, Inter, Baumans } from "next/font/google";
-import { Footer } from "@/components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -32,9 +32,7 @@ export function UserMenu({ user, onlySignOut }: Props) {
           className="rounded-lg bg-accent hover:bg-accent/80 group transition-all hover:scale-105"
         >
           <LogIn size={16} className="group-hover:rotate-12 transition-all" />
-          <span className="text-sm ml-1.5 group-hover:block hidden animate-in fade-in duration-300">
-            Login
-          </span>
+          <span className="text-sm ml-1.5 font-semibold ">Log in</span>
         </Button>
       </Link>
     );

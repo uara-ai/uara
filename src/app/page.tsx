@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/navbar";
+import { Navbar } from "@/components/landing/navbar";
 import { WelcomeScreen } from "@/components/ai";
-import { WipBanner, Footer } from "@/components";
+import { WipBanner } from "@/components/landing/wip-banner";
+import { Footer } from "@/components/landing/footer";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { ProfileCompletionHandler } from "@/components/auth/profile-completion-handler";
 import { RateLimitProvider } from "@/hooks/use-rate-limit-context";
@@ -44,13 +45,7 @@ export default function Home() {
     <RateLimitProvider enabled={!!user.user}>
       <div className="min-h-screen relative overflow-hidden">
         <ProfileCompletionHandler />
-        <Navbar
-          isDialogOpen={false}
-          chatId={null}
-          selectedVisibilityType="public"
-          status="ready"
-          user={user.user}
-        />
+        <Navbar user={user.user} />
         <WelcomeScreen
           input={input}
           status="ready"
