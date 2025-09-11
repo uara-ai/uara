@@ -39,7 +39,10 @@ model User {
   researchConsent       Boolean @default(false)
 
   // AI Chat integration
-  chats           Chat[]
+  chats       Chat[]
+  documents   Document[]
+  suggestions Suggestion[]
+
   BillingCustomer BillingCustomer?
   Subscription    Subscription?
 
@@ -83,47 +86,77 @@ enum BloodType {
 
 // AI Chat models
 model Chat {
-  id        String   @id @default(cuid())
-  title     String   @default("New Chat")
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(cuid())
+  title      String
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visibility String   @default("private") // 'private' or 'public'
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  // Chat messages
-  messages ChatMessage[]
+  // Chat messages and related data
+  messages  Message[]
+  votes     Vote[]
+  documents Document[]
 
   @@map("chats")
 }
 
-model ChatMessage {
-  id        String   @id @default(cuid())
-  chatId    String
-  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  role      String // 'user', 'assistant', 'system'
-  content   String   @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Message {
+  id          String   @id @default(cuid())
+  chatId      String
+  chat        Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  role        String // 'user', 'assistant', 'system'
+  parts       Json // Message parts (text, images, etc.)
+  attachments Json // File attachments
+  createdAt   DateTime @default(now())
 
-  // Tool invocations for future AI tools support
-  toolInvocations ToolInvocation[]
+  votes Vote[]
 
-  @@map("chat_messages")
+  @@map("messages")
 }
 
-model ToolInvocation {
-  id         String      @id @default(cuid())
-  messageId  String
-  message    ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  toolCallId String
-  toolName   String
-  args       Json
-  result     Json?
-  state      String // 'partial-call', 'call', 'result'
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+model Vote {
+  chatId    String
+  messageId String
+  isUpvoted Boolean
 
-  @@map("tool_invocations")
+  chat    Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@id([chatId, messageId])
+  @@map("votes")
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  chatId    String?
+  chat      Chat?    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  content   String?  @db.Text
+  kind      String   @default("text") // 'text', 'code', 'image', 'sheet'
+  createdAt DateTime @default(now())
+
+  suggestions Suggestion[]
+
+  @@map("documents")
+}
+
+model Suggestion {
+  id            String   @id @default(cuid())
+  documentId    String
+  document      Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  originalText  String   @db.Text
+  suggestedText String   @db.Text
+  description   String?  @db.Text
+  isResolved    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  @@map("suggestions")
 }
 
 // Stripe Billing models

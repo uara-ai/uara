@@ -129,11 +129,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <AuthKitProvider>
-            <NuqsAdapter>
-              {children}
-
-              <Footer />
-            </NuqsAdapter>
+            <NuqsAdapter>{children}</NuqsAdapter>
             <Impersonation />
           </AuthKitProvider>
           <OpenPanelComponent

@@ -1,279 +1,159 @@
-import { NextRequest } from "next/server";
-import { streamText, convertToModelMessages, UIMessage } from "ai";
-import { openai } from "@ai-sdk/openai";
 import {
-  DEFAULT_MODEL,
-  LONGEVITY_SYSTEM_PROMPT,
-  generateChatTitle,
-} from "@/packages/ai/client";
-import { prisma } from "@/lib/prisma";
-import { withAuth } from "@workos-inc/authkit-nextjs";
-import { z } from "zod";
-import { RateLimiter } from "@/packages/redis/rate-limiter";
+  convertToModelMessages,
+  createUIMessageStream,
+  JsonToSseTransformStream,
+  smoothStream,
+  stepCountIs,
+  streamText,
+} from "ai";
+import { requireAuth } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { saveChat, saveMessage, getChatById } from "@/lib/db/queries";
+import { myProvider } from "@/lib/ai/providers";
+import { LONGEVITY_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
+import { convertToUIMessages, generateUUID } from "@/lib/utils";
+import { ChatSDKError } from "@/lib/errors";
+import { createTools } from "@/lib/ai/tools";
 
-// Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
-
-function isProFromStatus(sub?: {
-  status: string | null;
-  cancelAtPeriodEnd: boolean | null;
-  currentPeriodEnd: Date | null;
-  endedAt: Date | null;
-}) {
-  if (!sub) return false;
-  const status = (sub.status || "").toLowerCase();
-  if (status === "active" || status === "trialing" || status === "past_due") {
-    if (sub.cancelAtPeriodEnd && sub.currentPeriodEnd) {
-      return sub.currentPeriodEnd.getTime() > Date.now();
-    }
-    if (sub.endedAt && sub.endedAt.getTime() <= Date.now()) return false;
-    return true;
-  }
-  return false;
-}
-
-export async function POST(req: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const body = await req.json();
-    const { messages, chatId }: { messages: UIMessage[]; chatId?: string } =
-      body;
+    const { id, message, selectedChatModel, selectedVisibilityType } =
+      await request.json();
 
-    // Get user from WorkOS
-    const { user } = await withAuth();
+    // Validate that message exists
+    if (!message) {
+      return new ChatSDKError("bad_request:api").toResponse();
+    }
 
+    // Require authentication
+    const user = await requireAuth();
     if (!user) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+      return new ChatSDKError("unauthorized:chat").toResponse();
     }
 
-    // Find user in our database (user should already exist from auth callback)
-    const dbUser = await prisma.user.findUnique({
-      where: { id: user.id },
-      select: {
-        id: true,
-        Subscription: {
-          select: {
-            status: true,
-            cancelAtPeriodEnd: true,
-            currentPeriodEnd: true,
-            endedAt: true,
-          },
-        },
-      },
-    });
+    // Check rate limit
+    await checkRateLimit(user.id);
 
-    if (!dbUser) {
-      return Response.json({ error: "User not found" }, { status: 404 });
-    }
+    const chat = await getChatById({ id });
 
-    // Check rate limits before processing
-    const isProUser = isProFromStatus(dbUser.Subscription || undefined);
-    const rateLimitResult = await RateLimiter.checkAndIncrement(
-      dbUser.id,
-      isProUser
-    );
+    if (!chat) {
+      const title = message?.parts?.[0]?.text?.slice(0, 100) || "New Chat";
 
-    if (!rateLimitResult.success) {
-      return Response.json(
-        {
-          error: "Rate limit exceeded",
-          remaining: rateLimitResult.remaining,
-          resetTime: rateLimitResult.resetTime,
-          limit: rateLimitResult.limit,
-        },
-        { status: 429 }
-      );
-    }
-
-    let currentChatId = chatId;
-    let currentChat;
-
-    // If no chatId provided, create a new chat
-    if (!currentChatId) {
-      const firstUserMessage = messages.find((m) => m.role === "user");
-      const textPart = firstUserMessage?.parts?.find(
-        (part: any) => part.type === "text"
-      ) as any;
-      const messageContent = textPart?.text || "";
-      const title = await generateChatTitle(messageContent);
-
-      currentChat = await prisma.chat.create({
-        data: {
-          title,
-          userId: dbUser.id,
-        },
+      await saveChat({
+        id,
+        userId: user.id,
+        title,
+        visibility: selectedVisibilityType || "private",
       });
-      currentChatId = currentChat.id;
-
-      // Invalidate chat history cache when new chat is created
-      const { revalidateTag } = await import("next/cache");
-      revalidateTag("chat-history");
-      revalidateTag(`user-${dbUser.id}`);
     } else {
-      // Verify chat exists and belongs to user
-      currentChat = await prisma.chat.findFirst({
-        where: {
-          id: currentChatId,
-          userId: dbUser.id,
-        },
-      });
-
-      if (!currentChat) {
-        return Response.json({ error: "Chat not found" }, { status: 404 });
+      if (chat.userId !== user.id) {
+        return new ChatSDKError("forbidden:chat").toResponse();
       }
     }
 
-    // Save user message to database
-    const lastUserMessage = messages[messages.length - 1];
-    if (lastUserMessage?.role === "user") {
-      const textPart = lastUserMessage.parts?.find(
-        (part: any) => part.type === "text"
-      ) as any;
-      const messageContent = textPart?.text || "";
-      await prisma.chatMessage.create({
-        data: {
-          chatId: currentChatId,
-          role: "user",
-          content: messageContent,
-        },
-      });
-    }
+    // Get existing messages from chat
+    const messagesFromDb = chat?.messages || [];
+    const uiMessages = [...convertToUIMessages(messagesFromDb), message];
 
-    // Stream AI response with health and longevity tools
-    const result = streamText({
-      model: openai(DEFAULT_MODEL),
-      messages: convertToModelMessages([
-        {
-          role: "system",
-          parts: [{ type: "text", text: LONGEVITY_SYSTEM_PROMPT }],
-          id: "system",
-        },
-        ...messages,
-      ]),
-      temperature: 0.7,
-      tools: {
-        // Server-side tools with execute functions
-        analyzeLabResults: {
-          description:
-            "Analyze lab results and provide health insights based on biomarkers",
-          inputSchema: z.object({
-            testType: z
-              .string()
-              .describe("Type of lab test (e.g., blood panel, lipid profile)"),
-            values: z
-              .record(z.string(), z.number())
-              .describe("Lab values with reference ranges"),
-            age: z.number().optional().describe("Patient age"),
-            gender: z.string().optional().describe("Patient gender"),
-          }),
-          execute: async ({
-            testType,
-          }: {
-            testType: string;
-            values: Record<string, number>;
-            age?: number;
-            gender?: string;
-          }) => {
-            // Future: Integrate with actual lab analysis logic
-            return `Lab analysis for ${testType}: Based on the provided values, here are the key insights and recommendations for optimizing your health markers.`;
+    // Save the user message
+    await saveMessage({
+      id: message.id,
+      chatId: id,
+      role: message.role,
+      parts: message.parts || [],
+      attachments: message.attachments || [],
+    });
+
+    const stream = createUIMessageStream({
+      execute: ({ writer: dataStream }) => {
+        // Create tools with user context and data stream
+        const tools = createTools({ user, dataStream });
+
+        const result = streamText({
+          model: myProvider.languageModel(selectedChatModel || "chat-model"),
+          system: LONGEVITY_SYSTEM_PROMPT,
+          messages: convertToModelMessages(uiMessages),
+          tools,
+          stopWhen: stepCountIs(5),
+          experimental_transform: smoothStream({ chunking: "word" }),
+          maxOutputTokens: 1000,
+          temperature: 0.7,
+          onFinish: ({ usage }) => {
+            dataStream.write({ type: "data-usage", data: usage });
           },
-        },
+        });
 
-        calculateBioAge: {
-          description:
-            "Calculate biological age based on biomarkers and lifestyle factors",
-          inputSchema: z.object({
-            biomarkers: z
-              .record(z.string(), z.number())
-              .describe("Key biomarkers like HRV, VO2 max, etc."),
-            chronologicalAge: z.number().describe("Actual age in years"),
-            lifestyle: z
-              .object({
-                exercise: z.number().describe("Exercise frequency per week"),
-                sleep: z.number().describe("Average sleep hours"),
-                stress: z.number().describe("Stress level 1-10"),
-              })
-              .optional(),
-          }),
-          execute: async ({
-            chronologicalAge,
-          }: {
-            biomarkers: Record<string, number>;
-            chronologicalAge: number;
-            lifestyle?: { exercise: number; sleep: number; stress: number };
-          }) => {
-            // Future: Implement actual biological age calculation
-            const estimatedBioAge = chronologicalAge - 2; // Placeholder calculation
-            return {
-              bioAge: estimatedBioAge,
-              chronoAge: chronologicalAge,
-              insights:
-                "Your biological age appears to be lower than your chronological age, indicating good health practices.",
-            };
-          },
-        },
+        result.consumeStream();
 
-        // Client-side tools (no execute function)
-        getWhoopData: {
-          description: "Fetch user data from Whoop wearable device",
-          inputSchema: z.object({
-            dataType: z
-              .enum(["recovery", "strain", "sleep", "hrv"])
-              .describe("Type of Whoop data to fetch"),
-            days: z
-              .number()
-              .default(7)
-              .describe("Number of days to fetch data for"),
-          }),
-        },
-
-        askForConfirmation: {
-          description:
-            "Ask the user for confirmation before performing sensitive health actions",
-          inputSchema: z.object({
-            message: z
-              .string()
-              .describe("The confirmation message to display to the user"),
-          }),
-        },
+        dataStream.merge(
+          result.toUIMessageStream({
+            sendReasoning: true,
+          })
+        );
       },
-      onFinish: async (result) => {
-        // Save assistant response to database
-        try {
-          await prisma.chatMessage.create({
-            data: {
-              chatId: currentChatId,
-              role: "assistant",
-              content: result.text,
-            },
-          });
-
-          // Update chat timestamp
-          await prisma.chat.update({
-            where: { id: currentChatId },
-            data: { updatedAt: new Date() },
-          });
-
-          // Invalidate cache when chat is updated
-          const { revalidateTag } = await import("next/cache");
-          revalidateTag("chat-history");
-          revalidateTag(`user-${dbUser.id}`);
-        } catch (error) {
-          console.error("Error saving assistant message:", error);
+      generateId: generateUUID,
+      onFinish: async ({ messages }) => {
+        // Save all messages generated during the stream
+        for (const msg of messages) {
+          if (msg.role === "assistant") {
+            await saveMessage({
+              id: msg.id,
+              chatId: id,
+              role: msg.role,
+              parts: msg.parts,
+              attachments: [],
+            });
+          }
         }
+      },
+      onError: () => {
+        return "Oops, an error occurred!";
       },
     });
 
-    return result.toUIMessageStreamResponse({
+    return new Response(stream.pipeThrough(new JsonToSseTransformStream()), {
       headers: {
-        "X-Chat-Id": currentChatId,
-        "X-Rate-Limit-Remaining": rateLimitResult.remaining.toString(),
-        "X-Rate-Limit-Reset": rateLimitResult.resetTime.toISOString(),
-        "X-Rate-Limit-Limit": rateLimitResult.limit.toString(),
+        "X-Chat-Id": id,
       },
     });
   } catch (error) {
-    console.error("Chat API error:", error);
-    return Response.json({ error: "Internal server error" }, { status: 500 });
+    if (error instanceof ChatSDKError) {
+      return error.toResponse();
+    }
+
+    console.error("Unhandled error in chat API:", error);
+    return new ChatSDKError("offline:chat").toResponse();
+  }
+}
+
+export async function GET(request: Request) {
+  try {
+    const user = await requireAuth();
+    const { searchParams } = new URL(request.url);
+    const chatId = searchParams.get("chatId");
+
+    if (!chatId) {
+      return new ChatSDKError("bad_request:api").toResponse();
+    }
+
+    const chat = await getChatById({ id: chatId });
+    if (!chat) {
+      return Response.json({ error: "Chat not found" }, { status: 404 });
+    }
+
+    // Check if user owns the chat
+    if (chat.userId !== user.id) {
+      return new ChatSDKError("forbidden:chat").toResponse();
+    }
+
+    return Response.json(chat);
+  } catch (error) {
+    if (error instanceof ChatSDKError) {
+      return error.toResponse();
+    }
+
+    console.error("Get chat error:", error);
+    return new ChatSDKError("offline:chat").toResponse();
   }
 }
 
