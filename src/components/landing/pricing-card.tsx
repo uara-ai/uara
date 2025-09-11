@@ -13,6 +13,7 @@ import Link from "next/link";
 
 interface PricingCardProps {
   className?: string;
+  hidden?: boolean;
 }
 
 const features = [
@@ -33,7 +34,7 @@ const comingSoonFeatures = [
   "Health provider network",
 ];
 
-export function PricingCard({ className }: PricingCardProps) {
+export function PricingCard({ className, hidden }: PricingCardProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
   const router = useRouter();
@@ -188,13 +189,15 @@ export function PricingCard({ className }: PricingCardProps) {
             <p className="text-xs text-gray-500 dark:text-gray-400">
               🔒 Secure payment with Stripe
             </p>
-            <Link
-              href="/"
-              className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 flex items-center justify-center gap-2"
-            >
-              <ArrowLeft className="size-3" />
-              Go back
-            </Link>
+            {!hidden && (
+              <Link
+                href="/"
+                className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 flex items-center justify-center gap-2"
+              >
+                <ArrowLeft className="size-3" />
+                Go back
+              </Link>
+            )}
           </div>
         </div>
       </motion.div>
