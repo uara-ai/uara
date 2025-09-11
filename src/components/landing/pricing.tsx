@@ -133,7 +133,7 @@ export function Pricing({ className }: PricingProps) {
             </div>
             <p className="text-sm text-muted-foreground">
               Join our founding members with lifetime access. Only available
-              while we're building.
+              while we&apos;re building.
             </p>
           </div>
         </div>

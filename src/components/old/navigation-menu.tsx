@@ -15,16 +15,7 @@ import {
 } from "@/components/ui/tooltip";
 import Link from "next/link";
 
-import {
-  Book,
-  Bug,
-  FileText,
-  Github,
-  Instagram,
-  Menu,
-  Shield,
-  UserCheck2,
-} from "lucide-react";
+import { Book, FileText, Menu, Shield, UserCheck2 } from "lucide-react";
 import { Icons } from "@/components/ui/icons";
 
 // Navigation Menu Component - contains all the general navigation items

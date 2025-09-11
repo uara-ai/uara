@@ -17,7 +17,7 @@ export function Problem({ className }: ProblemProps) {
       <div className="relative text-center">
         {/* Main Question - Cluely style */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground mb-12 sm:mb-16">
-          When's the last time you{" "}
+          When&apos;s the last time you{" "}
           <span className="relative inline-block">
             <span className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/10 rounded-lg blur-sm opacity-60"></span>
             <span className="relative bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent px-2 py-1">
@@ -82,7 +82,7 @@ export function Problem({ className }: ProblemProps) {
             <span className="relative inline-block">
               <span className="absolute inset-0 bg-gradient-to-r from-primary/30 to-primary/20 rounded-lg blur-sm opacity-80"></span>
               <span className="relative bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent px-2 py-1">
-                Health doesn't.
+                Health doesn&apos;t.
               </span>
             </span>
           </h3>

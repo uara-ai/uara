@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
 import React, { memo, useMemo } from "react";
 import Link from "next/link";
 import { Brain, Plus } from "lucide-react";
@@ -44,15 +43,7 @@ interface NavbarProps {
 }
 
 const Navbar = memo(
-  ({
-    isDialogOpen,
-    chatId,
-    selectedVisibilityType,
-    status,
-    user,
-    isOwner = true,
-    isProStatusLoading,
-  }: NavbarProps) => {
+  ({ isDialogOpen, status, user, isProStatusLoading }: NavbarProps) => {
     const router = useRouter();
     const pathname = usePathname();
     const isSearchWithId = useMemo(

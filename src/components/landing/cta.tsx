@@ -13,7 +13,7 @@ export function SmallCTA() {
           <span className="relative inline-block">
             <span className="absolute inset-0 bg-gradient-to-r from-primary/30 to-primary/20 rounded-lg blur-sm opacity-80"></span>
             <span className="relative bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent px-2 py-1">
-              Health doesn't.
+              Health doesn&apos;t.
             </span>
           </span>
         </h3>

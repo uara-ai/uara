@@ -9,7 +9,6 @@ import { createRoot } from "react-dom/client";
 
 import { Suggestion as PreviewSuggestion } from "@/components/ai/elements/suggestion";
 import type { Suggestion } from "@/lib/db/schema";
-import type { ArtifactKind } from "@/components/ai/artifact";
 
 export interface UISuggestion extends Suggestion {
   selectionStart: number;

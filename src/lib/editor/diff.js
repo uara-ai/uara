@@ -302,7 +302,7 @@ const sentencesToChars = (oldSentences, newSentences) => {
   return { chars1, chars2, lineArray };
 };
 
-export const computeChildEqualityFactor = (node1, node2) => {
+export const computeChildEqualityFactor = () => {
   return 0;
 };
 
