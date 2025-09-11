@@ -75,6 +75,12 @@ export function SubscribeInput() {
       <p className="text-xs text-muted-foreground mt-2">
         We&apos;ll send you an email when we&apos;re live with early access.
       </p>
+      <p className="text-xs text-muted-foreground mt-2 font-semibold">
+        If you want to support, you can choose one of the pricing plans 💙
+      </p>
+      <p className="text-xs text-muted-foreground mt-2">
+        Launch ETA: Oct. 2025.
+      </p>
     </div>
   );
 }

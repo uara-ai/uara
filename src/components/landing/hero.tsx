@@ -4,7 +4,8 @@ import Link from "next/link";
 import { ArrowRight, Brain, Activity, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Avatars } from "./avatars";
+// import { Avatars } from "./avatars";
+import { SubscribeInput } from "./subscribe-input";
 
 interface HeroProps {
   className?: string;
@@ -72,8 +73,12 @@ export function Hero({ className }: HeroProps) {
           <p className="text-xs text-muted-foreground">7-day free trial.</p>
         </div>
 
-        {/* Social Proof */}
-        <Avatars />
+        <div className="w-full sm:w-auto mt-4">
+          <SubscribeInput />
+        </div>
+
+        {/* Social Proof 
+        <Avatars />*/}
         {/* Bottom Spacing */}
         <div className="mt-16 sm:mt-20 lg:mt-24" />
       </div>
