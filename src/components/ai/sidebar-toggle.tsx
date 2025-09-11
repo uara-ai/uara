@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 export function SidebarToggle({
   className,
 }: ComponentProps<typeof SidebarTrigger>) {
-  const { toggleSidebar } = useSidebar();
+  const { toggleSidebar, open } = useSidebar();
 
   return (
     <Tooltip>
@@ -21,14 +21,15 @@ export function SidebarToggle({
         <Button
           data-testid="sidebar-toggle-button"
           onClick={toggleSidebar}
-          variant="outline"
-          className="h-8 px-2 md:h-fit md:px-2"
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 shrink-0"
         >
           <SidebarLeftIcon size={16} />
         </Button>
       </TooltipTrigger>
       <TooltipContent align="start" className="hidden md:block">
-        Toggle Sidebar
+        {open ? "Collapse" : "Expand"} Sidebar
       </TooltipContent>
     </Tooltip>
   );

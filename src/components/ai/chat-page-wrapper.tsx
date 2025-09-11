@@ -1,9 +1,17 @@
 "use client";
 
 import { Chat } from "./chat";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import {
+  SidebarProvider,
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarInset,
+} from "@/components/ui/sidebar";
 import { DataStreamProvider } from "./data-stream-provider";
 import { DataStreamHandler } from "./data-stream-handler";
+import { SidebarHistory } from "./sidebar-history";
+import { SidebarUserNav } from "./sidebar-user-nav";
 import { User } from "@/lib/user.type";
 
 interface ChatData {
@@ -44,19 +52,29 @@ export function ChatPageWrapper({ user, chat }: ChatPageWrapperProps) {
   };
 
   return (
-    <SidebarProvider>
-      <DataStreamProvider>
-        <DataStreamHandler />
-        <Chat
-          id={chat.id}
-          initialMessages={messages}
-          initialChatModel="claude-3-5-sonnet-20241022"
-          initialVisibilityType="private"
-          isReadonly={false}
-          session={userSession}
-          autoResume={false}
-        />
-      </DataStreamProvider>
+    <SidebarProvider defaultOpen={false}>
+      <Sidebar>
+        <SidebarHeader>
+          <SidebarUserNav user={user} />
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarHistory user={user} />
+        </SidebarContent>
+      </Sidebar>
+      <SidebarInset>
+        <DataStreamProvider>
+          <DataStreamHandler />
+          <Chat
+            id={chat.id}
+            initialMessages={messages}
+            initialChatModel="claude-3-5-sonnet-20241022"
+            initialVisibilityType="private"
+            isReadonly={false}
+            session={userSession}
+            autoResume={false}
+          />
+        </DataStreamProvider>
+      </SidebarInset>
     </SidebarProvider>
   );
 }
