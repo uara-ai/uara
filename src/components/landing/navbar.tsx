@@ -19,6 +19,7 @@ import { User } from "@/lib/user.type";
 import { UserMenu } from "@/components/auth/user-menu";
 import { Logo } from "../logo";
 import { routes } from "@/packages/config/routes";
+import { useAuth } from "@workos-inc/authkit-nextjs/components";
 
 interface NavbarProps {
   user: User | null;
@@ -43,7 +44,8 @@ const menuItems = [
   },
 ];
 
-const Navbar = memo(({ user }: NavbarProps) => {
+const Navbar = memo(() => {
+  const user = useAuth();
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -81,7 +83,7 @@ const Navbar = memo(({ user }: NavbarProps) => {
 
             {/* Desktop User Menu */}
             <div className={cn("hidden md:flex items-center")}>
-              <UserMenu user={user} />
+              <UserMenu user={user.user} />
             </div>
 
             {/* Mobile Menu Button */}
@@ -128,19 +130,19 @@ const Navbar = memo(({ user }: NavbarProps) => {
                         <div className="flex items-center space-x-3 px-4 py-2">
                           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                             <span className="text-sm font-medium">
-                              {user.firstName?.charAt(0)?.toUpperCase() ||
-                                user.email?.charAt(0)?.toUpperCase() ||
+                              {user.user?.firstName?.charAt(0)?.toUpperCase() ||
+                                user.user?.email?.charAt(0)?.toUpperCase() ||
                                 "U"}
                             </span>
                           </div>
                           <div className="flex flex-col">
                             <span className="text-sm font-medium">
-                              {`${user.firstName || ""} ${
-                                user.lastName || ""
-                              }`.trim() || user.email}
+                              {`${user.user?.firstName || ""} ${
+                                user.user?.lastName || ""
+                              }`.trim() || user.user?.email}
                             </span>
                             <span className="text-xs text-muted-foreground">
-                              {user.email}
+                              {user.user?.email}
                             </span>
                           </div>
                         </div>
