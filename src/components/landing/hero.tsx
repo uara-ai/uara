@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Brain, Activity, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Avatars } from "./avatars";
 
 interface HeroProps {
   className?: string;
@@ -42,65 +43,37 @@ export function Hero({ className }: HeroProps) {
         <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8 sm:mb-10">
           Track, understand, and extend your healthspan. All your labs,
           wearables, and lifestyle data in one{" "}
-          <span className="font-medium text-foreground">
-            AI-powered dashboard
+          <span className="relative inline-block">
+            <span className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/10 rounded-lg blur-sm opacity-60"></span>
+            <span className="relative font-medium bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent px-2 py-1">
+              AI-powered space.
+            </span>
           </span>
-          .
         </p>
 
         {/* Feature Pills */}
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-8 sm:mb-10">
           <FeaturePill icon={Activity} label="Real-time insights" />
           <FeaturePill icon={TrendingUp} label="Longevity tracking" />
-          <FeaturePill icon={Brain} label="AI health coach" />
+          <FeaturePill icon={Brain} label="AI health insights" />
         </div>
 
         {/* Call to Action */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 max-w-md mx-auto">
-          <Link href="/pricing" className="flex-1 sm:flex-none">
+        <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 max-w-md mx-auto">
+          <Link href="/login" className="flex-1 sm:flex-none">
             <Button
               size="lg"
               className="w-full sm:w-auto rounded-full bg-primary hover:bg-primary/90 px-8 py-3 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
             >
-              Start Your Journey
+              Live younger
               <ArrowRight className="ml-2 size-4" />
             </Button>
           </Link>
-          <Link href="/chat" className="flex-1 sm:flex-none">
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full sm:w-auto rounded-full px-8 py-3 text-base font-medium hover:bg-accent/50 transition-all duration-200"
-            >
-              Try AI Coach
-            </Button>
-          </Link>
+          <p className="text-xs text-muted-foreground">7-day free trial.</p>
         </div>
 
         {/* Social Proof */}
-        <div className="mt-8 sm:mt-12">
-          <p className="text-xs sm:text-sm text-muted-foreground mb-3">
-            Trusted by health-conscious founders
-          </p>
-          <div className="flex items-center justify-center gap-1">
-            <div className="flex -space-x-2">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                  key={i}
-                  className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 border-2 border-background flex items-center justify-center"
-                >
-                  <span className="text-xs font-medium text-foreground/70">
-                    {String.fromCharCode(64 + i)}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <span className="ml-3 text-xs text-muted-foreground">
-              +1,200 early adopters
-            </span>
-          </div>
-        </div>
-
+        <Avatars />
         {/* Bottom Spacing */}
         <div className="mt-16 sm:mt-20 lg:mt-24" />
       </div>
