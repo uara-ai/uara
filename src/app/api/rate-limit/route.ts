@@ -1,70 +1,23 @@
-import { withAuth } from "@workos-inc/authkit-nextjs";
-import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
 import { RateLimiter } from "@/packages/redis/rate-limiter";
-
-function isProFromStatus(sub?: {
-  status: string | null;
-  cancelAtPeriodEnd: boolean | null;
-  currentPeriodEnd: Date | null;
-  endedAt: Date | null;
-}) {
-  if (!sub) return false;
-  const status = (sub.status || "").toLowerCase();
-  if (status === "active" || status === "trialing" || status === "past_due") {
-    // If scheduled to cancel, remain pro until the end of the current period
-    if (sub.cancelAtPeriodEnd && sub.currentPeriodEnd) {
-      return sub.currentPeriodEnd.getTime() > Date.now();
-    }
-    // If endedAt set, consider not pro
-    if (sub.endedAt && sub.endedAt.getTime() <= Date.now()) return false;
-    return true;
-  }
-  return false;
-}
+import { requireAuth, isProUser } from "@/lib/auth";
 
 export async function GET() {
   try {
-    // Get user from WorkOS
-    const { user } = await withAuth();
+    const user = await requireAuth();
+    const isPro = await isProUser();
 
-    if (!user) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const rateLimitResult = await RateLimiter.getStatus(user.id, isPro);
 
-    // Find user in our database
-    const dbUser = await prisma.user.findUnique({
-      where: { id: user.id },
-      select: {
-        id: true,
-        Subscription: {
-          select: {
-            status: true,
-            cancelAtPeriodEnd: true,
-            currentPeriodEnd: true,
-            endedAt: true,
-          },
-        },
-      },
-    });
-
-    if (!dbUser) {
-      return Response.json({ error: "User not found" }, { status: 404 });
-    }
-
-    const isProUser = isProFromStatus(dbUser.Subscription || undefined);
-
-    // Get rate limit status without incrementing
-    const rateLimitResult = await RateLimiter.getStatus(dbUser.id, isProUser);
-
-    return Response.json({
+    return NextResponse.json({
       remaining: rateLimitResult.remaining,
       limit: rateLimitResult.limit,
-      resetTime: rateLimitResult.resetTime,
-      isProUser,
+      resetTime: rateLimitResult.resetTime.toISOString(),
+      isProUser: isPro,
     });
   } catch (error) {
-    console.error("Rate limit API error:", error);
-    return Response.json({ error: "Internal server error" }, { status: 500 });
+    console.error("Rate limit check error:", error);
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 }
 

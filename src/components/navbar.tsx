@@ -7,7 +7,6 @@ import { Brain, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { NavigationMenu } from "@/components/navigation-menu";
-import { ChatHistory } from "@/components/ai/chat-history";
 import {
   Tooltip,
   TooltipContent,
@@ -235,8 +234,6 @@ const Navbar = memo(
               </div>
             )}
 
-            {/* Chat History Button */}
-            {user && <ChatHistory />}
             {/* User Summary Badge - health profile overview */}
             {user && <UserSummaryBadge />}
             {/* Navigation Menu - settings icon for general navigation */}

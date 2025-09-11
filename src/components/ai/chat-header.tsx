@@ -1,60 +1,85 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useWindowSize } from "usehooks-ts";
+
+import { SidebarToggle } from "./sidebar-toggle";
 import { Button } from "@/components/ui/button";
-import { Bot } from "lucide-react";
+import { PlusIcon, VercelIcon } from "./icons";
+import { useSidebar } from "@/components/ui/sidebar";
+import { memo } from "react";
+import { type VisibilityType, VisibilitySelector } from "./visibility-selector";
 
-interface ChatHeaderProps {
-  messages: any[];
-  onClose: () => void;
-}
-
-export function ChatHeader({ messages, onClose }: ChatHeaderProps) {
-  const getChatTitle = () => {
-    if (messages.length > 0 && messages[0]?.parts) {
-      const textPart = messages[0].parts.find(
-        (part: any) => part.type === "text"
-      ) as any;
-      if (textPart && textPart.text) {
-        return (
-          textPart.text.slice(0, 50) + (textPart.text.length > 50 ? "..." : "")
-        );
-      }
-    }
-    return "New Chat";
+function PureChatHeader({
+  chatId,
+  selectedVisibilityType,
+  isReadonly,
+  session,
+}: {
+  chatId: string;
+  selectedVisibilityType: VisibilityType;
+  isReadonly: boolean;
+  session: {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      type: "free" | "pro";
+    };
   };
+}) {
+  const router = useRouter();
+  const { open } = useSidebar();
+
+  const { width: windowWidth } = useWindowSize();
 
   return (
-    <motion.div
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ delay: 0.1 }}
-      className="flex items-center justify-between p-2 border-b border-gray-200 dark:border-gray-800 "
-    >
-      <div className="flex items-center space-x-3">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src="/logo.svg" alt="Uara AI" />
-          <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-            <Bot className="h-4 w-4" />
-          </AvatarFallback>
-        </Avatar>
-        <div>
-          <h2 className="font-medium text-gray-900 dark:text-gray-100 text-sm capitalize">
-            {getChatTitle()}
-          </h2>
-        </div>
-      </div>
+    <header className="sticky top-0 flex items-center gap-2 bg-background px-2 py-1.5 md:px-2">
+      <SidebarToggle />
+
+      {(!open || windowWidth < 768) && (
+        <Button
+          variant="outline"
+          className="order-2 ml-auto h-8 px-2 md:order-1 md:ml-0 md:h-fit md:px-2"
+          onClick={() => {
+            router.push("/");
+            router.refresh();
+          }}
+        >
+          <PlusIcon />
+          <span className="md:sr-only">New Chat</span>
+        </Button>
+      )}
+
+      {!isReadonly && (
+        <VisibilitySelector
+          chatId={chatId}
+          selectedVisibilityType={selectedVisibilityType}
+          className="order-1 md:order-2"
+        />
+      )}
+
       <Button
-        variant="ghost"
-        size="sm"
-        onClick={onClose}
-        className="h-7 w-7 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-xs"
+        className="order-3 hidden bg-zinc-900 px-2 text-zinc-50 hover:bg-zinc-800 md:ml-auto md:flex md:h-fit dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+        asChild
       >
-        ×
+        <Link
+          href={`https://vercel.com/new/clone?repository-url=https://github.com/vercel/ai-chatbot&env=AUTH_SECRET&envDescription=Learn more about how to get the API Keys for the application&envLink=https://github.com/vercel/ai-chatbot/blob/main/.env.example&demo-title=AI Chatbot&demo-description=An Open-Source AI Chatbot Template Built With Next.js and the AI SDK by Vercel.&demo-url=https://chat.vercel.ai&products=[{"type":"integration","protocol":"storage","productSlug":"neon","integrationSlug":"neon"},{"type":"integration","protocol":"storage","productSlug":"upstash-kv","integrationSlug":"upstash"},{"type":"blob"}]`}
+          target="_noblank"
+        >
+          Deploy with Vercel
+        </Link>
       </Button>
-    </motion.div>
+    </header>
   );
 }
 
-// Cursor rules applied correctly.
+export const ChatHeader = memo(PureChatHeader, (prevProps, nextProps) => {
+  return (
+    prevProps.chatId === nextProps.chatId &&
+    prevProps.selectedVisibilityType === nextProps.selectedVisibilityType &&
+    prevProps.isReadonly === nextProps.isReadonly
+  );
+});
