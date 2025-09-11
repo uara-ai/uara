@@ -1,169 +1,154 @@
-import { NextRequest, NextResponse } from "next/server";
-import { streamText, generateId } from "ai";
+import {
+  convertToModelMessages,
+  createUIMessageStream,
+  JsonToSseTransformStream,
+  smoothStream,
+  stepCountIs,
+  streamText,
+} from "ai";
 import { requireAuth } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { saveChat, saveMessage, getChatById } from "@/lib/db/queries";
 import { myProvider } from "@/lib/ai/providers";
 import { LONGEVITY_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
+import { convertToUIMessages, generateUUID } from "@/lib/utils";
+import { ChatSDKError } from "@/lib/errors";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
+    const { id, message, selectedChatModel, selectedVisibilityType } =
+      await request.json();
+
+    // Validate that message exists
+    if (!message) {
+      return new ChatSDKError("bad_request:api").toResponse();
+    }
+
     // Require authentication
     const user = await requireAuth();
+    if (!user) {
+      return new ChatSDKError("unauthorized:chat").toResponse();
+    }
 
     // Check rate limit
     await checkRateLimit(user.id);
 
-    const { message, id: chatIdFromBody } = await request.json();
+    const chat = await getChatById({ id });
 
-    // Validate that message exists
-    if (!message) {
-      return NextResponse.json(
-        { error: "Message is required" },
-        { status: 400 }
-      );
-    }
-
-    // Check if chat exists, if not create it
-    let chatId = chatIdFromBody;
-    let chat = null;
-
-    if (chatId) {
-      chat = await getChatById({ id: chatId });
-    }
-
-    if (!chatId || !chat) {
-      // If no chat ID provided or chat doesn't exist, create a new one
-      if (!chatId) {
-        chatId = generateId();
-      }
-
+    if (!chat) {
       const title = message?.parts?.[0]?.text?.slice(0, 100) || "New Chat";
 
       await saveChat({
-        id: chatId,
-        title,
+        id,
         userId: user.id,
-        visibility: "private",
+        title,
+        visibility: selectedVisibilityType || "private",
       });
     } else {
-      // Verify user owns the existing chat
       if (chat.userId !== user.id) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+        return new ChatSDKError("forbidden:chat").toResponse();
       }
     }
 
+    // Get existing messages from chat
+    const messagesFromDb = chat?.messages || [];
+    const uiMessages = [...convertToUIMessages(messagesFromDb), message];
+
     // Save the user message
-    const userMessageId = message.id || generateId();
     await saveMessage({
-      id: userMessageId,
-      chatId,
+      id: message.id,
+      chatId: id,
       role: message.role,
       parts: message.parts || [],
       attachments: message.attachments || [],
     });
 
-    // Convert message parts to a simple string for the AI
-    const userMessageText =
-      message.parts
-        ?.map((part: any) => part.text || part.content || "")
-        .join(" ") || "";
+    const stream = createUIMessageStream({
+      execute: ({ writer: dataStream }) => {
+        const result = streamText({
+          model: myProvider.languageModel(selectedChatModel || "chat-model"),
+          system: LONGEVITY_SYSTEM_PROMPT,
+          messages: convertToModelMessages(uiMessages),
+          stopWhen: stepCountIs(5),
+          experimental_transform: smoothStream({ chunking: "word" }),
+          maxOutputTokens: 1000,
+          temperature: 0.7,
+          onFinish: ({ usage }) => {
+            dataStream.write({ type: "data-usage", data: usage });
+          },
+        });
 
-    // Get chat history to provide context
-    const existingChat =
-      chat || (chatId ? await getChatById({ id: chatId }) : null);
-    const chatHistory = existingChat?.messages || [];
+        result.consumeStream();
 
-    // Convert chat history to the format expected by AI SDK
-    const previousMessages = chatHistory.map((msg: any) => ({
-      role: msg.role as "user" | "assistant" | "system",
-      content: Array.isArray(msg.parts)
-        ? msg.parts
-            .map((part: any) => part.text || part.content || "")
-            .join(" ")
-        : msg.parts || "",
-    }));
-
-    // Generate streaming response using the AI provider
-    const stream = streamText({
-      model: myProvider.languageModel("chat-model"),
-      messages: [
-        { role: "system", content: LONGEVITY_SYSTEM_PROMPT },
-        ...previousMessages,
-        { role: "user", content: userMessageText },
-      ],
-      maxOutputTokens: 1000,
-      temperature: 0.7,
-      async onFinish({ text }) {
-        // Save the assistant response after streaming is complete
-        const assistantResponse = {
-          id: generateId(),
-          chatId,
-          role: "assistant",
-          parts: [{ type: "text", text }],
-          attachments: [],
-        };
-
-        await saveMessage(assistantResponse);
+        dataStream.merge(
+          result.toUIMessageStream({
+            sendReasoning: true,
+          })
+        );
+      },
+      generateId: generateUUID,
+      onFinish: async ({ messages }) => {
+        // Save all messages generated during the stream
+        for (const msg of messages) {
+          if (msg.role === "assistant") {
+            await saveMessage({
+              id: msg.id,
+              chatId: id,
+              role: msg.role,
+              parts: msg.parts,
+              attachments: [],
+            });
+          }
+        }
+      },
+      onError: () => {
+        return "Oops, an error occurred!";
       },
     });
 
-    return stream.toTextStreamResponse({
+    return new Response(stream.pipeThrough(new JsonToSseTransformStream()), {
       headers: {
-        "X-Chat-Id": chatId,
+        "X-Chat-Id": id,
       },
     });
   } catch (error) {
-    console.error("Chat API error:", error);
-
-    if (error instanceof Error && error.message.includes("Rate limit")) {
-      return NextResponse.json({ error: error.message }, { status: 429 });
+    if (error instanceof ChatSDKError) {
+      return error.toResponse();
     }
 
-    if (error instanceof Error && error.message.includes("Authentication")) {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error("Unhandled error in chat API:", error);
+    return new ChatSDKError("offline:chat").toResponse();
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
     const user = await requireAuth();
     const { searchParams } = new URL(request.url);
     const chatId = searchParams.get("chatId");
 
     if (!chatId) {
-      return NextResponse.json(
-        { error: "Chat ID is required" },
-        { status: 400 }
-      );
+      return new ChatSDKError("bad_request:api").toResponse();
     }
 
     const chat = await getChatById({ id: chatId });
     if (!chat) {
-      return NextResponse.json({ error: "Chat not found" }, { status: 404 });
+      return Response.json({ error: "Chat not found" }, { status: 404 });
     }
 
     // Check if user owns the chat
     if (chat.userId !== user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+      return new ChatSDKError("forbidden:chat").toResponse();
     }
 
-    return NextResponse.json(chat);
+    return Response.json(chat);
   } catch (error) {
+    if (error instanceof ChatSDKError) {
+      return error.toResponse();
+    }
+
     console.error("Get chat error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return new ChatSDKError("offline:chat").toResponse();
   }
 }
 
