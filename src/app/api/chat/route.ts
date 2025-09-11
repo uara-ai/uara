@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateId } from "ai";
+import { streamText, generateId } from "ai";
 import { requireAuth } from "@/lib/auth";
-import { checkRateLimit, createRateLimitHeaders } from "@/lib/rate-limit";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { saveChat, saveMessage, getChatById } from "@/lib/db/queries";
+import { myProvider } from "@/lib/ai/providers";
+import { LONGEVITY_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,16 +12,33 @@ export async function POST(request: NextRequest) {
     const user = await requireAuth();
 
     // Check rate limit
-    const rateLimitData = await checkRateLimit(user.id);
+    await checkRateLimit(user.id);
 
-    const { messages, chatId: existingChatId } = await request.json();
+    const { message, id: chatIdFromBody } = await request.json();
 
-    // If no existing chat ID, create a new chat
-    let chatId = existingChatId;
-    if (!chatId) {
-      chatId = generateId();
-      const firstMessage = messages[0];
-      const title = firstMessage?.parts?.[0]?.text?.slice(0, 100) || "New Chat";
+    // Validate that message exists
+    if (!message) {
+      return NextResponse.json(
+        { error: "Message is required" },
+        { status: 400 }
+      );
+    }
+
+    // Check if chat exists, if not create it
+    let chatId = chatIdFromBody;
+    let chat = null;
+
+    if (chatId) {
+      chat = await getChatById({ id: chatId });
+    }
+
+    if (!chatId || !chat) {
+      // If no chat ID provided or chat doesn't exist, create a new one
+      if (!chatId) {
+        chatId = generateId();
+      }
+
+      const title = message?.parts?.[0]?.text?.slice(0, 100) || "New Chat";
 
       await saveChat({
         id: chatId,
@@ -27,57 +46,73 @@ export async function POST(request: NextRequest) {
         userId: user.id,
         visibility: "private",
       });
+    } else {
+      // Verify user owns the existing chat
+      if (chat.userId !== user.id) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+      }
     }
 
     // Save the user message
-    const userMessage = messages[messages.length - 1];
-    if (userMessage) {
-      await saveMessage({
-        id: userMessage.id || generateId(),
-        chatId,
-        role: userMessage.role,
-        parts: userMessage.parts || [],
-        attachments: userMessage.attachments || [],
-      });
-    }
-
-    // For now, return a simple response
-    // In a real implementation, you would integrate with your AI provider here
-    const assistantResponse = {
-      id: generateId(),
-      role: "assistant",
-      parts: [
-        {
-          type: "text",
-          text: "Hello! This is a placeholder response. The AI integration will be implemented next.",
-        },
-      ],
-      attachments: [],
-    };
-
-    // Save the assistant response
+    const userMessageId = message.id || generateId();
     await saveMessage({
-      id: assistantResponse.id,
+      id: userMessageId,
       chatId,
-      role: assistantResponse.role,
-      parts: assistantResponse.parts,
-      attachments: assistantResponse.attachments,
+      role: message.role,
+      parts: message.parts || [],
+      attachments: message.attachments || [],
     });
 
-    const headers = {
-      ...createRateLimitHeaders(rateLimitData),
-      "X-Chat-Id": chatId,
-    };
+    // Convert message parts to a simple string for the AI
+    const userMessageText =
+      message.parts
+        ?.map((part: any) => part.text || part.content || "")
+        .join(" ") || "";
 
-    return NextResponse.json(
-      {
-        id: assistantResponse.id,
-        role: assistantResponse.role,
-        parts: assistantResponse.parts,
-        attachments: assistantResponse.attachments,
+    // Get chat history to provide context
+    const existingChat =
+      chat || (chatId ? await getChatById({ id: chatId }) : null);
+    const chatHistory = existingChat?.messages || [];
+
+    // Convert chat history to the format expected by AI SDK
+    const previousMessages = chatHistory.map((msg: any) => ({
+      role: msg.role as "user" | "assistant" | "system",
+      content: Array.isArray(msg.parts)
+        ? msg.parts
+            .map((part: any) => part.text || part.content || "")
+            .join(" ")
+        : msg.parts || "",
+    }));
+
+    // Generate streaming response using the AI provider
+    const stream = streamText({
+      model: myProvider.languageModel("chat-model"),
+      messages: [
+        { role: "system", content: LONGEVITY_SYSTEM_PROMPT },
+        ...previousMessages,
+        { role: "user", content: userMessageText },
+      ],
+      maxOutputTokens: 1000,
+      temperature: 0.7,
+      async onFinish({ text }) {
+        // Save the assistant response after streaming is complete
+        const assistantResponse = {
+          id: generateId(),
+          chatId,
+          role: "assistant",
+          parts: [{ type: "text", text }],
+          attachments: [],
+        };
+
+        await saveMessage(assistantResponse);
       },
-      { headers }
-    );
+    });
+
+    return stream.toTextStreamResponse({
+      headers: {
+        "X-Chat-Id": chatId,
+      },
+    });
   } catch (error) {
     console.error("Chat API error:", error);
 

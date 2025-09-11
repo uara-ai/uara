@@ -8,7 +8,7 @@ interface ChatLayoutProps {
 export default function ChatLayout({ children }: ChatLayoutProps) {
   return (
     <TooltipProvider>
-      <div className="h-screen overflow-hidden bg-background">{children}</div>
+      <div className="flex h-screen flex-col overflow-hidden">{children}</div>
     </TooltipProvider>
   );
 }
