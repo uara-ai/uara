@@ -320,9 +320,9 @@ function PureMultimodalInput({
             data-testid="attachments-preview"
             className="flex overflow-x-scroll flex-row gap-2 items-end"
           >
-            {attachments.map((attachment) => (
+            {attachments.map((attachment, index) => (
               <PreviewAttachment
-                key={attachment.url}
+                key={`attachment-${index}-${attachment.url || attachment.name}`}
                 attachment={attachment}
                 onRemove={() => {
                   setAttachments((currentAttachments) =>
@@ -335,9 +335,9 @@ function PureMultimodalInput({
               />
             ))}
 
-            {uploadQueue.map((filename) => (
+            {uploadQueue.map((filename, index) => (
               <PreviewAttachment
-                key={filename}
+                key={`upload-${index}-${filename}`}
                 attachment={{
                   url: "",
                   name: filename,
@@ -472,7 +472,7 @@ function PureModelSelectorCompact({
         <div className="flex flex-col gap-px">
           {chatModels.map((model) => (
             <SelectItem
-              key={model.id}
+              key={`model-${model.id}`}
               value={model.name}
               className="px-3 py-2 text-xs"
             >

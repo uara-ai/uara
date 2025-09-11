@@ -9,12 +9,12 @@ export interface ChatModel {
 export const chatModels: Array<ChatModel> = [
   {
     id: "chat-model",
-    name: "GPT-4o",
+    name: "GPT-5-mini",
     description: "Advanced multimodal model with vision and text capabilities",
   },
   {
     id: "chat-model-reasoning",
-    name: "GPT-4o Reasoning",
+    name: "GPT-5",
     description:
       "Uses advanced chain-of-thought reasoning for complex problems",
   },
