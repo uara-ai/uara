@@ -13,6 +13,7 @@ import { myProvider } from "@/lib/ai/providers";
 import { LONGEVITY_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
 import { convertToUIMessages, generateUUID } from "@/lib/utils";
 import { ChatSDKError } from "@/lib/errors";
+import { createTools } from "@/lib/ai/tools";
 
 export async function POST(request: Request) {
   try {
@@ -65,10 +66,14 @@ export async function POST(request: Request) {
 
     const stream = createUIMessageStream({
       execute: ({ writer: dataStream }) => {
+        // Create tools with user context and data stream
+        const tools = createTools({ user, dataStream });
+
         const result = streamText({
           model: myProvider.languageModel(selectedChatModel || "chat-model"),
           system: LONGEVITY_SYSTEM_PROMPT,
           messages: convertToModelMessages(uiMessages),
+          tools,
           stopWhen: stepCountIs(5),
           experimental_transform: smoothStream({ chunking: "word" }),
           maxOutputTokens: 1000,

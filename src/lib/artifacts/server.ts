@@ -93,7 +93,7 @@ export const documentHandlersByArtifactKind: Array<DocumentHandler> = [
   sheetDocumentHandler,
 ];
 
-export const artifactKinds = ["text", "code", "sheet"] as const;
+export const artifactKinds = ["text", "image", "sheet"] as const;
 
 export interface ArtifactActionContext {
   content: string;
