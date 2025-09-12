@@ -15,7 +15,7 @@ export function Hero({ className }: HeroProps) {
   return (
     <section
       className={cn(
-        "relative mx-auto mt-20 sm:mt-24 lg:mt-32 max-w-4xl px-4 sm:px-6 lg:px-8",
+        "relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 min-h-screen flex items-center justify-center",
         className
       )}
     >
@@ -70,11 +70,6 @@ export function Hero({ className }: HeroProps) {
               <ArrowRight className="ml-2 size-4" />
             </Button>
           </Link>
-          <p className="text-xs text-muted-foreground">7-day free trial.</p>
-        </div>
-
-        <div className="w-full sm:w-auto mt-4">
-          <SubscribeInput />
         </div>
 
         {/* Social Proof 
