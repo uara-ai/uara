@@ -146,24 +146,6 @@ const Navbar = memo(() => {
                             </span>
                           </div>
                         </div>
-                        <div className="flex flex-col space-y-2">
-                          <SheetClose asChild>
-                            <Link
-                              href="/account"
-                              className="text-sm py-2 px-4 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground"
-                            >
-                              Account
-                            </Link>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Link
-                              href="/account/support"
-                              className="text-sm py-2 px-4 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground"
-                            >
-                              Support
-                            </Link>
-                          </SheetClose>
-                        </div>
                       </div>
                     ) : (
                       <div className="px-4">
