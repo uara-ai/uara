@@ -2,7 +2,6 @@
 
 import { Check, Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Navbar } from "@/components/landing/navbar";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { Logo } from "@/components/logo";
 import {
