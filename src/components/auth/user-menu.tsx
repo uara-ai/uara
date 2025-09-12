@@ -84,7 +84,7 @@ export function UserMenu({ user, onlySignOut }: Props) {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuGroup>
+            {/*<DropdownMenuGroup>
               <Link prefetch href="/account">
                 <DropdownMenuItem>Account</DropdownMenuItem>
               </Link>
@@ -94,7 +94,7 @@ export function UserMenu({ user, onlySignOut }: Props) {
               </Link>
             </DropdownMenuGroup>
 
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator />*/}
             <div className="flex flex-row justify-between items-center px-2 py-1.5">
               <div className="flex items-center">
                 <p className="text-sm font-medium">Theme</p>

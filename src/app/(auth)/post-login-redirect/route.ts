@@ -8,7 +8,7 @@ export async function GET() {
     cookieStore.set("post-login-redirect", "", { path: "/", maxAge: 0 });
     return redirect(dest);
   }
-  return redirect("/");
+  return redirect("/waitlist");
 }
 
 // Cursor rules applied correctly.

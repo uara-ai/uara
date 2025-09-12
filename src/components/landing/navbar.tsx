@@ -26,10 +26,10 @@ interface NavbarProps {
 }
 
 const menuItems = [
-  {
-    label: "Pricing",
-    href: "#pricing", // or #pricing
-  },
+  //{
+  //  label: "Pricing",
+  //  href: "#pricing", // or #pricing
+  //},
   //{
   //  label: "FAQ",
   //  href: routes.home.faq,
