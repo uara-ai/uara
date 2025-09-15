@@ -1,5 +1,5 @@
 import { LoginButton } from "./login-button";
-import { Logo } from "../logo";
+import { Logo } from "../../logo";
 import { NavLinks } from "./nav-links";
 
 export function Navbar() {

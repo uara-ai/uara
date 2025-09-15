@@ -1,7 +1,7 @@
 import { Footer } from "@/components/landing/footer";
 import { ProfileCompletionHandler } from "@/components/auth/profile-completion-handler";
-import { Hero } from "@/components/hero/hero";
-import { Navbar } from "@/components/hero/navbar";
+import { Hero } from "@/components/landing/hero/hero";
+import { Navbar } from "@/components/landing/hero/navbar";
 // import { Problem } from "@/components/landing/problem";
 // import { HowItWorks } from "@/components/landing/how-it-works";
 // import { Features } from "@/components/landing/features";
