@@ -5,6 +5,7 @@ import { CelebrationConfetti } from "@/components/ui/confetti";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { prisma } from "@/lib/prisma";
 import { getTierById } from "@/lib/tier-calculator";
+import { Logo } from "@/components/logo";
 
 export default async function SuccessPage() {
   let userTier = null;
@@ -29,77 +30,111 @@ export default async function SuccessPage() {
     console.error("Error fetching user tier:", error);
   }
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-20 left-10 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
-        <div className="absolute bottom-20 right-10 h-64 w-64 rounded-full bg-secondary/10 blur-3xl" />
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-white to-blue-50/30">
+      <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16">
+        <CelebrationConfetti />
 
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 pt-28 pb-16">
-        <div className="relative text-center space-y-6">
-          <CelebrationConfetti />
-
-          <div className="inline-flex items-center gap-1.5 rounded-full shadow-sm ring-1 ring-ring/35 ring-offset-1 ring-offset-background bg-gradient-to-br from-secondary/25 via-primary/20 to-accent/25 text-foreground px-3 py-1.5">
-            <CheckCircle2 className="size-4 text-primary" />
-            <span className="uppercase tracking-wide text-xs text-primary">
-              success
+        {/* Header */}
+        <div className="max-w-4xl mx-auto text-center space-y-8 mb-12">
+          {/*<div className="inline-flex items-center gap-1.5 rounded-full shadow-sm ring-1 ring-[#085983]/20 ring-offset-1 ring-offset-background bg-gradient-to-br from-[#085983]/10 via-[#085983]/5 to-[#085983]/10 text-[#085983] px-4 py-2 mb-6">
+            <CheckCircle2 className="size-5 text-[#085983]" />
+            <span className="uppercase tracking-wide text-sm font-semibold text-[#085983]">
+              Purchase Successful
             </span>
-          </div>
+          </div>*/}
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-foreground font-baumans! tracking-wide">
-            Thank you for your purchase!
+          <h1 className="text-4xl md:text-6xl font-[family-name:var(--font-instrument-serif)] font-light tracking-tight text-[#085983]">
+            Welcome to Your Longevity Journey
           </h1>
 
-          {tierInfo && (
-            <div className="bg-gradient-to-r from-[#085983]/10 to-[#085983]/5 rounded-2xl p-6 max-w-md mx-auto">
-              <h2 className="text-lg font-semibold text-[#085983] mb-2">
-                {tierInfo.name} - Lifetime Access
-              </h2>
-              <p className="text-2xl font-bold text-[#085983] mb-1">
-                {tierInfo.displayPrice}
-              </p>
-              <p className="text-sm text-[#085983]/70">
-                Purchased on{" "}
-                {userTier?.tierPurchasedAt
-                  ? new Date(userTier.tierPurchasedAt).toLocaleDateString()
-                  : "today"}
-              </p>
-            </div>
-          )}
-
-          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
-            You now have lifetime access to higher limits and upcoming features
-            focused on extending your healthspan.
+          <p className="text-lg md:text-xl text-[#085983]/80 font-light max-w-2xl mx-auto">
+            Thank you for securing your lifetime access. Your healthspan
+            optimization starts now.
           </p>
+        </div>
 
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
+        {/* Tier Information Card */}
+        {tierInfo && (
+          <div className="w-full max-w-md mx-auto mb-12">
+            <div className="bg-gradient-to-br from-blue-100/90 via-white/85 to-blue-50/80 backdrop-blur-md rounded-3xl shadow-2xl border-4 border-[#085983] p-8">
+              <div className="text-center">
+                <h2 className="font-[family-name:var(--font-instrument-serif)] text-3xl font-bold text-[#085983] mb-4 tracking-wider">
+                  {tierInfo.name.toUpperCase()}
+                </h2>
+                <p className="font-[family-name:var(--font-geist-sans)] text-lg text-[#085983]/80 mb-4">
+                  Lifetime Access
+                </p>
+                <div className="font-[family-name:var(--font-instrument-serif)] text-5xl font-bold text-[#085983] mb-6">
+                  {tierInfo.displayPrice}
+                </div>
+                <p className="text-sm text-[#085983]/70 mb-6">
+                  Purchased on{" "}
+                  {userTier?.tierPurchasedAt
+                    ? new Date(userTier.tierPurchasedAt).toLocaleDateString()
+                    : "today"}
+                </p>
+                <div className="bg-gradient-to-r from-green-500/20 to-green-600/20 rounded-full px-4 py-2">
+                  <span className="text-green-700 font-semibold text-sm">
+                    ✓ ACTIVATED
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Features Grid */}
+        <div className="w-full max-w-4xl mx-auto mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Feature
-              title="Higher daily limits"
-              description="Chat more with your Uara."
-              icon={<Brain className="size-4" />}
+              title="Higher Daily Limits"
+              description="Chat more with your Uara AI coach without restrictions."
+              icon={<Brain className="size-5 text-[#085983]" />}
             />
             <Feature
-              title="Healthspan"
-              description="Track biological age and recovery."
-              icon={<ScanHeart className="size-4" />}
+              title="Healthspan Tracking"
+              description="Monitor biological age, recovery, and longevity metrics."
+              icon={<ScanHeart className="size-5 text-[#085983]" />}
             />
             <Feature
-              title="Priority features"
-              description="Early access to new capabilities."
-              icon={<Sparkles className="size-4" />}
+              title="Priority Features"
+              description="Early access to new capabilities and premium tools."
+              icon={<Sparkles className="size-5 text-[#085983]" />}
             />
           </div>
+        </div>
 
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-2">
-            <Link href={userTier ? "/chat" : "/"} className="w-full sm:w-auto">
-              <Button
-                size="sm"
-                className="w-full sm:w-auto rounded-full tracking-wide font-baumans!"
-              >
-                <Brain className="size-4 mr-2" />
-                {userTier ? "Start chatting with Uara" : "Start living longer"}
-              </Button>
-            </Link>
+        {/* Call to Action */}
+        <div className="text-center space-y-6">
+          {/*<Link href={userTier ? "/chat" : "/"} className="inline-block">
+            <Button
+              size="lg"
+              className="bg-gradient-to-b from-[#085983] via-[#0a6b99] to-[#085983] hover:from-[#074a6b] hover:via-[#085983] hover:to-[#074a6b] text-white font-[family-name:var(--font-instrument-serif)] text-xl font-bold py-6 px-12 rounded-full shadow-2xl transition-all duration-300 hover:shadow-3xl hover:scale-105 tracking-widest border-2 border-[#085983]/50"
+              style={{
+                boxShadow:
+                  "0 8px 20px rgba(8, 89, 131, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <Brain className="size-6 mr-3" />
+              {userTier ? "START CHATTING WITH UARA" : "START LIVING LONGER"}
+            </Button>
+          </Link>*/}
+
+          <p className="text-sm text-[#085983]/60 max-w-2xl mx-auto">
+            Your lifetime access is now active. You&apos;ll receive an email
+            when your account is ready to use.
+          </p>
+          {/*<p className="text-sm text-[#085983]/60 max-w-2xl mx-auto">
+            Start exploring your personalized longevity insights and AI-powered
+            health optimization.
+          </p>*/}
+        </div>
+
+        {/* Navigation indicator */}
+        <div className="flex justify-center mt-12">
+          <div className="flex items-center space-x-2 text-[#085983]/40">
+            <Logo hidden className="size-6" />
+            <span className="text-sm">uara.ai</span>
           </div>
         </div>
       </div>
@@ -117,12 +152,14 @@ function Feature({
   icon: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-background/60 p-4">
-      <div className="flex items-center gap-2 text-muted-foreground mb-2">
-        {icon}
+    <div className="bg-white/60 backdrop-blur-sm rounded-2xl border-2 border-[#085983]/20 p-6 text-center hover:shadow-lg transition-all duration-300 hover:border-[#085983]/30">
+      <div className="flex justify-center mb-4">
+        <div className="bg-[#085983]/10 rounded-full p-3">{icon}</div>
       </div>
-      <div className="text-sm font-medium text-foreground">{title}</div>
-      <div className="text-xs text-muted-foreground">{description}</div>
+      <h3 className="font-[family-name:var(--font-instrument-serif)] text-lg font-semibold text-[#085983] mb-3 tracking-wider">
+        {title}
+      </h3>
+      <p className="text-sm text-[#085983]/70 leading-relaxed">{description}</p>
     </div>
   );
 }
