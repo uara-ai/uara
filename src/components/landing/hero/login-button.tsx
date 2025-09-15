@@ -5,9 +5,13 @@ import { cn } from "@/lib/utils";
 
 interface LoginButtonProps {
   isScrolled?: boolean;
+  className?: string;
 }
 
-export function LoginButton({ isScrolled = false }: LoginButtonProps) {
+export function LoginButton({
+  className,
+  isScrolled = false,
+}: LoginButtonProps) {
   // Define colors based on scroll state
   const textColor = isScrolled ? "text-[#085983]" : "text-white";
   const hoverTextColor = isScrolled
@@ -22,7 +26,7 @@ export function LoginButton({ isScrolled = false }: LoginButtonProps) {
       <Button
         variant="outline"
         className={cn(
-          `${bgColor} ${hoverBgColor} border-2 ${borderColor} ${textColor} ${hoverTextColor} font-[family-name:var(--font-instrument-serif)] text-base tracking-wider font-normal px-4 py-2 h-auto backdrop-blur-sm rounded-full transition-all duration-200`
+          `${bgColor} ${hoverBgColor} border-2 ${borderColor} ${textColor} ${hoverTextColor} ${className} font-[family-name:var(--font-instrument-serif)] text-base tracking-wider font-normal px-4 py-2 h-auto backdrop-blur-sm rounded-full transition-all duration-200`
         )}
       >
         Login

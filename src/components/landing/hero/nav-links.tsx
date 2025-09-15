@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { LoginButton } from "./login-button";
+import { Logo } from "@/components/logo";
 
 interface NavLinksProps {
   isScrolled?: boolean;
@@ -93,12 +94,13 @@ export function NavLinks({ isScrolled = false }: NavLinksProps) {
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
-          <div className="absolute top-0 right-0 w-80 h-full bg-black/80 backdrop-blur-md border-l border-white/20">
+          <div className="absolute top-0 right-0 w-80 h-full bg-white backdrop-blur-md border-l border-gray-200 shadow-xl">
             {/* Close button */}
-            <div className="flex justify-end p-6">
+            <div className="flex justify-between p-6">
+              <Logo hidden />
               <button
                 onClick={toggleMenu}
-                className="p-2 text-white hover:text-white/80 transition-colors"
+                className="p-2 text-gray-700 hover:text-gray-900 transition-colors"
                 aria-label="Close menu"
               >
                 <X className="w-6 h-6" />
@@ -111,8 +113,8 @@ export function NavLinks({ isScrolled = false }: NavLinksProps) {
                 href="#pricing"
                 onClick={toggleMenu}
                 className={cn(
-                  "text-white/90 hover:text-white transition-colors font-[family-name:var(--font-instrument-serif)] text-xl font-normal py-2 border-b border-white/10",
-                  pathname === "#pricing" && "text-white"
+                  "text-gray-700 hover:text-[#085983] transition-colors font-[family-name:var(--font-instrument-serif)] text-xl font-normal py-2 border-b border-gray-200",
+                  pathname === "#pricing" && "text-[#085983]"
                 )}
               >
                 Pricing
@@ -121,8 +123,8 @@ export function NavLinks({ isScrolled = false }: NavLinksProps) {
                 href="#faq"
                 onClick={toggleMenu}
                 className={cn(
-                  "text-white/90 hover:text-white transition-colors font-[family-name:var(--font-instrument-serif)] text-xl font-normal py-2 border-b border-white/10",
-                  pathname === "#faq" && "text-white"
+                  "text-gray-700 hover:text-[#085983] transition-colors font-[family-name:var(--font-instrument-serif)] text-xl font-normal py-2 border-b border-gray-200",
+                  pathname === "#faq" && "text-[#085983]"
                 )}
               >
                 FAQ
@@ -130,21 +132,24 @@ export function NavLinks({ isScrolled = false }: NavLinksProps) {
               <Link
                 href="#reviews"
                 onClick={toggleMenu}
-                className="text-white/90 hover:text-white transition-colors font-[family-name:var(--font-instrument-serif)] text-xl font-normal py-2 border-b border-white/10"
+                className="text-gray-700 hover:text-[#085983] transition-colors font-[family-name:var(--font-instrument-serif)] text-xl font-normal py-2 border-b border-gray-200"
               >
                 Reviews
               </Link>
               <Link
                 href="/blog"
                 onClick={toggleMenu}
-                className="text-white/90 hover:text-white transition-colors font-[family-name:var(--font-instrument-serif)] text-xl font-normal py-2 border-b border-white/10"
+                className="text-gray-700 hover:text-[#085983] transition-colors font-[family-name:var(--font-instrument-serif)] text-xl font-normal py-2 border-b border-gray-200"
               >
                 Blog
               </Link>
 
               {/* Mobile Login Button */}
               <div className="pt-4">
-                <LoginButton isScrolled={isScrolled} />
+                <LoginButton
+                  isScrolled={isScrolled}
+                  className="bg-[#085983]/80 hover:bg-[#085983]/10"
+                />
               </div>
             </div>
           </div>
