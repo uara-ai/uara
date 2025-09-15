@@ -7,11 +7,22 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { LoginButton } from "./login-button";
 
-export function NavLinks() {
+interface NavLinksProps {
+  isScrolled?: boolean;
+}
+
+export function NavLinks({ isScrolled = false }: NavLinksProps) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  // Define text color based on scroll state
+  const textColor = isScrolled ? "text-[#085983]" : "text-white/90";
+  const hoverTextColor = isScrolled
+    ? "hover:text-[#085983]/80"
+    : "hover:text-white";
+  const activeTextColor = isScrolled ? "text-[#085983]" : "text-white";
 
   return (
     <>
@@ -20,8 +31,8 @@ export function NavLinks() {
         <Link
           href="#pricing"
           className={cn(
-            "text-white/90 hover:text-white transition-colors font-[family-name:var(--font-instrument-serif)] text-2xl font-normal",
-            pathname === "#pricing" && "text-white"
+            `${textColor} ${hoverTextColor} transition-colors font-[family-name:var(--font-instrument-serif)] text-2xl font-normal`,
+            pathname === "#pricing" && activeTextColor
           )}
         >
           Pricing
@@ -29,21 +40,21 @@ export function NavLinks() {
         <Link
           href="#faq"
           className={cn(
-            "text-white/90 hover:text-white transition-colors font-[family-name:var(--font-instrument-serif)] text-2xl font-normal",
-            pathname === "#faq" && "text-white"
+            `${textColor} ${hoverTextColor} transition-colors font-[family-name:var(--font-instrument-serif)] text-2xl font-normal`,
+            pathname === "#faq" && activeTextColor
           )}
         >
           FAQ
         </Link>
         <Link
           href="#reviews"
-          className="text-white/90 hover:text-white transition-colors font-[family-name:var(--font-instrument-serif)] text-2xl font-normal"
+          className={`${textColor} ${hoverTextColor} transition-colors font-[family-name:var(--font-instrument-serif)] text-2xl font-normal`}
         >
           Reviews
         </Link>
         <Link
           href="/blog"
-          className="text-white/90 hover:text-white transition-colors font-[family-name:var(--font-instrument-serif)] text-2xl font-normal"
+          className={`${textColor} ${hoverTextColor} transition-colors font-[family-name:var(--font-instrument-serif)] text-2xl font-normal`}
         >
           Blog
         </Link>
@@ -55,7 +66,28 @@ export function NavLinks() {
         className="md:hidden p-2 text-white hover:text-white/80 transition-colors"
         aria-label="Toggle menu"
       >
-        {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        {isMenuOpen ? (
+          <X className="w-6 h-6" />
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="icon icon-tabler icons-tabler-outline icon-tabler-menu-3"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M10 6h10" />
+            <path d="M4 12h16" />
+            <path d="M7 12h13" />
+            <path d="M4 18h10" />
+          </svg>
+        )}
       </button>
 
       {/* Mobile Menu Overlay */}
@@ -112,7 +144,7 @@ export function NavLinks() {
 
               {/* Mobile Login Button */}
               <div className="pt-4">
-                <LoginButton />
+                <LoginButton isScrolled={isScrolled} />
               </div>
             </div>
           </div>
