@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import Link from "next/link";
 
 interface BottomCTAProps {
   className?: string;
@@ -57,8 +58,9 @@ export function BottomCTA({ className }: BottomCTAProps) {
                     <Button
                       size="lg"
                       className="bg-gradient-to-r from-[#085983] to-[#0a6b99] hover:from-[#074a6b] hover:to-[#085983] text-white font-[family-name:var(--font-instrument-serif)] text-xl sm:text-2xl font-semibold py-6 px-12 sm:px-16 rounded-full shadow-lg  hover:shadow-xl  tracking-wider border-2 border-[#085983]/50"
+                      asChild
                     >
-                      Become a founding member
+                      <Link href="/login">Become a founding member</Link>
                     </Button>
                   </div>
                 </div>

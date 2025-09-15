@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface PricingTierProps {
   className?: string;
@@ -68,8 +69,9 @@ export function PricingTier({ className }: PricingTierProps) {
                       boxShadow:
                         "0 8px 20px rgba(8, 89, 131, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.1)",
                     }}
+                    asChild
                   >
-                    CLAIM NOW
+                    <Link href="/login">CLAIM NOW</Link>
                   </Button>
                   {/* Button shadow for 3D effect */}
                   <div className="absolute inset-0 bg-[#085983]/20 rounded-full blur-lg transform translate-y-2 -z-10"></div>
