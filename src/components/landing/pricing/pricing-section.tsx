@@ -14,7 +14,7 @@ export function PricingSection({ className }: PricingSectionProps) {
   return (
     <section
       className={cn(
-        "relative w-full bg-gradient-to-b from-white to-gray-50 py-16 lg:py-24 overflow-hidden",
+        "relative w-full py-16 lg:py-24 overflow-hidden",
         className
       )}
     >

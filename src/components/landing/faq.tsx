@@ -67,12 +67,7 @@ export function FAQ({ className }: FAQProps) {
   };
 
   return (
-    <section
-      className={cn(
-        "relative w-full bg-gradient-to-b from-white to-gray-50 py-16 lg:py-24",
-        className
-      )}
-    >
+    <section className={cn("relative w-full py-16 lg:py-24", className)}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12 sm:mb-16 lg:mb-20">
