@@ -12,8 +12,8 @@ export default function HealthspanPage() {
           Dashboard coming soon
         </h1>
         <p className="text-sm text-muted-foreground max-w-md mx-auto">
-          We’re crafting your personalized longevity hub. Early features are
-          rolling out to beta users.
+          We&apos;re crafting your personalized longevity hub. Early features
+          are rolling out to beta users.
         </p>
       </div>
     </div>
