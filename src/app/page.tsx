@@ -3,6 +3,7 @@ import { ProfileCompletionHandler } from "@/components/auth/profile-completion-h
 import { Hero } from "@/components/landing/hero/hero";
 import { Navbar } from "@/components/landing/hero/navbar";
 import { HowItWorks } from "@/components/landing/how-it-works";
+import { PricingSection } from "@/components/landing/pricing/pricing-section";
 // import { Problem } from "@/components/landing/problem";
 // import { HowItWorks } from "@/components/landing/how-it-works";
 // import { Features } from "@/components/landing/features";
@@ -15,6 +16,7 @@ export default function Home() {
       <div>
         <Hero />
         <HowItWorks />
+        <PricingSection />
       </div>
 
       <Footer />
