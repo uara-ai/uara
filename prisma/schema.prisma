@@ -50,6 +50,9 @@ model User {
   BillingCustomer BillingCustomer?
   Subscription    Subscription?
 
+  // WHOOP integration
+  whoopUser WhoopUser?
+
   @@map("users")
 }
 
@@ -218,4 +221,192 @@ model Subscription {
 
   @@index([stripeCustomerId])
   @@map("subscriptions")
+}
+
+// WHOOP Integration models - HIPAA-compliant health data storage
+model WhoopUser {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // WHOOP OAuth data
+  whoopUserId  Int       @unique
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime?
+
+  // User profile from WHOOP
+  email     String
+  firstName String
+  lastName  String
+
+  // Body measurements (latest values)
+  heightMeter    Float?
+  weightKilogram Float?
+  maxHeartRate   Int?
+
+  // Sync tracking
+  lastSyncAt     DateTime?
+  disconnectedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Related health data
+  recovery WhoopRecovery[]
+  cycles   WhoopCycle[]
+  sleep    WhoopSleep[]
+  workouts WhoopWorkout[]
+
+  @@map("whoop_users")
+}
+
+// WHOOP OAuth state tracking for CSRF protection
+model WhoopOAuthState {
+  id        String   @id @default(cuid())
+  state     String   @unique
+  userId    String
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+
+  @@index([state])
+  @@index([expiresAt])
+  @@map("whoop_oauth_states")
+}
+
+// WHOOP Recovery data - daily recovery scores and HRV
+model WhoopRecovery {
+  id          String    @id @default(cuid())
+  whoopUserId String
+  whoopUser   WhoopUser @relation(fields: [whoopUserId], references: [userId], onDelete: Cascade)
+
+  // WHOOP identifiers
+  cycleId Int
+  sleepId Int
+
+  // Recovery metadata
+  scoreState String
+
+  // Recovery metrics
+  recoveryScore    Float?
+  restingHeartRate Int?
+  hrvRmssd         Float?
+  userCalibrating  Boolean?
+
+  createdAt DateTime
+  updatedAt DateTime
+
+  @@unique([whoopUserId, cycleId])
+  @@index([whoopUserId, createdAt])
+  @@map("whoop_recovery")
+}
+
+// WHOOP Cycle data - daily physiological cycles and strain
+model WhoopCycle {
+  id          String    @id @default(cuid())
+  whoopUserId String
+  whoopUser   WhoopUser @relation(fields: [whoopUserId], references: [userId], onDelete: Cascade)
+
+  // WHOOP identifiers
+  cycleId Int
+
+  // Cycle timing
+  start          DateTime
+  end            DateTime?
+  timezoneOffset String
+
+  // Cycle metadata
+  scoreState String
+
+  // Cycle metrics
+  strain           Float?
+  averageHeartRate Int?
+  maxHeartRate     Int?
+  kilojoule        Float?
+  percentRecorded  Float?
+
+  createdAt DateTime
+  updatedAt DateTime
+
+  @@unique([whoopUserId, cycleId])
+  @@index([whoopUserId, start])
+  @@map("whoop_cycles")
+}
+
+// WHOOP Sleep data - sleep stages and performance metrics
+model WhoopSleep {
+  id          String    @id @default(cuid())
+  whoopUserId String
+  whoopUser   WhoopUser @relation(fields: [whoopUserId], references: [userId], onDelete: Cascade)
+
+  // WHOOP identifiers
+  sleepId Int
+
+  // Sleep timing
+  start          DateTime
+  end            DateTime
+  timezoneOffset String
+  nap            Boolean
+
+  // Sleep metadata
+  scoreState String
+
+  // Sleep stage durations (in milliseconds)
+  totalInBedTime         Int?
+  totalAwakeTime         Int?
+  totalLightSleepTime    Int?
+  totalSlowWaveSleepTime Int?
+  totalRemSleepTime      Int?
+
+  // Sleep quality metrics
+  sleepCycleCount            Int?
+  disturbanceCount           Int?
+  respiratoryRate            Float?
+  sleepPerformancePercentage Float?
+  sleepConsistencyPercentage Float?
+  sleepEfficiencyPercentage  Float?
+
+  createdAt DateTime
+  updatedAt DateTime
+
+  @@unique([whoopUserId, sleepId])
+  @@index([whoopUserId, start])
+  @@map("whoop_sleep")
+}
+
+// WHOOP Workout data - exercise sessions with heart rate zones
+model WhoopWorkout {
+  id          String    @id @default(cuid())
+  whoopUserId String
+  whoopUser   WhoopUser @relation(fields: [whoopUserId], references: [userId], onDelete: Cascade)
+
+  // WHOOP identifiers
+  workoutId Int
+  sportId   Int
+
+  // Workout timing
+  start          DateTime
+  end            DateTime
+  timezoneOffset String
+
+  // Workout metadata
+  scoreState String
+
+  // Workout metrics
+  strain               Float?
+  averageHeartRate     Int?
+  maxHeartRate         Int?
+  kilojoule            Float?
+  percentRecorded      Float?
+  distanceMeters       Float?
+  altitudeGainMeters   Float?
+  altitudeChangeMeters Float?
+
+  createdAt DateTime
+  updatedAt DateTime
+
+  @@unique([whoopUserId, workoutId])
+  @@index([whoopUserId, start])
+  @@map("whoop_workouts")
 }
