@@ -8,6 +8,7 @@ import { PricingSection } from "@/components/landing/pricing/pricing-section";
 // import { HowItWorks } from "@/components/landing/how-it-works";
 // import { Features } from "@/components/landing/features";
 // import { PricingCard } from "@/components/landing/pricing-card";
+import { FAQ } from "@/components/landing/faq";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
         <Hero />
         <HowItWorks />
         <PricingSection />
+        <FAQ />
       </div>
 
       <Footer />
