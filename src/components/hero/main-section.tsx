@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function MainSection() {
   return (
-    <div className="relative z-20 text-white w-full lg:w-1/2 px-6 lg:px-8 lg:text-left text-center mt-40">
+    <div className="relative z-20 text-white w-full lg:w-1/2 px-6 lg:px-8 lg:text-left text-center mt-20">
       {/* Main Title */}
       <h1 className="text-center font-[family-name:var(--font-instrument-serif)] text-[48px] lg:text-[96px] md:text-[64px] sm:text-[32px] font-normal leading-tight mb-6">
         <span className="bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
@@ -41,7 +41,7 @@ export function MainSection() {
       </div>
 
       {/* Quick Action Buttons */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16 max-w-3xl lg:max-w-none lg:mx-0 mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16 max-w-3xl lg:max-w-none lg:mx-0 mx-auto tracking-wider">
         <button className="flex items-center space-x-3 px-6 py-3 bg-white/10 border-2 border-[#085983] rounded-full hover:bg-white/20 transition-colors backdrop-blur-sm">
           <svg
             xmlns="http://www.w3.org/2000/svg"

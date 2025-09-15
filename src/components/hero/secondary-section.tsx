@@ -4,14 +4,14 @@ import { Users } from "lucide-react";
 
 export function SecondarySection() {
   return (
-    <div className="relative z-20 w-full lg:w-1/2 px-6 lg:px-8 text-center lg:text-right text-white mt-16 lg:mt-0">
-      <div className="text-right text-white lg:flex lg:flex-col lg:justify-center lg:h-full">
-        <p className="font-[family-name:var(--font-instrument-serif)] text-[32px] font-normal mb-4">
+    <div className="relative z-20 text-white w-full lg:w-1/2 px-6 lg:px-8 lg:text-left text-center mt-20 flex items-end justify-center lg:justify-end">
+      <div className="flex flex-col items-center text-center space-y-6 mb-16">
+        <p className="font-[family-name:var(--font-instrument-serif)] text-[32px] font-normal">
           Trusted by
         </p>
 
         {/* Avatar Circles */}
-        <div className="flex flex-col items-center lg:items-end space-y-2 mb-6">
+        <div className="flex flex-col items-center space-y-2">
           <div className="flex -space-x-2">
             {[1, 2, 3, 4].map((i) => (
               <div
@@ -27,12 +27,12 @@ export function SecondarySection() {
           </div>
         </div>
 
-        <p className="font-[family-name:var(--font-instrument-serif)] text-[32px] font-normal mb-6">
+        <p className="font-[family-name:var(--font-instrument-serif)] text-[32px] font-normal">
           Clients
         </p>
 
         {/* Stats */}
-        <div className="space-y-3 text-center lg:text-right">
+        <div className="space-y-3 text-center max-w-sm tracking-wider font-mono">
           <p className="font-[family-name:var(--font-instrument-serif)] text-[16px] font-normal text-white/80">
             5+ Hours/Time saved per month on manual data analysis and research
             for actionable insights.
