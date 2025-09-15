@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
+import { getTierById } from "@/lib/tier-calculator";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -57,6 +58,8 @@ async function upsertSubscriptionFromStripeObject(
       defaultPaymentMethodLast4: pm?.card?.last4 ?? null,
       defaultPaymentMethodExpMonth: pm?.card?.exp_month ?? null,
       defaultPaymentMethodExpYear: pm?.card?.exp_year ?? null,
+      tier: subscription.metadata?.tierId ?? null,
+      tierPurchasedAt: subscription.metadata?.tierId ? new Date() : null,
     },
     create: {
       userId,
@@ -85,6 +88,8 @@ async function upsertSubscriptionFromStripeObject(
       defaultPaymentMethodLast4: pm?.card?.last4 ?? null,
       defaultPaymentMethodExpMonth: pm?.card?.exp_month ?? null,
       defaultPaymentMethodExpYear: pm?.card?.exp_year ?? null,
+      tier: subscription.metadata?.tierId ?? null,
+      tierPurchasedAt: subscription.metadata?.tierId ? new Date() : null,
     },
   });
 }
@@ -115,12 +120,16 @@ export async function POST(req: NextRequest) {
         const userId = session.client_reference_id as string | null;
         const customerId = session.customer as string;
         const subscriptionId = session.subscription as string | null;
+        const tierId = session.metadata?.tierId;
+
         if (userId) {
+          // Update billing customer with latest information
           await prisma.billingCustomer.upsert({
             where: { userId },
             update: {
               stripeCustomerId: customerId,
               email: session.customer_details?.email ?? undefined,
+              updatedAt: new Date(),
             },
             create: {
               userId,
@@ -130,6 +139,7 @@ export async function POST(req: NextRequest) {
           });
 
           if (subscriptionId) {
+            // Handle subscription-based payments
             const subscription = await stripe.subscriptions.retrieve(
               subscriptionId
             );
@@ -138,6 +148,62 @@ export async function POST(req: NextRequest) {
               userId,
               customerId
             );
+
+            // Update user tier information for subscription
+            const subscriptionTierId = subscription.metadata?.tierId;
+            if (subscriptionTierId) {
+              await prisma.user.update({
+                where: { id: userId },
+                data: {
+                  tier: subscriptionTierId,
+                  tierPurchasedAt: new Date(),
+                },
+              });
+            }
+          } else if (session.mode === "payment" && tierId) {
+            // Handle one-time payments (lifetime access)
+            await prisma.user.update({
+              where: { id: userId },
+              data: {
+                tier: tierId,
+                tierPurchasedAt: new Date(),
+              },
+            });
+
+            // Get the line item details for price information
+            const lineItems = await stripe.checkout.sessions.listLineItems(
+              session.id
+            );
+            const lineItem = lineItems.data[0];
+            const priceId = lineItem?.price?.id;
+            const amount = lineItem?.amount_total || session.amount_total;
+            const currency = lineItem?.currency || session.currency;
+
+            // Create a comprehensive subscription record for tracking purposes
+            await prisma.subscription.upsert({
+              where: { userId },
+              update: {
+                status: "active",
+                priceId: priceId || null,
+                currency: currency || null,
+                amount: amount || null,
+                tier: tierId,
+                tierPurchasedAt: new Date(),
+                latestInvoiceId: (session.invoice as string) || null,
+              },
+              create: {
+                userId,
+                stripeCustomerId: customerId,
+                status: "active",
+                priceId: priceId || null,
+                currency: currency || null,
+                amount: amount || null,
+                tier: tierId,
+                tierPurchasedAt: new Date(),
+                latestInvoiceId: (session.invoice as string) || null,
+                startDate: new Date(),
+              },
+            });
           }
         }
         break;

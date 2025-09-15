@@ -1,5 +1,5 @@
-import { PricingCard } from "@/components/landing/pricing-card";
+import { PricingSection } from "@/components/landing/pricing";
 
 export default async function PricingPage() {
-  return <PricingCard />;
+  return <PricingSection />;
 }

@@ -1,24 +1,28 @@
-import { Navbar } from "@/components/landing/navbar";
 import { Footer } from "@/components/landing/footer";
 import { ProfileCompletionHandler } from "@/components/auth/profile-completion-handler";
-import { Hero } from "@/components/landing/hero";
+import { Hero } from "@/components/landing/hero/hero";
+import { Navbar } from "@/components/landing/hero/navbar";
+import { HowItWorks } from "@/components/landing/how-it-works";
+import { PricingSection } from "@/components/landing/pricing/pricing-section";
 // import { Problem } from "@/components/landing/problem";
 // import { HowItWorks } from "@/components/landing/how-it-works";
 // import { Features } from "@/components/landing/features";
 // import { PricingCard } from "@/components/landing/pricing-card";
+import { FAQ } from "@/components/landing/faq";
+import { BottomCTA } from "@/components/landing/bottom-cta";
 
 export default function Home() {
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Remove this */}
-      <ProfileCompletionHandler />
       <Navbar />
-      <Hero />
-      {/*<HowItWorks />
-       Demo section like datafast 
-      <Problem />
-      <Features />
-      <PricingCard hidden />*/}
+      <div>
+        <Hero />
+        <HowItWorks />
+        <PricingSection redirectTo="/waitlist" />
+        <FAQ />
+        <BottomCTA />
+      </div>
+
       <Footer />
     </div>
   );

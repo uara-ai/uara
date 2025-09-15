@@ -1,150 +1,128 @@
 "use client";
 
-import { Check, Loader } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { Logo } from "@/components/logo";
-import {
-  subscribeAction,
-  getSubscriberCount,
-} from "@/actions/subscribe-action";
 import { useState, useEffect } from "react";
-import { toast } from "sonner";
+import { useAuth } from "@workos-inc/authkit-nextjs/components";
+import { PricingCard } from "@/components/landing/pricing/pricing-card";
+import { SignOut } from "@/components/auth/sign-out";
+
+interface TierInfo {
+  currentTier: {
+    id: string;
+    name: string;
+    price: number;
+    displayPrice: string;
+    maxUsers: number;
+  };
+  nextTier: {
+    id: string;
+    name: string;
+    price: number;
+    displayPrice: string;
+    maxUsers: number;
+  } | null;
+  spotsRemaining: number;
+  totalUsers: number;
+  adjustedUserCount: number;
+  isLastTier: boolean;
+}
 
 export default function WaitlistPage() {
   const { user } = useAuth();
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [usersOnWaitlist, setUsersOnWaitlist] = useState<number>(0);
-  const [isLoadingCount, setIsLoadingCount] = useState(true);
+  const [tierInfo, setTierInfo] = useState<TierInfo | null>(null);
+  const [hasRedirected, setHasRedirected] = useState(false);
 
-  const handleJoinWaitlist = async () => {
-    if (!user?.email) {
-      toast.error("Please sign in to join the waitlist");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const result = await subscribeAction({ email: user.email });
-
-      if (result?.data?.success) {
-        setIsSubscribed(true);
-        // Save subscription state to localStorage
-        localStorage.setItem(`waitlist_${user.email}`, "subscribed");
-        toast.success("Welcome to the waitlist!");
-        // Update waitlist count after successful subscription
-        fetchWaitlistCount();
-      } else {
-        // If they're already on the list, also mark as subscribed
-        setIsSubscribed(true);
-        localStorage.setItem(`waitlist_${user.email}`, "subscribed");
-        toast.error("You're already on the list!");
-      }
-    } catch (error) {
-      toast.error("Something went wrong. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchWaitlistCount = async () => {
-    try {
-      const countResult = await getSubscriberCount();
-
-      if (
-        countResult?.success &&
-        countResult.data &&
-        typeof countResult.data === "object" &&
-        "count" in countResult.data
-      ) {
-        setUsersOnWaitlist((countResult.data as { count: number }).count + 100);
-      }
-    } catch (error) {
-      console.error("Error fetching waitlist count:", error);
-    } finally {
-      setIsLoadingCount(false);
-    }
-  };
-
-  // Load saved subscription state from localStorage
+  // Only redirect once when we confirm user is null (not undefined/loading)
   useEffect(() => {
-    if (user?.email) {
-      const savedState = localStorage.getItem(`waitlist_${user.email}`);
-      if (savedState === "subscribed") {
-        setIsSubscribed(true);
+    const timer = setTimeout(() => {
+      if (user === null && !hasRedirected) {
+        setHasRedirected(true);
+        window.location.replace("/login");
       }
-    }
-    fetchWaitlistCount();
-  }, [user?.email]);
+    }, 100); // Small delay to ensure auth state is stable
+
+    return () => clearTimeout(timer);
+  }, [user, hasRedirected]);
+
+  // Fetch tier info only once when component mounts
+  useEffect(() => {
+    let mounted = true;
+
+    const loadTierInfo = async () => {
+      try {
+        const response = await fetch("/api/pricing/tier");
+        if (response.ok && mounted) {
+          const data = await response.json();
+          setTierInfo(data);
+        }
+      } catch (error) {
+        if (mounted) {
+          console.error("Failed to fetch tier info:", error);
+        }
+      }
+    };
+
+    loadTierInfo();
+
+    return () => {
+      mounted = false;
+    };
+  }, []); // Empty dependency array - only run once
+
+  // Show loading while checking authentication
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#085983]"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-white to-blue-50/30">
       <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16">
-        <div className="max-w-2xl mx-auto text-center space-y-8">
-          {/* Main heading */}
-          <h1 className="text-4xl md:text-5xl font-light tracking-tight mb-4">
-            Uara requires an invitation
+        {/* Header */}
+        <div className="max-w-4xl mx-auto text-center space-y-8 mb-12">
+          <h1 className="text-4xl md:text-6xl font-[family-name:var(--font-instrument-serif)] font-light tracking-tight text-[#085983]">
+            Get Your Lifetime Access
           </h1>
-
-          {/* Subtitle */}
-          <p className="text-md text-muted-foreground mb-12 font-light">
-            Join the waitlist to be notified when access
-            <br />
-            opens up.
+          <p className="text-lg md:text-xl text-[#085983]/80 font-light max-w-2xl mx-auto">
+            Join thousands of users who have already secured their spot.
+            Limited-time lifetime deals available now.
           </p>
 
-          {/* Waitlist Button */}
-          <div className="p-6 mb-8 space-y-4">
-            <Button
-              className="max-w-xs mx-auto w-full border border-border"
-              variant="secondary"
-              onClick={handleJoinWaitlist}
-              disabled={isLoading || isSubscribed || !user?.email}
-            >
-              {isLoading ? (
-                <>
-                  <Loader className="size-4 animate-spin mr-2" />
-                  Adding to waitlist...
-                </>
-              ) : isSubscribed ? (
-                <>
-                  <Check className="size-4 mr-2" />
-                  Added to waitlist
-                </>
-              ) : (
-                "Join the waitlist"
-              )}
-            </Button>
-
-            {user?.email && (
-              <p className="text-muted-foreground text-sm">
-                Signed in as{" "}
-                <span className="text-foreground font-semibold">
-                  {user.email}
-                </span>
-              </p>
-            )}
-          </div>
-
-          <div className="flex items-center justify-center">
-            <span className="text-muted-foreground text-sm">
-              {isLoadingCount ? (
-                <>
-                  <Loader className="size-3 animate-spin mr-1 inline" />
-                  Loading...
-                </>
-              ) : (
-                `${usersOnWaitlist.toLocaleString()} users on the waitlist`
-              )}
+          <div className="flex flex-col items-center justify-center gap-2 text-[#085983]/60">
+            <span className="text-sm">
+              Signed in as{" "}
+              <span className="text-[#085983] font-semibold">{user.email}</span>
             </span>
-          </div>
-          {/* Navigation indicator */}
-          <div className="flex justify-center mt-12">
-            <div className="flex items-center space-x-2 text-gray-400">
-              <Logo hidden className="size-6" />
-              <span className="text-sm">uara.ai</span>
+            <div className="items-center">
+              <SignOut />
             </div>
+          </div>
+        </div>
+
+        {/* Dynamic Pricing Card */}
+        <div className="w-full max-w-6xl mx-auto">
+          <PricingCard tierInfo={tierInfo} />
+        </div>
+
+        {/* User Stats */}
+        <div className="mt-12 text-center text-[#085983]/60">
+          <span className="text-sm">
+            {tierInfo ? (
+              `${tierInfo.totalUsers} users have already claimed their lifetime access`
+            ) : (
+              <div className="animate-pulse bg-[#085983]/20 rounded h-4 w-80 mx-auto"></div>
+            )}
+          </span>
+        </div>
+
+        {/* Navigation indicator */}
+        <div className="flex justify-center mt-12">
+          <div className="flex items-center space-x-2 text-[#085983]/40">
+            <Logo hidden className="size-6" />
+            <span className="text-sm">uara.ai</span>
           </div>
         </div>
       </div>
