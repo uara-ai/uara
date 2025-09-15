@@ -54,6 +54,8 @@
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.57.0",
     "@tabler/icons": "^3.34.1",
+    "@tabler/icons-react": "^3.35.0",
+    "@tanstack/react-table": "^8.21.3",
     "@types/papaparse": "^5.3.16",
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.3",
@@ -68,7 +70,7 @@
     "framer-motion": "^12.23.12",
     "gray-matter": "^4.0.3",
     "input-otp": "^1.4.2",
-    "lucide-react": "^0.542.0",
+    "lucide-react": "^0.544.0",
     "motion": "^12.23.12",
     "next": "^15.5.3",
     "next-safe-action": "^8.0.11",
@@ -94,7 +96,7 @@
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^3.0.5",
-    "recharts": "^2.15.4",
+    "recharts": "2.15.4",
     "rehype-highlight": "^7.0.2",
     "rehype-pretty-code": "^0.14.1",
     "rehype-raw": "^7.0.0",
@@ -111,7 +113,7 @@
     "use-stick-to-bottom": "^1.1.1",
     "usehooks-ts": "^3.1.1",
     "vaul": "^1.1.2",
-    "zod": "^3.23.8"
+    "zod": "^4.1.8"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
