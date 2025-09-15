@@ -35,11 +35,23 @@ export function Hero({ className }: HeroProps) {
       {/* Navigation Bar */}
       <Navbar />
 
-      {/* Main Content (Left Section) */}
-      <MainSection />
+      {/* Content Layout Container */}
+      <div className="relative z-20 w-full max-w-8xl mx-auto px-2 lg:px-12 min-h-screen flex flex-col lg:flex-row items-center justify-center">
+        {/* Main Content (Left Section) */}
+        <MainSection />
 
-      {/* Secondary Section (Right Section) */}
-      <SecondarySection />
+        {/* Secondary Section (Right Section) */}
+        <SecondarySection />
+      </div>
+
+      {/* Bottom Text */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-20 text-center text-white max-w-7xl px-6 mt-16 w-full">
+        <p className="font-[family-name:var(--font-instrument-serif)] text-[20px] font-normal text-white/90 leading-relaxed">
+          Your health data is fragmented. Your potential is not. uara.ai is the
+          operating system that unifies your wearables, labs, and logs,
+          translating raw data into an actionable longevity protocol.
+        </p>
+      </div>
 
       {/* Mobile responsive adjustments */}
       <style jsx>{`

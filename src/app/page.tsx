@@ -11,7 +11,9 @@ export default function Home() {
   return (
     <div className="min-h-screen relative overflow-hidden">
       <Navbar />
-      <Hero />
+      <div>
+        <Hero />
+      </div>
 
       <Footer />
     </div>

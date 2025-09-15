@@ -4,14 +4,14 @@ import { Users } from "lucide-react";
 
 export function SecondarySection() {
   return (
-    <div className="absolute right-8 top-1/2 -translate-y-1/2 z-20 hidden xl:block">
-      <div className="text-right text-white">
+    <div className="relative z-20 w-full lg:w-1/2 px-6 lg:px-8 text-center lg:text-right text-white mt-16 lg:mt-0">
+      <div className="text-right text-white lg:flex lg:flex-col lg:justify-center lg:h-full">
         <p className="font-[family-name:var(--font-instrument-serif)] text-[32px] font-normal mb-4">
           Trusted by
         </p>
 
         {/* Avatar Circles */}
-        <div className="flex flex-col items-end space-y-2 mb-6">
+        <div className="flex flex-col items-center lg:items-end space-y-2 mb-6">
           <div className="flex -space-x-2">
             {[1, 2, 3, 4].map((i) => (
               <div
@@ -32,7 +32,7 @@ export function SecondarySection() {
         </p>
 
         {/* Stats */}
-        <div className="space-y-3 text-right">
+        <div className="space-y-3 text-center lg:text-right">
           <p className="font-[family-name:var(--font-instrument-serif)] text-[16px] font-normal text-white/80">
             5+ Hours/Time saved per month on manual data analysis and research
             for actionable insights.
