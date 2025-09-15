@@ -30,7 +30,7 @@ export function MainSection() {
           <input
             type="text"
             placeholder="Ask anything..."
-            className="w-full px-6 py-4 rounded-full bg-white/10 border-2 border-[#085983] text-white placeholder-white/70 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#085983] font-[family-name:var(--font-instrument-serif)] text-lg tracking-wider"
+            className="w-full px-6 py-4 rounded-full bg-white/10 border-2 border-[#085983] text-white placeholder-white/70 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#085983] font-[family-name:var(--font-geist-sans)] text-lg tracking-wider"
           />
           <button className="absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 bg-gradient-to-br from-[#085983] to-[#1f88bd]/80 hover:from-[#085983]/90 hover:to-[#1f88bd]/60 rounded-full flex items-center justify-center transition-all duration-200 border-2 border-[#085983] shadow-lg">
             <Link href="/login">
@@ -50,16 +50,16 @@ export function MainSection() {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             className="icon icon-tabler icons-tabler-outline icon-tabler-zzz"
           >
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path d="M4 12h6l-6 8h6" />
             <path d="M14 4h6l-6 8h6" />
           </svg>
-          <span className="font-[family-name:var(--font-instrument-serif)] text-[20px] font-normal text-white">
+          <span className="font-[family-name:var(--font-geist-sans)] text-base font-normal text-white">
             Analyze My Sleep Patterns
           </span>
         </button>
@@ -72,9 +72,9 @@ export function MainSection() {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             className="icon icon-tabler icons-tabler-outline icon-tabler-route-square"
           >
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -82,7 +82,7 @@ export function MainSection() {
             <path d="M17 3h4v4h-4z" />
             <path d="M11 19h5.5a3.5 3.5 0 0 0 0 -7h-8a3.5 3.5 0 0 1 0 -7h4.5" />
           </svg>
-          <span className="font-[family-name:var(--font-instrument-serif)] text-[20px] font-normal text-white">
+          <span className="font-[family-name:var(--font-geist-sans)] text-base font-normal text-white">
             Plan Longevity Routine
           </span>
         </button>
@@ -95,9 +95,9 @@ export function MainSection() {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             className="icon icon-tabler icons-tabler-outline icon-tabler-gymnastics"
           >
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -106,7 +106,7 @@ export function MainSection() {
             <path d="M3 11h6l5 1" />
             <path d="M11.5 8.5l4.5 -3.5" />
           </svg>
-          <span className="font-[family-name:var(--font-instrument-serif)] text-[20px] font-normal text-white">
+          <span className="font-[family-name:var(--font-geist-sans)] text-base font-normal text-white">
             Optimize My Recovery
           </span>
         </button>
@@ -119,9 +119,9 @@ export function MainSection() {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             className="icon icon-tabler icons-tabler-outline icon-tabler-stereo-glasses"
           >
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -131,7 +131,7 @@ export function MainSection() {
             <path d="M7 16h1" />
             <path d="M16 16h1" />
           </svg>
-          <span className="font-[family-name:var(--font-instrument-serif)] text-[20px] font-normal text-white">
+          <span className="font-[family-name:var(--font-geist-sans)] text-base font-normal text-white">
             Review Lab Result
           </span>
         </button>

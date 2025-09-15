@@ -36,21 +36,24 @@ export function Hero({ className }: HeroProps) {
       <Navbar />
 
       {/* Content Layout Container */}
-      <div className="relative z-20 w-full max-w-8xl mx-auto px-2 lg:px-12 min-h-screen flex flex-col lg:flex-row items-center justify-center">
-        {/* Main Content (Left Section) */}
-        <MainSection />
+      <div className="relative z-20 w-full max-w-8xl mx-auto px-2 lg:px-12 flex flex-col min-h-screen">
+        {/* Main Hero Content */}
+        <div className="flex-1 flex flex-col lg:flex-row items-center justify-center">
+          {/* Main Content (Left Section) */}
+          <MainSection />
 
-        {/* Secondary Section (Right Section) */}
-        <SecondarySection />
-      </div>
+          {/* Secondary Section (Right Section) */}
+          <SecondarySection />
+        </div>
 
-      {/* Bottom Text */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-20 text-center text-white max-w-7xl px-6 mt-16 w-full">
-        <p className="font-[family-name:var(--font-instrument-serif)] text-[20px] font-normal text-white/90 leading-relaxed">
-          Your health data is fragmented. Your potential is not. uara.ai is the
-          operating system that unifies your wearables, labs, and logs,
-          translating raw data into an actionable longevity protocol.
-        </p>
+        {/* Bottom Text */}
+        <div className="w-full text-center text-white pb-8 px-4 lg:px-6">
+          <p className="bottom-text font-[family-name:var(--font-geist-sans)] text-base sm:text-lg md:text-xl lg:text-[20px] font-normal text-white/90 leading-relaxed max-w-6xl mx-auto">
+            Your health data is fragmented. Your potential is not. uara.ai is
+            the operating system that unifies your wearables, labs, and logs,
+            translating raw data into an actionable longevity protocol.
+          </p>
+        </div>
       </div>
 
       {/* Mobile responsive adjustments */}
@@ -71,11 +74,23 @@ export function Hero({ className }: HeroProps) {
           .stats-text {
             font-size: 8px !important;
           }
-          .bottom-text {
-            font-size: 10px !important;
-          }
           .quick-action-text {
             font-size: 10px !important;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .bottom-text {
+            font-size: 14px !important;
+            line-height: 1.4 !important;
+            padding: 0 16px !important;
+          }
+        }
+
+        @media (max-width: 430px) {
+          .bottom-text {
+            font-size: 12px !important;
+            line-height: 1.3 !important;
           }
         }
       `}</style>
