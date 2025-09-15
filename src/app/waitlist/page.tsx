@@ -31,6 +31,7 @@ export default function WaitlistPage() {
   const { user } = useAuth();
   const [tierInfo, setTierInfo] = useState<TierInfo | null>(null);
   const [hasRedirected, setHasRedirected] = useState(false);
+  const [hasFetchedTiers, setHasFetchedTiers] = useState(false);
 
   // Only redirect once when we confirm user is null (not undefined/loading)
   useEffect(() => {
@@ -44,8 +45,10 @@ export default function WaitlistPage() {
     return () => clearTimeout(timer);
   }, [user, hasRedirected]);
 
-  // Fetch tier info only once when component mounts
+  // Fetch tier info only once when component mounts - completely independent of user state
   useEffect(() => {
+    if (hasFetchedTiers) return; // Prevent multiple fetches
+
     let mounted = true;
 
     const loadTierInfo = async () => {
@@ -54,6 +57,7 @@ export default function WaitlistPage() {
         if (response.ok && mounted) {
           const data = await response.json();
           setTierInfo(data);
+          setHasFetchedTiers(true); // Mark as fetched
         }
       } catch (error) {
         if (mounted) {
@@ -67,7 +71,7 @@ export default function WaitlistPage() {
     return () => {
       mounted = false;
     };
-  }, []); // Empty dependency array - only run once
+  }, []); // Empty dependency array - only run once on mount
 
   // Show loading while checking authentication
   if (!user) {
