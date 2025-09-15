@@ -48,6 +48,7 @@ export function HowItWorks({ className }: HowItWorksProps) {
         "relative w-full bg-gradient-to-b from-gray-50 to-white py-16 lg:py-24",
         className
       )}
+      id="features"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}

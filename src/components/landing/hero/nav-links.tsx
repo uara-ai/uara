@@ -30,6 +30,12 @@ export function NavLinks({ isScrolled = false }: NavLinksProps) {
       {/* Desktop Navigation */}
       <div className="hidden md:flex items-center space-x-8 ml-8">
         <Link
+          href="#features"
+          className={`${textColor} ${hoverTextColor} transition-colors font-[family-name:var(--font-instrument-serif)] text-2xl font-normal`}
+        >
+          Features
+        </Link>
+        <Link
           href="#pricing"
           className={cn(
             `${textColor} ${hoverTextColor} transition-colors font-[family-name:var(--font-instrument-serif)] text-2xl font-normal`,
@@ -46,18 +52,6 @@ export function NavLinks({ isScrolled = false }: NavLinksProps) {
           )}
         >
           FAQ
-        </Link>
-        <Link
-          href="#reviews"
-          className={`${textColor} ${hoverTextColor} transition-colors font-[family-name:var(--font-instrument-serif)] text-2xl font-normal`}
-        >
-          Reviews
-        </Link>
-        <Link
-          href="/blog"
-          className={`${textColor} ${hoverTextColor} transition-colors font-[family-name:var(--font-instrument-serif)] text-2xl font-normal`}
-        >
-          Blog
         </Link>
       </div>
 

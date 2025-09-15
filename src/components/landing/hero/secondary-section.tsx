@@ -31,7 +31,7 @@ export function SecondarySection() {
         </div>
 
         <p className="font-[family-name:var(--font-instrument-serif)] text-[32px] font-normal">
-          Clients
+          Founders
         </p>
 
         {/* Stats */}
