@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface BottomCTAProps {
   className?: string;
@@ -30,7 +31,9 @@ export function BottomCTA({ className }: BottomCTAProps) {
           >
             {/* Background Image */}
             <div className="absolute inset-0">
-              <img
+              <Image
+                width={1000}
+                height={1000}
                 src="/bottom-cta.jpg"
                 alt="Futuristic landscape with person wearing VR headset"
                 className={cn("w-full h-full object-cover")}

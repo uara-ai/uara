@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface HowItWorksProps {
   className?: string;
@@ -162,8 +163,10 @@ function WorkflowStep({
       {/* Image */}
       <div className={cn("relative", isReversed ? "lg:col-start-1" : "")}>
         <div className="relative overflow-hidden rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-lg sm:shadow-2xl">
-          <img
+          <Image
             src={step.img}
+            width={1000}
+            height={1000}
             alt={`${step.title} visualization`}
             className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover"
           />

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { X, Terminal, Clock, CheckCircle, XCircle } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 
 export interface ConsoleOutputContent {
@@ -104,7 +105,9 @@ export function Console({ consoleOutputs, setConsoleOutputs }: ConsoleProps) {
                           {content.value}
                         </pre>
                       ) : content.type === "image" ? (
-                        <img
+                        <Image
+                          width={100}
+                          height={100}
                           src={content.value}
                           alt="Output"
                           className="max-w-full rounded border"

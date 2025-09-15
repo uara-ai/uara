@@ -3,6 +3,7 @@
 import { Logo } from "@/components/logo";
 import Link from "next/link";
 import { Twitter, Instagram, MailIcon, Heart } from "lucide-react";
+import Image from "next/image";
 
 export function Footer() {
   return (
@@ -24,7 +25,9 @@ export function Footer() {
           <div className="relative overflow-hidden rounded-2xl lg:rounded-3xl shadow-2xl">
             {/* Background Image */}
             <div className="absolute inset-0">
-              <img
+              <Image
+                width={1000}
+                height={1000}
                 src="/footer.jpg"
                 alt="Futuristic landscape background"
                 className="w-full h-full object-cover"

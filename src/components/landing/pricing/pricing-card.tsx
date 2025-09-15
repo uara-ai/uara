@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { PricingTier } from "./pricing-tier";
+import Image from "next/image";
 
 interface TierInfo {
   currentTier: {
@@ -44,7 +45,7 @@ export function PricingCard({ tierInfo, className }: PricingCardProps) {
       >
         {/* Background Image */}
         <div className="absolute inset-0">
-          <img
+          <Image
             src="/pricing.jpg"
             alt="Scenic landscape background"
             className={cn(

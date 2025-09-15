@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { LoaderIcon } from "./icons";
 import cn from "clsx";
 
@@ -34,7 +35,9 @@ export function ImageEditor({
         </div>
       ) : (
         <picture>
-          <img
+          <Image
+            width={100}
+            height={100}
             className={cn("h-fit w-full max-w-[800px]", {
               "p-0 md:p-20": !isInline,
             })}
