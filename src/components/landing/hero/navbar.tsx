@@ -21,7 +21,13 @@ export function Navbar() {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-30 p-6 lg:p-8 transition-colors duration-300">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-30 p-2 lg:p-4 transition-all duration-300 ${
+        isScrolled
+          ? "backdrop-blur-md border-b border-[#085983]/50"
+          : "bg-transparent"
+      }`}
+    >
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Logo */}
         <div className="flex items-center space-x-2">

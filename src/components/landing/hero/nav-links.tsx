@@ -4,7 +4,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { X } from "lucide-react";
 import { LoginButton } from "./login-button";
 import { Logo } from "@/components/logo";
 
@@ -64,7 +64,10 @@ export function NavLinks({ isScrolled = false }: NavLinksProps) {
       {/* Mobile Hamburger Button */}
       <button
         onClick={toggleMenu}
-        className="md:hidden p-2 text-white hover:text-white/80 transition-colors"
+        className={cn(
+          "md:hidden p-2 text-white hover:text-white/80 transition-colors",
+          textColor
+        )}
         aria-label="Toggle menu"
       >
         {isMenuOpen ? (
