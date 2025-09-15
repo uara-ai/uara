@@ -110,30 +110,25 @@ export function Footer() {
                 <p className="font-[family-name:var(--font-geist-sans)] text-sm text-white/80">
                   2025 Uara.ai. All rights reserved
                 </p>
-                <div>
+                <div className="flex flex-col gap-1">
                   <p className="text-white/80 font-[family-name:var(--font-geist-sans)] text-sm flex items-center gap-2 justify-center">
-                    Built by{" "}
-                    <Image
-                      src="/fedef.jpg"
-                      alt="FF"
-                      width={16}
-                      height={16}
-                      className="inline-block rounded-full"
-                    />{" "}
+                    Built with{" "}
+                    <Heart className="w-4 h-4 fill-red-400 text-red-400 inline-block" />{" "}
+                    by{" "}
                     <Link
                       href="https://x.com/FedericoFan"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:text-white/100 transition-colors"
                     >
-                      Federico Fan
+                      Federico
                     </Link>
                   </p>
                   <p className="text-white/80 font-[family-name:var(--font-geist-sans)] text-sm flex items-center gap-2 justify-center">
                     Designed by{" "}
                     <Image
                       src="/revolte.png"
-                      alt="RD"
+                      alt="Revolte"
                       width={16}
                       height={16}
                       className="inline-block rounded-full"
