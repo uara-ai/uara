@@ -34,12 +34,6 @@ const faqData = [
     defaultOpen: false,
   },
   {
-    question: "Can I get a refund if I'm not satisfied?",
-    answer:
-      "Yes! We offer a 30-day money-back guarantee. If you're not completely satisfied with Uara within the first 30 days, we'll provide a full refund, no questions asked.",
-    defaultOpen: false,
-  },
-  {
     question: "Is my health data secure?",
     answer:
       "Absolutely. We use bank-level encryption and never sell your data to third parties. Your health information is stored securely and only used to provide you with personalized insights.",
