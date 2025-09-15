@@ -30,7 +30,7 @@ export const AvatarCircles = ({
       ))}
       {(numPeople ?? 0) > 0 && (
         <a
-          href="/founders"
+          href="/"
           className="font-[family-name:var(--font-instrument-serif)] font-semibold flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/30 bg-white/20 backdrop-blur-sm text-center text-xs text-white hover:bg-white/30 transition-colors"
         >
           +{numPeople}
