@@ -77,7 +77,7 @@ export function FAQ({ className }: FAQProps) {
           {/* Mobile: Simple title without decorative lines */}
           <div className="block sm:hidden mb-4">
             <h2 className="font-[family-name:var(--font-instrument-serif)] text-3xl font-normal text-[#085983] leading-tight">
-              Questions? We've Got Answers.
+              Questions? We&apos;ve Got Answers.
             </h2>
           </div>
 
@@ -85,7 +85,7 @@ export function FAQ({ className }: FAQProps) {
           <div className="hidden sm:flex items-center justify-center mb-6">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#085983]/30"></div>
             <h2 className="px-6 font-[family-name:var(--font-instrument-serif)] text-3xl sm:text-4xl lg:text-5xl font-normal text-[#085983]">
-              Questions? We've Got Answers.
+              Questions? We&apos;ve Got Answers.
             </h2>
             <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#085983]/30"></div>
           </div>
