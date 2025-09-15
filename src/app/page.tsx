@@ -18,7 +18,7 @@ export default function Home() {
       <div>
         <Hero />
         <HowItWorks />
-        <PricingSection />
+        <PricingSection redirectTo="/waitlist" />
         <FAQ />
         <BottomCTA />
       </div>

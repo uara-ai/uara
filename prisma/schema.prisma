@@ -38,6 +38,10 @@ model User {
   marketingConsent      Boolean @default(false)
   researchConsent       Boolean @default(false)
 
+  // Pricing tier (tier_1, tier_2, etc.)
+  tier            String?
+  tierPurchasedAt DateTime?
+
   // AI Chat integration
   chats       Chat[]
   documents   Document[]
@@ -204,6 +208,10 @@ model Subscription {
   defaultPaymentMethodLast4    String?
   defaultPaymentMethodExpMonth Int?
   defaultPaymentMethodExpYear  Int?
+
+  // Pricing tier (tier_1, tier_2, etc.)
+  tier            String?
+  tierPurchasedAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

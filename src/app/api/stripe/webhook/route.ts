@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
+import { getTierById } from "@/lib/tier-calculator";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -57,6 +58,8 @@ async function upsertSubscriptionFromStripeObject(
       defaultPaymentMethodLast4: pm?.card?.last4 ?? null,
       defaultPaymentMethodExpMonth: pm?.card?.exp_month ?? null,
       defaultPaymentMethodExpYear: pm?.card?.exp_year ?? null,
+      tier: subscription.metadata?.tierId ?? null,
+      tierPurchasedAt: subscription.metadata?.tierId ? new Date() : null,
     },
     create: {
       userId,
@@ -85,6 +88,8 @@ async function upsertSubscriptionFromStripeObject(
       defaultPaymentMethodLast4: pm?.card?.last4 ?? null,
       defaultPaymentMethodExpMonth: pm?.card?.exp_month ?? null,
       defaultPaymentMethodExpYear: pm?.card?.exp_year ?? null,
+      tier: subscription.metadata?.tierId ?? null,
+      tierPurchasedAt: subscription.metadata?.tierId ? new Date() : null,
     },
   });
 }
@@ -138,6 +143,18 @@ export async function POST(req: NextRequest) {
               userId,
               customerId
             );
+
+            // Update user tier information
+            const tierId = subscription.metadata?.tierId;
+            if (tierId) {
+              await prisma.user.update({
+                where: { id: userId },
+                data: {
+                  tier: tierId,
+                  tierPurchasedAt: new Date(),
+                },
+              });
+            }
           }
         }
         break;

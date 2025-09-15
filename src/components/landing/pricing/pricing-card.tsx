@@ -5,12 +5,33 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { PricingTier } from "./pricing-tier";
 
-interface PricingCardProps {
+interface TierInfo {
+  currentTier: {
+    id: string;
+    name: string;
+    price: number;
+    displayPrice: string;
+    maxUsers: number;
+  };
+  nextTier: {
+    id: string;
+    name: string;
+    price: number;
+    displayPrice: string;
+    maxUsers: number;
+  } | null;
   spotsRemaining: number;
+  totalUsers: number;
+  adjustedUserCount: number;
+  isLastTier: boolean;
+}
+
+interface PricingCardProps {
+  tierInfo: TierInfo | null;
   className?: string;
 }
 
-export function PricingCard({ spotsRemaining, className }: PricingCardProps) {
+export function PricingCard({ tierInfo, className }: PricingCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -48,7 +69,15 @@ export function PricingCard({ spotsRemaining, className }: PricingCardProps) {
                   </span>
                   <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 border-2 border-[#085983]">
                     <span className="font-[family-name:var(--font-instrument-serif)] text-lg sm:text-xl lg:text-2xl font-semibold text- tracking-wider">
-                      {spotsRemaining}
+                      {tierInfo ? (
+                        tierInfo.spotsRemaining === Infinity ? (
+                          "∞"
+                        ) : (
+                          tierInfo.spotsRemaining
+                        )
+                      ) : (
+                        <div className="animate-pulse bg-white/30 rounded w-8 h-6"></div>
+                      )}
                     </span>
                   </div>
                 </div>
@@ -57,14 +86,22 @@ export function PricingCard({ spotsRemaining, className }: PricingCardProps) {
                   spots are gone.
                 </p>
 
-                <p className="font-[family-name:var(--font-geist-sans)] text-lg sm:text-xl lg:text-2xl font-normal text-white/90">
-                  Tier 2 pricing will then be <strong>$79</strong>.
-                </p>
+                <div className="font-[family-name:var(--font-geist-sans)] text-lg sm:text-xl lg:text-2xl font-normal text-white/90">
+                  {tierInfo ? (
+                    tierInfo.isLastTier ? (
+                      "This is the final tier."
+                    ) : (
+                      `${tierInfo.nextTier?.name} pricing will then be ${tierInfo.nextTier?.displayPrice}.`
+                    )
+                  ) : (
+                    <div className="animate-pulse bg-white/20 rounded h-6 w-64 mx-auto"></div>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Right Side - Pricing Card */}
-            <PricingTier />
+            <PricingTier tierInfo={tierInfo} />
           </div>
         </div>
       </div>

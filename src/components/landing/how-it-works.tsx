@@ -12,7 +12,7 @@ const workflowSteps = [
     title: "Connect Everything",
     subtitle: "One hub for wearables, labs, and lifestyle logs.",
     description:
-      "Stop switching between apps. Uara AI syncs your Oura, recovery, activity, and blood test results into one secure dashboard, so you see the big picture instantly.",
+      "Stop switching between apps. Uara syncs your Oura, recovery, activity, and blood test results into one secure dashboard, so you see the big picture instantly.",
     img: "/how-it-works/1.jpg",
   },
   {
@@ -36,7 +36,7 @@ const workflowSteps = [
     title: "Actionable Lab Reviews",
     subtitle: "From numbers to next steps.",
     description:
-      "Upload your lab reports, and Uara AI transforms them into plain-language insights with clear action items. No more guessing what a biomarker means.",
+      "Upload your lab reports, and Uara transforms them into plain-language insights with clear action items. No more guessing what a biomarker means.",
     img: "/how-it-works/4.jpg",
   },
 ];

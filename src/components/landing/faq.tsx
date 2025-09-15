@@ -12,13 +12,13 @@ const faqData = [
   {
     question: "How does the Lifetime Deal work?",
     answer:
-      "Pay once for $49 and get unlimited access to Uara AI forever. No monthly subscriptions, no hidden fees. After the first 10 spots are taken, the price increases to $79 for Tier 2.",
+      "Pay once for $49 and get unlimited access to Uara forever. No monthly subscriptions, no hidden fees. After the first 10 spots are taken, the price increases to $79 for Tier 2.",
     defaultOpen: true,
   },
   {
     question: "What happens after the 100 spots are gone?",
     answer:
-      "Once all lifetime deal spots are claimed, Uara AI will transition to a subscription model. Lifetime deal holders will always maintain their access without any additional charges.",
+      "Once all lifetime deal spots are claimed, Uara will transition to a subscription model. Lifetime deal holders will always maintain their access without any additional charges.",
     defaultOpen: false,
   },
   {
@@ -36,7 +36,7 @@ const faqData = [
   {
     question: "Can I get a refund if I'm not satisfied?",
     answer:
-      "Yes! We offer a 30-day money-back guarantee. If you're not completely satisfied with Uara AI within the first 30 days, we'll provide a full refund, no questions asked.",
+      "Yes! We offer a 30-day money-back guarantee. If you're not completely satisfied with Uara within the first 30 days, we'll provide a full refund, no questions asked.",
     defaultOpen: false,
   },
   {

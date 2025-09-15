@@ -4,12 +4,50 @@ import { cn } from "@/lib/utils";
 import { PricingCard } from "./pricing-card";
 import { useState, useEffect } from "react";
 
-interface PricingSectionProps {
-  className?: string;
+interface TierInfo {
+  currentTier: {
+    id: string;
+    name: string;
+    price: number;
+    displayPrice: string;
+    maxUsers: number;
+  };
+  nextTier: {
+    id: string;
+    name: string;
+    price: number;
+    displayPrice: string;
+    maxUsers: number;
+  } | null;
+  spotsRemaining: number;
+  totalUsers: number;
+  adjustedUserCount: number;
+  isLastTier: boolean;
 }
 
-export function PricingSection({ className }: PricingSectionProps) {
-  const [spotsRemaining, setSpotsRemaining] = useState(10);
+interface PricingSectionProps {
+  className?: string;
+  redirectTo?: string;
+}
+
+export function PricingSection({ className, redirectTo }: PricingSectionProps) {
+  const [tierInfo, setTierInfo] = useState<TierInfo | null>(null);
+
+  useEffect(() => {
+    async function fetchTierInfo() {
+      try {
+        const response = await fetch("/api/pricing/tier");
+        if (response.ok) {
+          const data = await response.json();
+          setTierInfo(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch tier info:", error);
+      }
+    }
+
+    fetchTierInfo();
+  }, []);
 
   return (
     <section
@@ -45,7 +83,7 @@ export function PricingSection({ className }: PricingSectionProps) {
 
         {/* Pricing Card Container */}
         <div className="flex justify-center">
-          <PricingCard spotsRemaining={spotsRemaining} />
+          <PricingCard tierInfo={tierInfo} />
         </div>
       </div>
 
