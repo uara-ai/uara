@@ -47,6 +47,8 @@ export function PricingCard({ tierInfo, className }: PricingCardProps) {
         <div className="absolute inset-0">
           <Image
             src="/pricing.jpg"
+            width={1000}
+            height={1000}
             alt="Scenic landscape background"
             className={cn(
               "w-full h-full object-cover transition-transform duration-700"

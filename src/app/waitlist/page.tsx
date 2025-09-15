@@ -1,10 +1,9 @@
-"use client";
-
 import { Logo } from "@/components/logo";
-import { useState, useEffect } from "react";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { PricingCard } from "@/components/landing/pricing/pricing-card";
 import { SignOut } from "@/components/auth/sign-out";
+import { getCurrentTierInfo } from "@/actions/tier-actions";
+import { withAuth } from "@workos-inc/authkit-nextjs";
+import { redirect } from "next/navigation";
 
 interface TierInfo {
   currentTier: {
@@ -27,59 +26,26 @@ interface TierInfo {
   isLastTier: boolean;
 }
 
-export default function WaitlistPage() {
-  const { user } = useAuth();
-  const [tierInfo, setTierInfo] = useState<TierInfo | null>(null);
-  const [hasRedirected, setHasRedirected] = useState(false);
-  const [hasFetchedTiers, setHasFetchedTiers] = useState(false);
+export default async function WaitlistPage() {
+  // Check authentication
+  const { user } = await withAuth();
 
-  // Only redirect once when we confirm user is null (not undefined/loading)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (user === null && !hasRedirected) {
-        setHasRedirected(true);
-        window.location.replace("/login");
-      }
-    }, 100); // Small delay to ensure auth state is stable
-
-    return () => clearTimeout(timer);
-  }, [user, hasRedirected]);
-
-  // Fetch tier info only once when component mounts - completely independent of user state
-  useEffect(() => {
-    if (hasFetchedTiers) return; // Prevent multiple fetches
-
-    let mounted = true;
-
-    const loadTierInfo = async () => {
-      try {
-        const response = await fetch("/api/pricing/tier");
-        if (response.ok && mounted) {
-          const data = await response.json();
-          setTierInfo(data);
-          setHasFetchedTiers(true); // Mark as fetched
-        }
-      } catch (error) {
-        if (mounted) {
-          console.error("Failed to fetch tier info:", error);
-        }
-      }
-    };
-
-    loadTierInfo();
-
-    return () => {
-      mounted = false;
-    };
-  }, []); // Empty dependency array - only run once on mount
-
-  // Show loading while checking authentication
   if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#085983]"></div>
-      </div>
-    );
+    redirect("/login");
+  }
+
+  // Fetch tier information with caching
+  let tierInfo: TierInfo | null = null;
+
+  try {
+    const result = await getCurrentTierInfo();
+    if (result.success && result.data) {
+      tierInfo = result.data;
+    } else {
+      console.error("Failed to fetch tier info:", result.error);
+    }
+  } catch (error) {
+    console.error("Error fetching tier info:", error);
   }
 
   return (
@@ -133,3 +99,5 @@ export default function WaitlistPage() {
     </div>
   );
 }
+
+// Cursor rules applied correctly.
