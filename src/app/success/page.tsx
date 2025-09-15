@@ -2,8 +2,32 @@ import Link from "next/link";
 import { Brain, CheckCircle2, ScanHeart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CelebrationConfetti } from "@/components/ui/confetti";
+import { withAuth } from "@workos-inc/authkit-nextjs";
+import { prisma } from "@/lib/prisma";
+import { getTierById } from "@/lib/tier-calculator";
 
-export default function SuccessPage() {
+export default async function SuccessPage() {
+  let userTier = null;
+  let tierInfo = null;
+
+  try {
+    const { user } = await withAuth();
+
+    if (user) {
+      // Get user's tier information
+      const userData = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { tier: true, tierPurchasedAt: true },
+      });
+
+      if (userData?.tier) {
+        userTier = userData;
+        tierInfo = getTierById(userData.tier);
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching user tier:", error);
+  }
   return (
     <div className="min-h-screen relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
@@ -25,9 +49,27 @@ export default function SuccessPage() {
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-foreground font-baumans! tracking-wide">
             Thank you for your purchase!
           </h1>
+
+          {tierInfo && (
+            <div className="bg-gradient-to-r from-[#085983]/10 to-[#085983]/5 rounded-2xl p-6 max-w-md mx-auto">
+              <h2 className="text-lg font-semibold text-[#085983] mb-2">
+                {tierInfo.name} - Lifetime Access
+              </h2>
+              <p className="text-2xl font-bold text-[#085983] mb-1">
+                {tierInfo.displayPrice}
+              </p>
+              <p className="text-sm text-[#085983]/70">
+                Purchased on{" "}
+                {userTier?.tierPurchasedAt
+                  ? new Date(userTier.tierPurchasedAt).toLocaleDateString()
+                  : "today"}
+              </p>
+            </div>
+          )}
+
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
-            You now have access to higher limits and upcoming features focused
-            on extending your healthspan.
+            You now have lifetime access to higher limits and upcoming features
+            focused on extending your healthspan.
           </p>
 
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
@@ -49,13 +91,13 @@ export default function SuccessPage() {
           </div>
 
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-2">
-            <Link href="/" className="w-full sm:w-auto">
+            <Link href={userTier ? "/chat" : "/"} className="w-full sm:w-auto">
               <Button
                 size="sm"
                 className="w-full sm:w-auto rounded-full tracking-wide font-baumans!"
               >
                 <Brain className="size-4 mr-2" />
-                Start living longer
+                {userTier ? "Start chatting with Uara" : "Start living longer"}
               </Button>
             </Link>
           </div>

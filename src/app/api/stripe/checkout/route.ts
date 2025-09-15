@@ -71,8 +71,9 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const session = await stripe.checkout.sessions.create({
-      mode: "subscription",
+    // Create session based on tier mode (payment for lifetime, subscription for recurring)
+    const sessionConfig: any = {
+      mode: selectedTier.mode,
       customer: billingCustomer.stripeCustomerId,
       line_items: [{ price: priceId, quantity: 1 }],
       allow_promotion_codes: true,
@@ -81,17 +82,23 @@ export async function POST(req: NextRequest) {
         absoluteUrl(req.headers.get("origin"), STRIPE.successUrl) +
         "?session_id={CHECKOUT_SESSION_ID}",
       cancel_url: absoluteUrl(origin, STRIPE.cancelUrl),
-      subscription_data: {
-        metadata: {
-          userId: user.id,
-          tierId: selectedTier.id,
-        },
-      },
       metadata: {
         userId: user.id,
         tierId: selectedTier.id,
       },
-    });
+    };
+
+    // Add subscription-specific config only for subscription mode
+    if (selectedTier.mode === "subscription") {
+      sessionConfig.subscription_data = {
+        metadata: {
+          userId: user.id,
+          tierId: selectedTier.id,
+        },
+      };
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     if (!session.url) {
       return Response.json(

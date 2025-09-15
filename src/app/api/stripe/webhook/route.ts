@@ -120,12 +120,16 @@ export async function POST(req: NextRequest) {
         const userId = session.client_reference_id as string | null;
         const customerId = session.customer as string;
         const subscriptionId = session.subscription as string | null;
+        const tierId = session.metadata?.tierId;
+
         if (userId) {
+          // Update billing customer with latest information
           await prisma.billingCustomer.upsert({
             where: { userId },
             update: {
               stripeCustomerId: customerId,
               email: session.customer_details?.email ?? undefined,
+              updatedAt: new Date(),
             },
             create: {
               userId,
@@ -135,6 +139,7 @@ export async function POST(req: NextRequest) {
           });
 
           if (subscriptionId) {
+            // Handle subscription-based payments
             const subscription = await stripe.subscriptions.retrieve(
               subscriptionId
             );
@@ -144,17 +149,61 @@ export async function POST(req: NextRequest) {
               customerId
             );
 
-            // Update user tier information
-            const tierId = subscription.metadata?.tierId;
-            if (tierId) {
+            // Update user tier information for subscription
+            const subscriptionTierId = subscription.metadata?.tierId;
+            if (subscriptionTierId) {
               await prisma.user.update({
                 where: { id: userId },
                 data: {
-                  tier: tierId,
+                  tier: subscriptionTierId,
                   tierPurchasedAt: new Date(),
                 },
               });
             }
+          } else if (session.mode === "payment" && tierId) {
+            // Handle one-time payments (lifetime access)
+            await prisma.user.update({
+              where: { id: userId },
+              data: {
+                tier: tierId,
+                tierPurchasedAt: new Date(),
+              },
+            });
+
+            // Get the line item details for price information
+            const lineItems = await stripe.checkout.sessions.listLineItems(
+              session.id
+            );
+            const lineItem = lineItems.data[0];
+            const priceId = lineItem?.price?.id;
+            const amount = lineItem?.amount_total || session.amount_total;
+            const currency = lineItem?.currency || session.currency;
+
+            // Create a comprehensive subscription record for tracking purposes
+            await prisma.subscription.upsert({
+              where: { userId },
+              update: {
+                status: "active",
+                priceId: priceId || null,
+                currency: currency || null,
+                amount: amount || null,
+                tier: tierId,
+                tierPurchasedAt: new Date(),
+                latestInvoiceId: (session.invoice as string) || null,
+              },
+              create: {
+                userId,
+                stripeCustomerId: customerId,
+                status: "active",
+                priceId: priceId || null,
+                currency: currency || null,
+                amount: amount || null,
+                tier: tierId,
+                tierPurchasedAt: new Date(),
+                latestInvoiceId: (session.invoice as string) || null,
+                startDate: new Date(),
+              },
+            });
           }
         }
         break;
