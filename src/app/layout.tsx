@@ -14,7 +14,12 @@ import { isEU } from "@/packages/location/location";
 import { Cookies } from "@/packages/config/constants";
 import { ConsentBanner } from "@/components/auth/consent-banner";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { Be_Vietnam_Pro, Inter, Baumans } from "next/font/google";
+import {
+  Be_Vietnam_Pro,
+  Inter,
+  Baumans,
+  Instrument_Serif,
+} from "next/font/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +50,14 @@ const beVietnamPro = Be_Vietnam_Pro({
 const baumans = Baumans({
   subsets: ["latin"],
   variable: "--font-baumans",
+  preload: true,
+  display: "swap",
+  weight: ["400"],
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  variable: "--font-instrument-serif",
   preload: true,
   display: "swap",
   weight: ["400"],
@@ -119,7 +132,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className="light" style={{ colorScheme: "light" }}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${beVietnamPro.variable} ${baumans.variable} ${inter.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${beVietnamPro.variable} ${baumans.variable} ${inter.variable} ${instrumentSerif.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"
