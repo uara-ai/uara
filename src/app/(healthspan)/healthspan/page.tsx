@@ -11,7 +11,7 @@ import {
 
 export default async function HealthspanPage() {
   // Fetch summary data for cards (fast, cached)
-  const whoopSummary = await getWhoopSummaryServer(7); // Last 7 days only
+  const whoopSummary = await getWhoopSummaryServer(25); // Last 7 days only
   const whoopStats = whoopSummary
     ? await processWhoopDataToStats(whoopSummary)
     : null;
