@@ -8,6 +8,7 @@ import { TierBadge } from "@/components/healthspan/tiers";
 import { getUserTierAction } from "@/actions/user-tier-action";
 import { useAction } from "next-safe-action/hooks";
 import { useEffect, useState } from "react";
+import { Brain } from "lucide-react";
 
 export function SiteHeader() {
   const user = useAuth();
@@ -47,7 +48,10 @@ export function SiteHeader() {
           orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4"
         />
-        <h1 className="text-base font-medium">Documents</h1>
+        <h1 className="text-base font-medium font-[family-name:var(--font-geist)] text-[#085983] dark:text-foreground tracking-wider flex items-center gap-2">
+          <Brain className="size-4" />
+          Healthspan
+        </h1>
         <div className="ml-auto flex items-center gap-2">
           {isPending && user.user && (
             <div className="hidden sm:inline-flex animate-pulse bg-gray-200 h-6 w-16 rounded-full" />

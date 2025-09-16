@@ -38,12 +38,12 @@ export async function GreetingHeader({ className }: GreetingHeaderProps) {
 
   return (
     <div className={className || ""}>
-      <h1 className="text-2xl font-medium text-slate-900 dark:text-slate-100">
+      <h1 className="text-2xl font-medium text-foreground dark:text-slate-100">
         {timeGreeting}
         {userNamePart && (
           <>
             ,{" "}
-            <span className="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r font-[family-name:var(--font-instrument-serif)] text-[#085983] dark:text-foreground tracking-wider text-3xl">
               {userNamePart}
             </span>
           </>

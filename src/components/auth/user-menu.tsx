@@ -110,7 +110,7 @@ export function UserMenu({ user, onlySignOut }: Props) {
                     tier={userTier.tierNumber}
                     size="sm"
                     showIcon={true}
-                    showName={false}
+                    showName={true}
                   />
                 )}
               </div>

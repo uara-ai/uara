@@ -183,7 +183,10 @@ async function handleRecoveryUpdate(
       return;
     }
 
-    const recovery = await whoopClient.getRecoveryById(accessToken, recoveryId);
+    const recovery = await whoopClient.getRecoveryById(
+      accessToken,
+      recoveryId.toString()
+    );
 
     await prisma.whoopRecovery.upsert({
       where: {
@@ -237,7 +240,10 @@ async function handleCycleUpdate(
       return;
     }
 
-    const cycle = await whoopClient.getCycleById(accessToken, cycleId);
+    const cycle = await whoopClient.getCycleById(
+      accessToken,
+      cycleId.toString()
+    );
 
     await prisma.whoopCycle.upsert({
       where: {
@@ -295,7 +301,10 @@ async function handleSleepUpdate(
       return;
     }
 
-    const sleep = await whoopClient.getSleepById(accessToken, sleepId);
+    const sleep = await whoopClient.getSleepById(
+      accessToken,
+      sleepId.toString()
+    );
 
     await prisma.whoopSleep.upsert({
       where: {
@@ -383,7 +392,10 @@ async function handleWorkoutUpdate(
       return;
     }
 
-    const workout = await whoopClient.getWorkoutById(accessToken, workoutId);
+    const workout = await whoopClient.getWorkoutById(
+      accessToken,
+      workoutId.toString()
+    );
 
     await prisma.whoopWorkout.upsert({
       where: {
