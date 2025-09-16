@@ -1,71 +1,52 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useWindowSize } from "usehooks-ts";
-
-import { SidebarToggle } from "./sidebar-toggle";
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "./icons";
-import { useSidebar } from "@/components/ui/sidebar";
-import { memo } from "react";
-import { type VisibilityType, VisibilitySelector } from "./visibility-selector";
+import { IconArrowLeft } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
-function PureChatHeader({
-  chatId,
-  selectedVisibilityType,
-  isReadonly,
-  session,
-}: {
-  chatId: string;
-  selectedVisibilityType: VisibilityType;
-  isReadonly: boolean;
-  session: {
-    user: {
-      id: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-      type: "free" | "pro";
-    };
-  };
-}) {
+interface ChatHeaderProps {
+  title?: string;
+  hasCanvas?: boolean;
+}
+
+export function ChatHeader({ title, hasCanvas }: ChatHeaderProps) {
   const router = useRouter();
-  const { open } = useSidebar();
 
-  const { width: windowWidth } = useWindowSize();
+  const handleBack = () => {
+    router.push("/healthspan/chat");
+  };
 
   return (
-    <header className="sticky top-0 flex items-center gap-2 bg-background px-2 py-1.5 md:px-2 z-10 border-b">
-      <SidebarToggle />
-
-      <Button
-        variant="outline"
-        className="ml-auto h-8 px-2 md:h-fit md:px-2"
-        onClick={() => {
-          router.push("/chat");
-          router.refresh();
-        }}
-      >
-        <PlusIcon />
-        <span className="md:sr-only">New Chat</span>
-      </Button>
-
-      {!isReadonly && (
-        <VisibilitySelector
-          chatId={chatId}
-          selectedVisibilityType={selectedVisibilityType}
-          className=""
-        />
+    <header
+      className={cn(
+        "sticky top-0 z-40 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60",
+        "dark:bg-[#0A0A0A]/95 dark:supports-[backdrop-filter]:bg-[#0A0A0A]/60"
       )}
+    >
+      <div className="flex h-14 items-center px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-3 w-full">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleBack}
+            className="flex items-center text-[#085983]/70 hover:text-[#085983] hover:bg-[#085983]/5 p-2"
+          >
+            <IconArrowLeft className="h-4 w-4" />
+          </Button>
+
+          {title && (
+            <>
+              <div className="h-4 w-px bg-[#085983]/20" />
+              <h1 className="font-[family-name:var(--font-geist-sans)] font-medium text-[#085983] text-sm truncate flex-1">
+                {title}
+              </h1>
+            </>
+          )}
+        </div>
+      </div>
     </header>
   );
 }
 
-export const ChatHeader = memo(PureChatHeader, (prevProps, nextProps) => {
-  return (
-    prevProps.chatId === nextProps.chatId &&
-    prevProps.selectedVisibilityType === nextProps.selectedVisibilityType &&
-    prevProps.isReadonly === nextProps.isReadonly
-  );
-});
+// Cursor rules applied correctly.
