@@ -56,19 +56,18 @@ export interface WhoopStats {
   };
 }
 
-// Core function to fetch WHOOP data from database
-async function fetchWhoopDataFromDB(
+// Optimized function to fetch minimal WHOOP data for dashboard
+async function fetchWhoopSummaryFromDB(
   userId: string,
-  days: number = 30,
-  limit: number = 50 // Reduced default limit for faster queries
+  days: number = 7 // Reduced default to 7 days for faster loading
 ): Promise<WhoopDataResponse> {
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - days);
 
-  // Fetch limited essential fields for better performance
+  // Fetch only essential fields for dashboard with strict limits
   const [recoveryData, cyclesData, sleepData, workoutsData] = await Promise.all(
     [
-      // Recovery data - only essential fields
+      // Recovery data - minimal fields, latest 10 records
       prisma.whoopRecovery.findMany({
         where: {
           whoopUserId: userId,
@@ -79,22 +78,19 @@ async function fetchWhoopDataFromDB(
         select: {
           id: true,
           cycleId: true,
-          sleepId: true,
           recoveryScore: true,
           restingHeartRate: true,
           hrvRmssd: true,
-          userCalibrating: true,
           scoreState: true,
           createdAt: true,
-          updatedAt: true,
         },
         orderBy: {
           createdAt: "desc",
         },
-        take: Math.min(limit, 50), // Cap at 50 for performance
+        take: 10, // Only last 10 for summary
       }),
 
-      // Cycles data - only essential fields
+      // Cycles data - minimal fields, latest 10 records
       prisma.whoopCycle.findMany({
         where: {
           whoopUserId: userId,
@@ -106,22 +102,18 @@ async function fetchWhoopDataFromDB(
           id: true,
           cycleId: true,
           start: true,
-          end: true,
           strain: true,
           averageHeartRate: true,
           maxHeartRate: true,
-          kilojoule: true,
-          percentRecorded: true,
           scoreState: true,
-          createdAt: true,
         },
         orderBy: {
           start: "desc",
         },
-        take: Math.min(limit, 50),
+        take: 10,
       }),
 
-      // Sleep data - only essential fields
+      // Sleep data - minimal fields, latest 7 records
       prisma.whoopSleep.findMany({
         where: {
           whoopUserId: userId,
@@ -133,27 +125,18 @@ async function fetchWhoopDataFromDB(
           id: true,
           sleepId: true,
           start: true,
-          end: true,
-          nap: true,
           sleepPerformancePercentage: true,
           sleepEfficiencyPercentage: true,
-          sleepConsistencyPercentage: true,
           totalInBedTime: true,
-          totalAwakeTime: true,
-          totalLightSleepTime: true,
-          totalSlowWaveSleepTime: true,
-          totalRemSleepTime: true,
-          respiratoryRate: true,
           scoreState: true,
-          createdAt: true,
         },
         orderBy: {
           start: "desc",
         },
-        take: Math.min(limit, 25),
+        take: 7,
       }),
 
-      // Workouts data - only essential fields
+      // Workouts data - minimal fields, latest 10 records
       prisma.whoopWorkout.findMany({
         where: {
           whoopUserId: userId,
@@ -165,25 +148,128 @@ async function fetchWhoopDataFromDB(
           id: true,
           workoutId: true,
           start: true,
-          end: true,
-          sportId: true,
           strain: true,
           averageHeartRate: true,
           maxHeartRate: true,
-          kilojoule: true,
           distanceMeters: true,
           scoreState: true,
-          createdAt: true,
         },
         orderBy: {
           start: "desc",
         },
-        take: Math.min(limit, 25),
+        take: 10,
       }),
     ]
   );
 
-  // Convert BigInt values to strings for JSON serialization
+  // Optimized serialization for smaller data sets
+  const serializeData = (data: any[]) => {
+    return data.map((item) => ({
+      ...item,
+      cycleId: item.cycleId ? item.cycleId.toString() : item.cycleId,
+      createdAt: item.createdAt?.toISOString?.() || item.createdAt,
+      start: item.start?.toISOString?.() || item.start,
+      end: item.end?.toISOString?.() || item.end,
+    }));
+  };
+
+  return {
+    recovery: serializeData(recoveryData),
+    cycles: serializeData(cyclesData),
+    sleep: serializeData(sleepData),
+    workouts: serializeData(workoutsData),
+    _metadata: {
+      userId,
+      counts: {
+        recovery: recoveryData.length,
+        cycles: cyclesData.length,
+        sleep: sleepData.length,
+        workouts: workoutsData.length,
+      },
+      fetchedAt: new Date().toISOString(),
+      daysPeriod: days,
+    },
+  };
+}
+
+// Cached version for better performance
+const getCachedWhoopData = unstable_cache(
+  async (userId: string, days: number) => {
+    return fetchWhoopSummaryFromDB(userId, days);
+  },
+  ["whoop-summary"],
+  {
+    revalidate: 300, // Cache for 5 minutes
+    tags: ["whoop-data"],
+  }
+);
+
+// Full data fetch function for detailed views (used by table)
+async function fetchFullWhoopDataFromDB(
+  userId: string,
+  days: number = 30,
+  limit: number = 100
+): Promise<WhoopDataResponse> {
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - days);
+
+  // Fetch full data with all fields when needed
+  const [recoveryData, cyclesData, sleepData, workoutsData] = await Promise.all(
+    [
+      prisma.whoopRecovery.findMany({
+        where: {
+          whoopUserId: userId,
+          createdAt: {
+            gte: cutoffDate,
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: Math.min(limit, 100),
+      }),
+
+      prisma.whoopCycle.findMany({
+        where: {
+          whoopUserId: userId,
+          start: {
+            gte: cutoffDate,
+          },
+        },
+        orderBy: {
+          start: "desc",
+        },
+        take: Math.min(limit, 100),
+      }),
+
+      prisma.whoopSleep.findMany({
+        where: {
+          whoopUserId: userId,
+          start: {
+            gte: cutoffDate,
+          },
+        },
+        orderBy: {
+          start: "desc",
+        },
+        take: Math.min(limit, 50),
+      }),
+
+      prisma.whoopWorkout.findMany({
+        where: {
+          whoopUserId: userId,
+          start: {
+            gte: cutoffDate,
+          },
+        },
+        orderBy: {
+          start: "desc",
+        },
+        take: Math.min(limit, 50),
+      }),
+    ]
+  );
+
   const serializeData = (data: any[]) => {
     return data.map((item) => ({
       ...item,
@@ -214,11 +300,6 @@ async function fetchWhoopDataFromDB(
   };
 }
 
-// Simplified version without caching to avoid blocking issues
-async function getWhoopDataFromDB(userId: string, days: number, limit: number) {
-  return fetchWhoopDataFromDB(userId, days, limit);
-}
-
 // Server action for client components
 export const getWhoopDataAction = actionClient
   .schema(whoopDataSchema)
@@ -228,14 +309,31 @@ export const getWhoopDataAction = actionClient
       throw new Error("Not authenticated");
     }
 
-    return await getWhoopDataFromDB(
+    return await fetchFullWhoopDataFromDB(
       user.id,
       parsedInput.days,
       parsedInput.limit
     );
   });
 
-// Server function for server components (no authentication wrapper needed)
+// Fast summary data for dashboard cards
+export async function getWhoopSummaryServer(
+  days: number = 7
+): Promise<WhoopDataResponse | null> {
+  try {
+    const { user } = await withAuth();
+    if (!user?.id) {
+      return null;
+    }
+
+    return await getCachedWhoopData(user.id, days);
+  } catch (error) {
+    console.error("Error fetching WHOOP summary:", error);
+    return null;
+  }
+}
+
+// Full data for detailed views (table)
 export async function getWhoopDataServer(
   days: number = 30,
   limit: number = 100
@@ -246,7 +344,7 @@ export async function getWhoopDataServer(
       return null;
     }
 
-    return await getWhoopDataFromDB(user.id, days, limit);
+    return await fetchFullWhoopDataFromDB(user.id, days, limit);
   } catch (error) {
     console.error("Error fetching WHOOP data from server:", error);
     return null;
