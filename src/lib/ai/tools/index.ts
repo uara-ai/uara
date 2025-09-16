@@ -1,5 +1,3 @@
-import { createDocument } from "./create-document";
-import { updateDocument } from "./update-document";
 import { requestSuggestions } from "./request-suggestions";
 import { getWeather } from "./get-weather";
 import type { User } from "@/lib/user.type";
@@ -14,8 +12,6 @@ interface ToolsProps {
 export function createTools({ user, dataStream }: ToolsProps) {
   return {
     getWeather,
-    createDocument: createDocument({ user, dataStream }),
-    updateDocument: updateDocument({ user, dataStream }),
     requestSuggestions: requestSuggestions({ user, dataStream }),
   };
 }

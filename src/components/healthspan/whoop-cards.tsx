@@ -239,7 +239,7 @@ export function WhoopCards({
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs">
                     <span className="text-[#085983]/60">Target: 80%</span>
-                    <span className="font-medium text-[#085983] text-[#085983]">
+                    <span className="font-medium text-[#085983]">
                       {whoopStats.latestRecovery?.recoveryScore
                         ? `${Math.round(
                             getProgressValue(
@@ -652,7 +652,7 @@ export function WhoopCards({
                     <IconHeart className="h-3 w-3 text-[#085983]/60" />
                     <span className="text-[#085983]/60 text-xs">Blood</span>
                   </div>
-                  <div className="font-medium text-[#085983] text-[#085983]">
+                  <div className="font-medium text-[#085983]">
                     {whoopUser?.maxHeartRate
                       ? `${whoopUser.maxHeartRate.toString()}`
                       : "N/A"}
