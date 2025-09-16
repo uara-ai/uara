@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { AppSidebar } from "@/components/healthspan/app-sidebar";
 import { SiteHeader } from "@/components/healthspan/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { withAuth } from "@workos-inc/authkit-nextjs";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Healthspan Dashboard | Uara.ai",
@@ -12,7 +14,14 @@ interface HealthspanLayoutProps {
   children: React.ReactNode;
 }
 
-export default function HealthspanLayout({ children }: HealthspanLayoutProps) {
+export default async function HealthspanLayout({
+  children,
+}: HealthspanLayoutProps) {
+  const user = await withAuth({ ensureSignedIn: true });
+  if (!user) {
+    redirect("/login");
+  }
+
   return (
     <SidebarProvider
       style={
