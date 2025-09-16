@@ -282,8 +282,8 @@ model WhoopRecovery {
   whoopUser   WhoopUser @relation(fields: [whoopUserId], references: [userId], onDelete: Cascade)
 
   // WHOOP identifiers
-  cycleId Int
-  sleepId Int
+  cycleId BigInt
+  sleepId String
 
   // Recovery metadata
   scoreState String
@@ -309,7 +309,7 @@ model WhoopCycle {
   whoopUser   WhoopUser @relation(fields: [whoopUserId], references: [userId], onDelete: Cascade)
 
   // WHOOP identifiers
-  cycleId Int
+  cycleId BigInt
 
   // Cycle timing
   start          DateTime
@@ -341,7 +341,7 @@ model WhoopSleep {
   whoopUser   WhoopUser @relation(fields: [whoopUserId], references: [userId], onDelete: Cascade)
 
   // WHOOP identifiers
-  sleepId Int
+  sleepId String
 
   // Sleep timing
   start          DateTime
@@ -382,7 +382,7 @@ model WhoopWorkout {
   whoopUser   WhoopUser @relation(fields: [whoopUserId], references: [userId], onDelete: Cascade)
 
   // WHOOP identifiers
-  workoutId Int
+  workoutId BigInt
   sportId   Int
 
   // Workout timing

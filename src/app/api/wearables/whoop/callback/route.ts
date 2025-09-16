@@ -98,9 +98,28 @@ export async function GET(request: NextRequest) {
     // Fetch user profile from WHOOP
     let whoopUser: WhoopUser;
     try {
+      console.log(
+        "Fetching WHOOP user profile with access token:",
+        tokenResponse.access_token?.substring(0, 20) + "..."
+      );
       whoopUser = await whoopClient.getUser(tokenResponse.access_token);
+      console.log(
+        "WHOOP user profile response:",
+        JSON.stringify(whoopUser, null, 2)
+      );
+
+      // Validate the response structure
+      if (!whoopUser || typeof whoopUser.user_id === "undefined") {
+        throw new Error(
+          `Invalid WHOOP user response structure: ${JSON.stringify(whoopUser)}`
+        );
+      }
     } catch (error) {
       console.error("Failed to fetch WHOOP user profile:", error);
+      console.error(
+        "Token response was:",
+        JSON.stringify(tokenResponse, null, 2)
+      );
       const redirectUrl = new URL(
         "/healthspan",
         process.env.NEXT_PUBLIC_APP_URL!
@@ -199,10 +218,10 @@ async function initiateDataSync(
         limit: 25,
       });
 
-      if (recoveryData.data.length > 0) {
-        const recoveryRecords = recoveryData.data.map((recovery) => ({
+      if (recoveryData.records.length > 0) {
+        const recoveryRecords = recoveryData.records.map((recovery) => ({
           whoopUserId: userId,
-          cycleId: recovery.cycle_id,
+          cycleId: BigInt(recovery.cycle_id),
           sleepId: recovery.sleep_id,
           createdAt: new Date(recovery.created_at),
           updatedAt: new Date(recovery.updated_at),
@@ -230,10 +249,10 @@ async function initiateDataSync(
         limit: 25,
       });
 
-      if (cycleData.data.length > 0) {
-        const cycleRecords = cycleData.data.map((cycle) => ({
+      if (cycleData.records.length > 0) {
+        const cycleRecords = cycleData.records.map((cycle) => ({
           whoopUserId: userId,
-          cycleId: cycle.id,
+          cycleId: BigInt(cycle.id),
           start: new Date(cycle.start),
           end: cycle.end ? new Date(cycle.end) : null,
           timezoneOffset: cycle.timezone_offset,
@@ -264,8 +283,8 @@ async function initiateDataSync(
         limit: 25,
       });
 
-      if (sleepData.data.length > 0) {
-        const sleepRecords = sleepData.data.map((sleep) => ({
+      if (sleepData.records.length > 0) {
+        const sleepRecords = sleepData.records.map((sleep) => ({
           whoopUserId: userId,
           sleepId: sleep.id,
           start: new Date(sleep.start),

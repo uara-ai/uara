@@ -24,7 +24,7 @@ export class WhoopApiClient {
     this.clientSecret = process.env.WHOOP_CLIENT_SECRET!;
     this.redirectUri =
       process.env.WHOOP_REDIRECT_URI ||
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/whoop/callback`;
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/wearables/whoop/callback`;
 
     if (!this.clientId || !this.clientSecret) {
       throw new Error("Missing WHOOP OAuth credentials");
@@ -40,9 +40,27 @@ export class WhoopApiClient {
       client_id: this.clientId,
       redirect_uri: this.redirectUri,
       scope:
-        "read:recovery read:cycles read:workout read:sleep read:profile read:body_measurement",
+        "offline read:recovery read:cycles read:workout read:sleep read:profile read:body_measurement",
       state,
     });
+
+    // Enhanced debug logging for redirect URI
+    console.log("=== WHOOP OAuth Debug Info ===");
+    console.log(
+      "Environment WHOOP_REDIRECT_URI:",
+      process.env.WHOOP_REDIRECT_URI
+    );
+    console.log(
+      "Environment NEXT_PUBLIC_APP_URL:",
+      process.env.NEXT_PUBLIC_APP_URL
+    );
+    console.log("Computed redirect URI:", this.redirectUri);
+    console.log("Client ID:", this.clientId);
+    console.log(
+      "Full auth URL:",
+      `${WHOOP_AUTH_URL}/oauth2/auth?${params.toString()}`
+    );
+    console.log("==============================");
 
     return `${WHOOP_AUTH_URL}/oauth2/auth?${params.toString()}`;
   }
@@ -110,7 +128,13 @@ export class WhoopApiClient {
     accessToken: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const response = await fetch(`${WHOOP_BASE_URL}/v1${endpoint}`, {
+    const url = `${WHOOP_BASE_URL}/v2${endpoint}`;
+    console.log(`Making WHOOP API request to: ${url}`);
+    console.log(
+      `Access token (first 20 chars): ${accessToken?.substring(0, 20)}...`
+    );
+
+    const response = await fetch(url, {
       ...options,
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -119,29 +143,72 @@ export class WhoopApiClient {
       },
     });
 
+    console.log(
+      `WHOOP API response status: ${response.status} ${response.statusText}`
+    );
+
     if (!response.ok) {
+      const responseText = await response.text();
+      console.error(`WHOOP API error response: ${responseText}`);
+
       if (response.status === 401) {
         throw new Error("WHOOP_TOKEN_EXPIRED");
       }
-      const error: WhoopApiError = await response
-        .json()
-        .catch(() => ({ error: "Unknown error" }));
+
+      let error: WhoopApiError;
+      try {
+        error = JSON.parse(responseText);
+      } catch {
+        error = { error: responseText || "Unknown error" };
+      }
+
       throw new Error(
-        `WHOOP API error: ${error.error_description || error.error}`
+        `WHOOP API error (${response.status}): ${
+          error.error_description || error.error
+        }`
       );
     }
 
-    return response.json();
+    const responseText = await response.text();
+    console.log(`WHOOP API response body: ${responseText}`);
+
+    try {
+      return JSON.parse(responseText);
+    } catch (parseError) {
+      console.error(`Failed to parse WHOOP API response as JSON:`, parseError);
+      throw new Error(`Invalid JSON response from WHOOP API: ${responseText}`);
+    }
   }
 
   /**
-   * Get user profile
+   * Get user basic profile (name, email, user_id)
    */
   async getUser(accessToken: string): Promise<WhoopUser> {
-    const response = await this.makeAuthenticatedRequest<
-      WhoopApiSingleResponse<WhoopUser>
-    >("/user/profile/basic", accessToken);
-    return response.data;
+    console.log(
+      "Making request to WHOOP /user/profile/basic endpoint (API v2)"
+    );
+
+    try {
+      // WHOOP API returns data directly, not wrapped in a data property
+      const response = await this.makeAuthenticatedRequest<WhoopUser>(
+        "/user/profile/basic",
+        accessToken
+      );
+
+      console.log("Raw WHOOP API response:", JSON.stringify(response, null, 2));
+
+      if (!response || !response.user_id) {
+        throw new Error(
+          `Invalid API response structure: ${JSON.stringify(response)}`
+        );
+      }
+
+      console.log("✅ Successfully fetched user profile");
+      return response;
+    } catch (error: any) {
+      console.error("❌ Failed to fetch user profile:", error);
+      throw new Error(`Failed to fetch user profile: ${error.message}`);
+    }
   }
 
   /**
@@ -216,7 +283,7 @@ export class WhoopApiClient {
     if (options.nextToken) params.append("nextToken", options.nextToken);
     if (options.limit) params.append("limit", options.limit.toString());
 
-    const endpoint = `/sleep${
+    const endpoint = `/activity/sleep${
       params.toString() ? `?${params.toString()}` : ""
     }`;
     return this.makeAuthenticatedRequest<WhoopApiResponse<WhoopSleep>>(
@@ -243,7 +310,7 @@ export class WhoopApiClient {
     if (options.nextToken) params.append("nextToken", options.nextToken);
     if (options.limit) params.append("limit", options.limit.toString());
 
-    const endpoint = `/workout${
+    const endpoint = `/activity/workout${
       params.toString() ? `?${params.toString()}` : ""
     }`;
     return this.makeAuthenticatedRequest<WhoopApiResponse<WhoopWorkout>>(
@@ -256,10 +323,12 @@ export class WhoopApiClient {
    * Get body measurements
    */
   async getBodyMeasurement(accessToken: string): Promise<WhoopBodyMeasurement> {
-    const response = await this.makeAuthenticatedRequest<
-      WhoopApiSingleResponse<WhoopBodyMeasurement>
-    >("/user/measurement/body", accessToken);
-    return response.data;
+    // WHOOP API returns data directly, not wrapped in a data property
+    const response = await this.makeAuthenticatedRequest<WhoopBodyMeasurement>(
+      "/user/measurement/body",
+      accessToken
+    );
+    return response;
   }
 
   /**
@@ -267,12 +336,14 @@ export class WhoopApiClient {
    */
   async getRecoveryById(
     accessToken: string,
-    recoveryId: number
+    recoveryId: string
   ): Promise<WhoopRecovery> {
-    const response = await this.makeAuthenticatedRequest<
-      WhoopApiSingleResponse<WhoopRecovery>
-    >(`/recovery/${recoveryId}`, accessToken);
-    return response.data;
+    // WHOOP API returns data directly for single items
+    const response = await this.makeAuthenticatedRequest<WhoopRecovery>(
+      `/recovery/${recoveryId}`,
+      accessToken
+    );
+    return response;
   }
 
   /**
@@ -280,12 +351,44 @@ export class WhoopApiClient {
    */
   async getCycleById(
     accessToken: string,
-    cycleId: number
+    cycleId: string
   ): Promise<WhoopCycle> {
-    const response = await this.makeAuthenticatedRequest<
-      WhoopApiSingleResponse<WhoopCycle>
-    >(`/cycle/${cycleId}`, accessToken);
-    return response.data;
+    // WHOOP API returns data directly for single items
+    const response = await this.makeAuthenticatedRequest<WhoopCycle>(
+      `/cycle/${cycleId}`,
+      accessToken
+    );
+    return response;
+  }
+
+  /**
+   * Get sleep data for a specific cycle
+   */
+  async getCycleSleep(
+    accessToken: string,
+    cycleId: string
+  ): Promise<WhoopSleep> {
+    // WHOOP API returns data directly for single items
+    const response = await this.makeAuthenticatedRequest<WhoopSleep>(
+      `/cycle/${cycleId}/sleep`,
+      accessToken
+    );
+    return response;
+  }
+
+  /**
+   * Get recovery data for a specific cycle
+   */
+  async getCycleRecovery(
+    accessToken: string,
+    cycleId: string
+  ): Promise<WhoopRecovery> {
+    // WHOOP API returns data directly for single items
+    const response = await this.makeAuthenticatedRequest<WhoopRecovery>(
+      `/cycle/${cycleId}/recovery`,
+      accessToken
+    );
+    return response;
   }
 
   /**
@@ -293,12 +396,14 @@ export class WhoopApiClient {
    */
   async getSleepById(
     accessToken: string,
-    sleepId: number
+    sleepId: string
   ): Promise<WhoopSleep> {
-    const response = await this.makeAuthenticatedRequest<
-      WhoopApiSingleResponse<WhoopSleep>
-    >(`/sleep/${sleepId}`, accessToken);
-    return response.data;
+    // WHOOP API returns data directly for single items
+    const response = await this.makeAuthenticatedRequest<WhoopSleep>(
+      `/activity/sleep/${sleepId}`,
+      accessToken
+    );
+    return response;
   }
 
   /**
@@ -306,12 +411,23 @@ export class WhoopApiClient {
    */
   async getWorkoutById(
     accessToken: string,
-    workoutId: number
+    workoutId: string
   ): Promise<WhoopWorkout> {
-    const response = await this.makeAuthenticatedRequest<
-      WhoopApiSingleResponse<WhoopWorkout>
-    >(`/workout/${workoutId}`, accessToken);
-    return response.data;
+    // WHOOP API returns data directly for single items
+    const response = await this.makeAuthenticatedRequest<WhoopWorkout>(
+      `/activity/workout/${workoutId}`,
+      accessToken
+    );
+    return response;
+  }
+
+  /**
+   * Revoke user's OAuth access
+   */
+  async revokeAccess(accessToken: string): Promise<void> {
+    await this.makeAuthenticatedRequest<void>("/user/access", accessToken, {
+      method: "DELETE",
+    });
   }
 }
 

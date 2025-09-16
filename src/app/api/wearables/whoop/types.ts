@@ -19,7 +19,7 @@ export interface WhoopTokenResponse {
 
 export interface WhoopRecovery {
   cycle_id: number;
-  sleep_id: number;
+  sleep_id: string;
   user_id: number;
   created_at: string;
   updated_at: string;
@@ -51,7 +51,7 @@ export interface WhoopCycle {
 }
 
 export interface WhoopSleep {
-  id: number;
+  id: string;
   user_id: number;
   created_at: string;
   updated_at: string;
@@ -139,7 +139,7 @@ export interface WhoopWebhookEvent {
 
 // API Response wrappers
 export interface WhoopApiResponse<T> {
-  data: T[];
+  records: T[];
   next_token?: string;
 }
 

@@ -119,17 +119,17 @@ export async function POST(request: NextRequest) {
         const recoveryData = await whoopClient.getRecovery(accessToken!, {
           start: startDate,
           end: endDate,
-          limit: 100,
+          limit: 25,
         });
 
-        if (recoveryData.data.length > 0) {
-          for (const recovery of recoveryData.data) {
+        if (recoveryData.records.length > 0) {
+          for (const recovery of recoveryData.records) {
             try {
               await prisma.whoopRecovery.upsert({
                 where: {
                   whoopUserId_cycleId: {
                     whoopUserId: user.id,
-                    cycleId: recovery.cycle_id,
+                    cycleId: BigInt(recovery.cycle_id),
                   },
                 },
                 update: {
@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
                 },
                 create: {
                   whoopUserId: user.id,
-                  cycleId: recovery.cycle_id,
+                  cycleId: BigInt(recovery.cycle_id),
                   sleepId: recovery.sleep_id,
                   createdAt: new Date(recovery.created_at),
                   updatedAt: new Date(recovery.updated_at),
@@ -161,7 +161,7 @@ export async function POST(request: NextRequest) {
               );
             }
           }
-          results.recovery = recoveryData.data.length;
+          results.recovery = recoveryData.records.length;
         }
       } catch (error) {
         results.errors.push(`Recovery fetch error: ${error}`);
@@ -174,17 +174,17 @@ export async function POST(request: NextRequest) {
         const cycleData = await whoopClient.getCycles(accessToken!, {
           start: startDate,
           end: endDate,
-          limit: 100,
+          limit: 25,
         });
 
-        if (cycleData.data.length > 0) {
-          for (const cycle of cycleData.data) {
+        if (cycleData.records.length > 0) {
+          for (const cycle of cycleData.records) {
             try {
               await prisma.whoopCycle.upsert({
                 where: {
                   whoopUserId_cycleId: {
                     whoopUserId: user.id,
-                    cycleId: cycle.id,
+                    cycleId: BigInt(cycle.id),
                   },
                 },
                 update: {
@@ -201,7 +201,7 @@ export async function POST(request: NextRequest) {
                 },
                 create: {
                   whoopUserId: user.id,
-                  cycleId: cycle.id,
+                  cycleId: BigInt(cycle.id),
                   start: new Date(cycle.start),
                   end: cycle.end ? new Date(cycle.end) : null,
                   timezoneOffset: cycle.timezone_offset,
@@ -219,7 +219,7 @@ export async function POST(request: NextRequest) {
               console.error(`Failed to upsert cycle ${cycle.id}:`, error);
             }
           }
-          results.cycles = cycleData.data.length;
+          results.cycles = cycleData.records.length;
         }
       } catch (error) {
         results.errors.push(`Cycles fetch error: ${error}`);
@@ -232,11 +232,11 @@ export async function POST(request: NextRequest) {
         const sleepData = await whoopClient.getSleep(accessToken!, {
           start: startDate,
           end: endDate,
-          limit: 100,
+          limit: 25,
         });
 
-        if (sleepData.data.length > 0) {
-          for (const sleep of sleepData.data) {
+        if (sleepData.records.length > 0) {
+          for (const sleep of sleepData.records) {
             try {
               await prisma.whoopSleep.upsert({
                 where: {
@@ -317,7 +317,7 @@ export async function POST(request: NextRequest) {
               console.error(`Failed to upsert sleep ${sleep.id}:`, error);
             }
           }
-          results.sleep = sleepData.data.length;
+          results.sleep = sleepData.records.length;
         }
       } catch (error) {
         results.errors.push(`Sleep fetch error: ${error}`);
@@ -330,17 +330,17 @@ export async function POST(request: NextRequest) {
         const workoutData = await whoopClient.getWorkouts(accessToken!, {
           start: startDate,
           end: endDate,
-          limit: 100,
+          limit: 25,
         });
 
-        if (workoutData.data.length > 0) {
-          for (const workout of workoutData.data) {
+        if (workoutData.records.length > 0) {
+          for (const workout of workoutData.records) {
             try {
               await prisma.whoopWorkout.upsert({
                 where: {
                   whoopUserId_workoutId: {
                     whoopUserId: user.id,
-                    workoutId: workout.id,
+                    workoutId: BigInt(workout.id),
                   },
                 },
                 update: {
@@ -363,7 +363,7 @@ export async function POST(request: NextRequest) {
                 },
                 create: {
                   whoopUserId: user.id,
-                  workoutId: workout.id,
+                  workoutId: BigInt(workout.id),
                   start: new Date(workout.start),
                   end: new Date(workout.end),
                   timezoneOffset: workout.timezone_offset,
@@ -387,7 +387,7 @@ export async function POST(request: NextRequest) {
               console.error(`Failed to upsert workout ${workout.id}:`, error);
             }
           }
-          results.workouts = workoutData.data.length;
+          results.workouts = workoutData.records.length;
         }
       } catch (error) {
         results.errors.push(`Workouts fetch error: ${error}`);
