@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withAuth } from "@workos-inc/authkit-nextjs";
+import { serializeBigInt } from "../utils";
 
 /**
  * WHOOP Data Export Endpoint
@@ -168,8 +169,9 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Default JSON format
-    const jsonString = JSON.stringify(exportData, null, 2);
+    // Default JSON format - serialize BigInt values first
+    const serializedData = serializeBigInt(exportData);
+    const jsonString = JSON.stringify(serializedData, null, 2);
 
     return new NextResponse(jsonString, {
       headers: {

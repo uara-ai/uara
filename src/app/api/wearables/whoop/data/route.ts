@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withAuth } from "@workos-inc/authkit-nextjs";
+import { serializeBigInt } from "../utils";
 
 /**
  * WHOOP Data Retrieval Endpoint
@@ -124,10 +125,13 @@ export async function GET(request: NextRequest) {
       generatedAt: new Date().toISOString(),
     };
 
-    return NextResponse.json({
+    // Serialize BigInt values before sending response
+    const serializedResponse = serializeBigInt({
       ...data,
       _metadata: metadata,
     });
+
+    return NextResponse.json(serializedResponse);
   } catch (error) {
     console.error("WHOOP data fetch error:", error);
     return NextResponse.json(

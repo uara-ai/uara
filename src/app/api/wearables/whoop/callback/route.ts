@@ -325,6 +325,82 @@ async function initiateDataSync(
       console.error("Failed to sync sleep data:", error);
     }
 
+    // Sync workout data
+    try {
+      const workoutData = await whoopClient.getWorkouts(accessToken, {
+        start: startDate,
+        end: endDate,
+        limit: 25,
+      });
+
+      if (workoutData.records.length > 0) {
+        const workoutRecords = workoutData.records.map((workout) => {
+          console.log(`Processing workout ${workout.id}:`);
+          console.log(
+            `- sport_id from API: ${
+              workout.sport_id
+            } (type: ${typeof workout.sport_id})`
+          );
+
+          const record = {
+            whoopUserId: userId,
+            workoutId: workout.id,
+            sportId: workout.sport_id ?? null,
+            start: new Date(workout.start),
+            end: new Date(workout.end),
+            timezoneOffset: workout.timezone_offset,
+            scoreState: workout.score_state,
+            strain: workout.score?.strain ?? null,
+            averageHeartRate: workout.score?.average_heart_rate ?? null,
+            maxHeartRate: workout.score?.max_heart_rate ?? null,
+            kilojoule: workout.score?.kilojoule ?? null,
+            percentRecorded: workout.score?.percent_recorded ?? null,
+            distanceMeters: workout.score?.distance_meter ?? null,
+            altitudeGainMeters: workout.score?.altitude_gain_meter ?? null,
+            altitudeChangeMeters: workout.score?.altitude_change_meter ?? null,
+            createdAt: new Date(workout.created_at),
+            updatedAt: new Date(workout.updated_at),
+          };
+
+          console.log(
+            `- sportId in record: ${
+              record.sportId
+            } (type: ${typeof record.sportId})`
+          );
+          console.log(`- Full record:`, JSON.stringify(record, null, 2));
+
+          return record;
+        });
+
+        console.log(
+          `Attempting to insert ${workoutRecords.length} workout records`
+        );
+
+        // Insert workouts one by one to identify which one is causing the issue
+        for (const workoutRecord of workoutRecords) {
+          try {
+            await prisma.whoopWorkout.create({
+              data: workoutRecord,
+            });
+            console.log(
+              `✅ Successfully inserted workout ${workoutRecord.workoutId}`
+            );
+          } catch (error) {
+            console.error(
+              `❌ Failed to insert workout ${workoutRecord.workoutId}:`,
+              error
+            );
+            console.error(
+              `Problematic record:`,
+              JSON.stringify(workoutRecord, null, 2)
+            );
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Failed to sync workout data:", error);
+    }
+
     console.log(`Initial data sync completed for user ${userId}`);
   } catch (error) {
     console.error("Data sync error:", error);

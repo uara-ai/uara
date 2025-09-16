@@ -85,14 +85,14 @@ export interface WhoopSleep {
 }
 
 export interface WhoopWorkout {
-  id: number;
+  id: string;
   user_id: number;
   created_at: string;
   updated_at: string;
   start: string;
   end: string;
   timezone_offset: string;
-  sport_id: number;
+  sport_id?: number;
   score_state: "SCORED" | "PENDING_SCORE" | "UNSCORABLE";
   score: {
     strain: number;

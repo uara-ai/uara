@@ -382,8 +382,8 @@ model WhoopWorkout {
   whoopUser   WhoopUser @relation(fields: [whoopUserId], references: [userId], onDelete: Cascade)
 
   // WHOOP identifiers
-  workoutId BigInt
-  sportId   Int
+  workoutId String
+  sportId   Int?
 
   // Workout timing
   start          DateTime

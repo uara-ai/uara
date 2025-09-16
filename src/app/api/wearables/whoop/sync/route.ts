@@ -340,14 +340,14 @@ export async function POST(request: NextRequest) {
                 where: {
                   whoopUserId_workoutId: {
                     whoopUserId: user.id,
-                    workoutId: BigInt(workout.id),
+                    workoutId: workout.id,
                   },
                 },
                 update: {
                   start: new Date(workout.start),
                   end: new Date(workout.end),
                   timezoneOffset: workout.timezone_offset,
-                  sportId: workout.sport_id,
+                  sportId: workout.sport_id ?? null,
                   scoreState: workout.score_state,
                   strain: workout.score?.strain ?? null,
                   averageHeartRate: workout.score?.average_heart_rate ?? null,
@@ -363,11 +363,11 @@ export async function POST(request: NextRequest) {
                 },
                 create: {
                   whoopUserId: user.id,
-                  workoutId: BigInt(workout.id),
+                  workoutId: workout.id,
                   start: new Date(workout.start),
                   end: new Date(workout.end),
                   timezoneOffset: workout.timezone_offset,
-                  sportId: workout.sport_id,
+                  sportId: workout.sport_id ?? null,
                   scoreState: workout.score_state,
                   strain: workout.score?.strain ?? null,
                   averageHeartRate: workout.score?.average_heart_rate ?? null,
