@@ -8,15 +8,14 @@ import {
   IconDatabase,
   IconFileAi,
   IconFileDescription,
-  IconFileWord,
-  IconFolder,
   IconHelp,
-  IconInnerShadowTop,
-  IconListDetails,
   IconReport,
   IconSearch,
   IconSettings,
-  IconUsers,
+  IconBrain,
+  IconActivity,
+  IconMessage,
+  IconHeart,
 } from "@tabler/icons-react";
 
 import { NavDocuments } from "@/components/healthspan/nav-documents";
@@ -47,24 +46,24 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
+      title: "AI Analysis",
+      url: "/healthspan/ai-analysis",
+      icon: IconBrain,
+    },
+    {
+      title: "WHOOP Data",
+      url: "/healthspan/whoop",
+      icon: IconActivity,
+    },
+    {
+      title: "Chat",
+      url: "/healthspan/chat",
+      icon: IconMessage,
     },
     {
       title: "Analytics",
       url: "#",
       icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
     },
   ],
   navClouds: [
@@ -134,19 +133,19 @@ const data = {
   ],
   documents: [
     {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Reports",
+      name: "Health Reports",
       url: "#",
       icon: IconReport,
     },
     {
-      name: "Word Assistant",
+      name: "Lab Results",
       url: "#",
-      icon: IconFileWord,
+      icon: IconDatabase,
+    },
+    {
+      name: "Recovery Tools",
+      url: "#",
+      icon: IconHeart,
     },
   ],
 };

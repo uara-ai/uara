@@ -1,5 +1,6 @@
 import { requestSuggestions } from "./request-suggestions";
 import { getWeather } from "./get-weather";
+import { analyzeWhoopData } from "./analyze-whoop-data";
 import type { User } from "@/lib/user.type";
 import type { UIMessageStreamWriter } from "ai";
 import type { ChatMessage } from "@/lib/types";
@@ -13,6 +14,7 @@ export function createTools({ user, dataStream }: ToolsProps) {
   return {
     getWeather,
     requestSuggestions: requestSuggestions({ user, dataStream }),
+    analyzeWhoopData: analyzeWhoopData,
   };
 }
 
