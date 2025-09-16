@@ -650,11 +650,11 @@ export function WhoopCards({
                 <div className="space-y-1">
                   <div className="flex items-center gap-1">
                     <IconHeart className="h-3 w-3 text-[#085983]/60" />
-                    <span className="text-[#085983]/60 text-xs">Max HR</span>
+                    <span className="text-[#085983]/60 text-xs">Blood</span>
                   </div>
                   <div className="font-medium text-[#085983] text-[#085983]">
                     {whoopUser?.maxHeartRate
-                      ? `${whoopUser.maxHeartRate} bpm`
+                      ? `${whoopUser.maxHeartRate.toString()}`
                       : "N/A"}
                   </div>
                 </div>
@@ -663,7 +663,7 @@ export function WhoopCards({
                     <IconTarget className="h-3 w-3 text-[#085983]/60" />
                     <span className="text-[#085983]/60 text-xs">Age</span>
                   </div>
-                  <div className="font-medium text-[#085983] text-[#085983]">
+                  <div className="font-medium text-[#085983]">
                     {user?.dateOfBirth
                       ? `${Math.floor(
                           (Date.now() - new Date(user.dateOfBirth).getTime()) /
