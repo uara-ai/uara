@@ -13,17 +13,17 @@ import {
 import { getUserTierServer } from "@/actions/user-tier-action";
 
 const tierBadgeVariants = cva(
-  "inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-300 hover:scale-105 shadow-lg border",
+  "inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-1.5 font-[family-name:var(--font-geist-sans)] text-xs font-medium transition-all duration-300 hover:scale-105",
   {
     variants: {
       tier: {
-        1: "bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 text-amber-900 border-amber-300 shadow-amber-200/50 hover:shadow-amber-300/60 animate-pulse",
-        2: "bg-gradient-to-r from-violet-500 via-purple-500 to-violet-500 text-white border-violet-400 shadow-violet-200/50 hover:shadow-violet-300/60",
-        3: "bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-500 text-white border-blue-400 shadow-blue-200/50 hover:shadow-blue-300/60",
-        4: "bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-500 text-white border-emerald-400 shadow-emerald-200/50 hover:shadow-emerald-300/60",
-        5: "bg-gradient-to-r from-orange-500 via-amber-500 to-orange-500 text-white border-orange-400 shadow-orange-200/50 hover:shadow-orange-300/60",
-        6: "bg-gradient-to-r from-slate-500 via-gray-500 to-slate-500 text-white border-slate-400 shadow-slate-200/50 hover:shadow-slate-300/60",
-        7: "bg-gradient-to-r from-zinc-400 via-gray-400 to-zinc-400 text-gray-800 border-zinc-300 shadow-zinc-200/50 hover:shadow-zinc-300/60",
+        1: "bg-[#085983] text-white border border-[#085983]/20 shadow-lg",
+        2: "bg-[#085983]/90 text-white border border-[#085983]/20 shadow-lg",
+        3: "bg-[#085983]/80 text-white border border-[#085983]/20 shadow-lg",
+        4: "bg-[#085983]/70 text-white border border-[#085983]/20 shadow-lg",
+        5: "bg-[#085983]/60 text-white border border-[#085983]/20 shadow-lg",
+        6: "bg-[#085983]/50 text-white border border-[#085983]/20 shadow-lg",
+        7: "bg-[#085983]/40 text-white border border-[#085983]/20 shadow-lg",
       },
     },
   }
@@ -111,21 +111,36 @@ function TierProgress({
       : ((maxSpots - spotsRemaining) / maxSpots) * 100;
 
   return (
-    <div className={cn("space-y-2", className)}>
+    <div
+      className={cn(
+        "space-y-3 p-4 bg-white rounded-xl border border-[#085983]/10 shadow-lg",
+        className
+      )}
+    >
       <div className="flex items-center justify-between">
         <TierBadge tier={currentTier} size="sm" />
-        <span className="text-xs text-muted-foreground">
+        <span className="font-[family-name:var(--font-geist-sans)] text-xs text-[#085983]/60">
           {spotsRemaining === Infinity
             ? "Unlimited"
             : `${spotsRemaining} spots left`}
         </span>
       </div>
       {spotsRemaining !== Infinity && (
-        <div className="w-full bg-secondary rounded-full h-2">
-          <div
-            className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-500"
-            style={{ width: `${progress}%` }}
-          />
+        <div className="space-y-1">
+          <div className="flex justify-between text-xs">
+            <span className="text-[#085983]/60 font-[family-name:var(--font-geist-sans)]">
+              Progress
+            </span>
+            <span className="font-medium text-[#085983] font-[family-name:var(--font-geist-sans)]">
+              {Math.round(progress)}%
+            </span>
+          </div>
+          <div className="w-full bg-[#085983]/10 rounded-full h-2">
+            <div
+              className="bg-[#085983] h-2 rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
         </div>
       )}
     </div>
@@ -143,17 +158,39 @@ function TierList({ currentTier, className, showAll = false }: TierListProps) {
   const tiers = showAll ? allTiers : currentTier ? [currentTier] : [];
 
   return (
-    <div className={cn("flex flex-wrap gap-2", className)}>
+    <div
+      className={cn(
+        "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
+        className
+      )}
+    >
       {tiers.map((tier) => (
-        <TierBadge
+        <div
           key={tier}
-          tier={tier}
-          className={
+          className={cn(
+            "p-4 bg-white rounded-xl border border-[#085983]/10 shadow-lg hover:shadow-xl transition-all duration-300",
             currentTier === tier
-              ? "ring-2 ring-blue-500 ring-offset-2"
-              : "opacity-60"
-          }
-        />
+              ? "ring-2 ring-[#085983] ring-offset-2"
+              : "opacity-80 hover:opacity-100"
+          )}
+        >
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <TierBadge tier={tier} size="sm" />
+              <span className="font-[family-name:var(--font-geist-sans)] text-xs text-[#085983]/60">
+                Tier {tier}
+              </span>
+            </div>
+            <div className="text-center">
+              <h3 className="font-[family-name:var(--font-instrument-serif)] text-lg font-normal text-[#085983]">
+                {tierNames[tier]}
+              </h3>
+              <p className="font-[family-name:var(--font-geist-sans)] text-sm text-[#085983]/70 mt-1">
+                {currentTier === tier ? "Your current tier" : "Available tier"}
+              </p>
+            </div>
+          </div>
+        </div>
       ))}
     </div>
   );
@@ -232,13 +269,50 @@ async function UserTierDisplay({
   const purchasedAt = userTier?.tierPurchasedAt;
 
   return (
-    <div className={cn("space-y-2", className)}>
-      <TierBadge tier={tierNumber} />
-      {showPurchaseDate && purchasedAt && (
-        <p className="text-xs text-muted-foreground">
-          Purchased: {new Date(purchasedAt).toLocaleDateString()}
-        </p>
+    <div
+      className={cn(
+        "p-4 bg-white rounded-xl border border-[#085983]/10 shadow-lg space-y-4",
+        className
       )}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="p-2 rounded-lg bg-[#085983]/10">
+            {(() => {
+              const IconComponent = tierIcons[tierNumber];
+              return <IconComponent className="h-4 w-4 text-[#085983]" />;
+            })()}
+          </div>
+          <span className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983]/80">
+            Your Tier
+          </span>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <h3 className="font-[family-name:var(--font-instrument-serif)] text-2xl sm:text-3xl font-normal text-[#085983]">
+          {tierNames[tierNumber]}
+        </h3>
+        <div className="flex items-center gap-2">
+          <TierBadge tier={tierNumber} size="sm" />
+          {showPurchaseDate && purchasedAt && (
+            <span className="font-[family-name:var(--font-geist-sans)] text-xs text-[#085983]/60">
+              Since {new Date(purchasedAt).toLocaleDateString()}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="pt-2 border-t border-[#085983]/10">
+        <div className="flex justify-between text-xs">
+          <span className="text-[#085983]/60 font-[family-name:var(--font-geist-sans)]">
+            Status:
+          </span>
+          <span className="font-medium text-[#085983] font-[family-name:var(--font-geist-sans)]">
+            Active
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

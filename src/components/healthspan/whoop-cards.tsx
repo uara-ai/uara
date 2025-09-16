@@ -83,11 +83,11 @@ export function WhoopCards({
   const getTrendColor = (trend: "up" | "down" | "stable") => {
     switch (trend) {
       case "up":
-        return "text-green-600 bg-green-50 border-green-200";
+        return "text-[#085983] bg-[#085983]/10 border-[#085983]/20";
       case "down":
-        return "text-red-600 bg-red-50 border-red-200";
+        return "text-[#085983]/60 bg-[#085983]/5 border-[#085983]/10";
       default:
-        return "text-gray-600 bg-gray-50 border-gray-200";
+        return "text-[#085983]/70 bg-[#085983]/5 border-[#085983]/15";
     }
   };
 
@@ -95,23 +95,24 @@ export function WhoopCards({
     score: number | null,
     type: "recovery" | "sleep" | "strain"
   ) => {
-    if (!score) return "text-gray-500";
+    if (!score) return "text-[#085983]/50";
 
+    // Use consistent brand color with opacity variations for all scores
     switch (type) {
       case "recovery":
-        if (score >= 80) return "text-green-600";
-        if (score >= 60) return "text-yellow-600";
-        return "text-red-600";
+        if (score >= 80) return "text-[#085983]";
+        if (score >= 60) return "text-[#085983]/80";
+        return "text-[#085983]/60";
       case "sleep":
-        if (score >= 85) return "text-green-600";
-        if (score >= 70) return "text-yellow-600";
-        return "text-red-600";
+        if (score >= 85) return "text-[#085983]";
+        if (score >= 70) return "text-[#085983]/80";
+        return "text-[#085983]/60";
       case "strain":
-        if (score >= 15) return "text-red-600";
-        if (score >= 10) return "text-yellow-600";
-        return "text-green-600";
+        if (score >= 15) return "text-[#085983]";
+        if (score >= 10) return "text-[#085983]/80";
+        return "text-[#085983]/60";
       default:
-        return "text-gray-500";
+        return "text-[#085983]/50";
     }
   };
 
@@ -169,7 +170,7 @@ export function WhoopCards({
                   <div className="p-2 rounded-lg bg-[#085983]/10">
                     <IconHeart className="h-4 w-4 text-[#085983]" />
                   </div>
-                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983]/80">
+                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983] text-[#085983]/80">
                     Recovery Score
                   </CardDescription>
                 </div>
@@ -221,7 +222,7 @@ export function WhoopCards({
                   <Badge
                     variant="outline"
                     className={cn(
-                      "text-xs font-medium",
+                      "text-xs font-medium text-[#085983]",
                       getTrendColor(whoopStats.trends.recoveryTrend)
                     )}
                   >
@@ -237,8 +238,8 @@ export function WhoopCards({
                 {/* Progress bar for recovery target */}
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Target: 80%</span>
-                    <span className="font-medium">
+                    <span className="text-[#085983]/60">Target: 80%</span>
+                    <span className="font-medium text-[#085983] text-[#085983]">
                       {whoopStats.latestRecovery?.recoveryScore
                         ? `${Math.round(
                             getProgressValue(
@@ -263,10 +264,10 @@ export function WhoopCards({
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="space-y-1">
                   <div className="flex items-center gap-1">
-                    <IconHeart className="h-3 w-3 text-red-500" />
-                    <span className="text-muted-foreground text-xs">RHR</span>
+                    <IconHeart className="h-3 w-3 text-[#085983]/60" />
+                    <span className="text-[#085983]/60 text-xs">RHR</span>
                   </div>
-                  <div className="font-medium">
+                  <div className="font-medium text-[#085983] text-[#085983]">
                     {whoopStats.latestRecovery?.restingHeartRate
                       ? `${whoopStats.latestRecovery.restingHeartRate} bpm`
                       : "N/A"}
@@ -274,10 +275,10 @@ export function WhoopCards({
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-1">
-                    <IconBolt className="h-3 w-3 text-blue-500" />
-                    <span className="text-muted-foreground text-xs">HRV</span>
+                    <IconBolt className="h-3 w-3 text-[#085983]/60" />
+                    <span className="text-[#085983]/60 text-xs">HRV</span>
                   </div>
-                  <div className="font-medium">
+                  <div className="font-medium text-[#085983] text-[#085983]">
                     {whoopStats.latestRecovery?.hrvRmssd
                       ? `${Math.round(whoopStats.latestRecovery.hrvRmssd)}ms`
                       : "N/A"}
@@ -288,8 +289,8 @@ export function WhoopCards({
               {/* Weekly average */}
               <div className="pt-2 border-t">
                 <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">7-day avg:</span>
-                  <span className="font-medium">
+                  <span className="text-[#085983]/60">7-day avg:</span>
+                  <span className="font-medium text-[#085983]">
                     {weeklyRecoveryAvg
                       ? `${weeklyRecoveryAvg.toFixed(1)}%`
                       : "N/A"}
@@ -307,7 +308,7 @@ export function WhoopCards({
                   <div className="p-2 rounded-lg bg-[#085983]/10">
                     <IconMoon className="h-4 w-4 text-[#085983]" />
                   </div>
-                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983]/80">
+                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983] text-[#085983]/80">
                     Sleep Performance
                   </CardDescription>
                 </div>
@@ -352,7 +353,7 @@ export function WhoopCards({
                   <Badge
                     variant="outline"
                     className={cn(
-                      "text-xs font-medium",
+                      "text-xs font-medium text-[#085983]",
                       getTrendColor(whoopStats.trends.sleepTrend)
                     )}
                   >
@@ -368,10 +369,10 @@ export function WhoopCards({
                 {/* Sleep quality progress */}
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">
+                    <span className="text-[#085983]/60">
                       Sleep Quality Target: 85%
                     </span>
-                    <span className="font-medium">
+                    <span className="font-medium text-[#085983]">
                       {whoopStats.latestSleep?.sleepPerformancePercentage
                         ? `${Math.round(
                             getProgressValue(
@@ -397,12 +398,12 @@ export function WhoopCards({
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="space-y-1">
                   <div className="flex items-center gap-1">
-                    <IconTarget className="h-3 w-3 text-green-500" />
-                    <span className="text-muted-foreground text-xs">
+                    <IconTarget className="h-3 w-3 text-[#085983]/60" />
+                    <span className="text-[#085983]/60 text-xs">
                       Efficiency
                     </span>
                   </div>
-                  <div className="font-medium">
+                  <div className="font-medium text-[#085983] text-[#085983]">
                     {whoopStats.latestSleep?.sleepEfficiencyPercentage
                       ? `${Math.round(
                           whoopStats.latestSleep.sleepEfficiencyPercentage
@@ -412,10 +413,10 @@ export function WhoopCards({
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-1">
-                    <IconZzz className="h-3 w-3 text-purple-500" />
-                    <span className="text-muted-foreground text-xs">Time</span>
+                    <IconZzz className="h-3 w-3 text-[#085983]/60" />
+                    <span className="text-[#085983]/60 text-xs">Time</span>
                   </div>
-                  <div className="font-medium">
+                  <div className="font-medium text-[#085983] text-[#085983]">
                     {whoopStats.latestSleep?.totalInBedTime
                       ? formatTime(whoopStats.latestSleep.totalInBedTime)
                       : "N/A"}
@@ -426,10 +427,8 @@ export function WhoopCards({
               {/* Weekly average */}
               <div className="pt-2 border-t">
                 <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">
-                    7-day efficiency:
-                  </span>
-                  <span className="font-medium">
+                  <span className="text-[#085983]/60">7-day efficiency:</span>
+                  <span className="font-medium text-[#085983]">
                     {weeklySleepEfficiency
                       ? `${weeklySleepEfficiency.toFixed(1)}%`
                       : "N/A"}
@@ -447,7 +446,7 @@ export function WhoopCards({
                   <div className="p-2 rounded-lg bg-[#085983]/10">
                     <IconActivity className="h-4 w-4 text-[#085983]" />
                   </div>
-                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983]/80">
+                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983] text-[#085983]/80">
                     Weekly Strain
                   </CardDescription>
                 </div>
@@ -489,7 +488,7 @@ export function WhoopCards({
                   <Badge
                     variant="outline"
                     className={cn(
-                      "text-xs font-medium",
+                      "text-xs font-medium text-[#085983]",
                       getTrendColor(whoopStats.trends.strainTrend)
                     )}
                   >
@@ -505,10 +504,10 @@ export function WhoopCards({
                 {/* Strain target progress */}
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">
+                    <span className="text-[#085983]/60">
                       Weekly Target: 12.0
                     </span>
-                    <span className="font-medium">
+                    <span className="font-medium text-[#085983]">
                       {whoopStats.weeklyStrain?.averageStrain
                         ? `${Math.round(
                             getProgressValue(
@@ -533,10 +532,10 @@ export function WhoopCards({
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="space-y-1">
                   <div className="flex items-center gap-1">
-                    <IconBolt className="h-3 w-3 text-red-500" />
-                    <span className="text-muted-foreground text-xs">Peak</span>
+                    <IconBolt className="h-3 w-3 text-[#085983]/60" />
+                    <span className="text-[#085983]/60 text-xs">Peak</span>
                   </div>
-                  <div className="font-medium">
+                  <div className="font-medium text-[#085983] text-[#085983]">
                     {whoopStats.weeklyStrain?.maxStrain
                       ? whoopStats.weeklyStrain.maxStrain.toFixed(1)
                       : "N/A"}
@@ -544,12 +543,10 @@ export function WhoopCards({
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-1">
-                    <IconTarget className="h-3 w-3 text-green-500" />
-                    <span className="text-muted-foreground text-xs">
-                      Workouts
-                    </span>
+                    <IconTarget className="h-3 w-3 text-[#085983]/60" />
+                    <span className="text-[#085983]/60 text-xs">Workouts</span>
                   </div>
-                  <div className="font-medium">
+                  <div className="font-medium text-[#085983]">
                     {whoopStats.weeklyStrain?.totalWorkouts || 0}
                   </div>
                 </div>
@@ -558,8 +555,8 @@ export function WhoopCards({
               {/* Activity insight */}
               <div className="pt-2 border-t">
                 <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Activity level:</span>
-                  <span className="font-medium">
+                  <span className="text-[#085983]/60">Activity level:</span>
+                  <span className="font-medium text-[#085983]">
                     {whoopStats.weeklyStrain?.averageStrain
                       ? whoopStats.weeklyStrain.averageStrain >= 15
                         ? "Very High"
@@ -581,7 +578,7 @@ export function WhoopCards({
                   <div className="p-2 rounded-lg bg-[#085983]/10">
                     <IconUser className="h-4 w-4 text-[#085983]" />
                   </div>
-                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983]/80">
+                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983] text-[#085983]/80">
                     Health Profile
                   </CardDescription>
                 </div>
@@ -629,7 +626,7 @@ export function WhoopCards({
                     <IconRuler2 className="h-3 w-3 text-[#085983]/60" />
                     <span className="text-[#085983]/60 text-xs">Height</span>
                   </div>
-                  <div className="font-medium text-[#085983]">
+                  <div className="font-medium text-[#085983] text-[#085983]">
                     {user?.heightCm
                       ? `${user.heightCm} cm`
                       : whoopUser?.heightMeter
@@ -642,7 +639,7 @@ export function WhoopCards({
                     <IconScale className="h-3 w-3 text-[#085983]/60" />
                     <span className="text-[#085983]/60 text-xs">Weight</span>
                   </div>
-                  <div className="font-medium text-[#085983]">
+                  <div className="font-medium text-[#085983] text-[#085983]">
                     {user?.weightKg
                       ? `${user.weightKg.toFixed(1)} kg`
                       : whoopUser?.weightKilogram
@@ -655,7 +652,7 @@ export function WhoopCards({
                     <IconHeart className="h-3 w-3 text-[#085983]/60" />
                     <span className="text-[#085983]/60 text-xs">Max HR</span>
                   </div>
-                  <div className="font-medium text-[#085983]">
+                  <div className="font-medium text-[#085983] text-[#085983]">
                     {whoopUser?.maxHeartRate
                       ? `${whoopUser.maxHeartRate} bpm`
                       : "N/A"}
@@ -666,7 +663,7 @@ export function WhoopCards({
                     <IconTarget className="h-3 w-3 text-[#085983]/60" />
                     <span className="text-[#085983]/60 text-xs">Age</span>
                   </div>
-                  <div className="font-medium text-[#085983]">
+                  <div className="font-medium text-[#085983] text-[#085983]">
                     {user?.dateOfBirth
                       ? `${Math.floor(
                           (Date.now() - new Date(user.dateOfBirth).getTime()) /
@@ -683,7 +680,7 @@ export function WhoopCards({
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs">
                     <span className="text-[#085983]/60">BMI</span>
-                    <span className="font-medium text-[#085983]">
+                    <span className="font-medium text-[#085983] text-[#085983]">
                       {(() => {
                         const height = user?.heightCm
                           ? user.heightCm / 100
@@ -718,7 +715,7 @@ export function WhoopCards({
               <div className="pt-2 border-t">
                 <div className="flex justify-between text-xs">
                   <span className="text-[#085983]/60">Last WHOOP sync:</span>
-                  <span className="font-medium text-[#085983]">
+                  <span className="font-medium text-[#085983] text-[#085983]">
                     {whoopUser?.lastSyncAt
                       ? new Date(whoopUser.lastSyncAt).toLocaleDateString()
                       : "Never"}
