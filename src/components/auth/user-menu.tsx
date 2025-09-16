@@ -1,9 +1,9 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -14,6 +14,10 @@ import { LogIn } from "lucide-react";
 import { SignOut } from "@/components/auth/sign-out";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { User } from "@/lib/user.type";
+import { TierBadge } from "@/components/healthspan/tiers";
+import { getUserTierAction } from "@/actions/user-tier-action";
+import { useAction } from "next-safe-action/hooks";
+import { useEffect, useState } from "react";
 
 type Props = {
   user: User | null;
@@ -21,6 +25,28 @@ type Props = {
 };
 
 export function UserMenu({ user, onlySignOut }: Props) {
+  const [userTier, setUserTier] = useState<{
+    tierNumber: 1 | 2 | 3 | 4 | 5 | 6 | 7 | null;
+    tierPurchasedAt: Date | null;
+  } | null>(null);
+
+  const { execute: fetchUserTier } = useAction(getUserTierAction, {
+    onSuccess: (data) => {
+      if (data) {
+        setUserTier({
+          tierNumber: data?.data?.tierNumber || null,
+          tierPurchasedAt: data?.data?.tierPurchasedAt || null,
+        });
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (user) {
+      fetchUserTier({});
+    }
+  }, [user, fetchUserTier]);
+
   // If user is not logged in, show login button
   if (!user) {
     return (
@@ -79,6 +105,14 @@ export function UserMenu({ user, onlySignOut }: Props) {
                     {email}
                   </span>
                 </div>
+                {userTier?.tierNumber && (
+                  <TierBadge
+                    tier={userTier.tierNumber}
+                    size="sm"
+                    showIcon={true}
+                    showName={false}
+                  />
+                )}
               </div>
             </DropdownMenuLabel>
 
