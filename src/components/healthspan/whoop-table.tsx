@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useState } from "react";
-import { useAction } from "next-safe-action/hooks";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -58,10 +57,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  WhoopDataResponse,
-  getWhoopDataAction,
-} from "@/actions/whoop-data-action";
+import { WhoopDataResponse } from "@/actions/whoop-data-action";
 
 // WHOOP data types based on our database schema
 interface WhoopRecoveryRecord {
@@ -136,7 +132,7 @@ type WhoopRecord =
   | WhoopWorkoutRecord;
 
 interface WhoopTableProps {
-  initialData?: WhoopDataResponse | null;
+  whoopData: WhoopDataResponse | null;
 }
 
 const formatTime = (milliseconds: number | null): string => {
@@ -491,10 +487,7 @@ const workoutColumns: ColumnDef<WhoopWorkoutRecord>[] = [
   },
 ];
 
-export function WhoopTable({ initialData }: WhoopTableProps) {
-  const [whoopData, setWhoopData] = useState<WhoopDataResponse | null>(
-    initialData || null
-  );
+export function WhoopTable({ whoopData }: WhoopTableProps) {
   const [activeTab, setActiveTab] = useState("recovery");
 
   // Table state
@@ -516,21 +509,6 @@ export function WhoopTable({ initialData }: WhoopTableProps) {
     setSorting([]);
     setColumnFilters([]);
   }, [activeTab]);
-
-  const { execute: fetchWhoopData, isPending } = useAction(getWhoopDataAction, {
-    onSuccess: (result) => {
-      if (result.data) {
-        setWhoopData(result.data);
-      }
-    },
-    onError: (error) => {
-      console.error("Error fetching WHOOP data:", error);
-    },
-  });
-
-  const handleRefresh = () => {
-    fetchWhoopData({ days: 90, limit: 200 });
-  };
 
   const exportData = async () => {
     try {
@@ -634,19 +612,6 @@ export function WhoopTable({ initialData }: WhoopTableProps) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  // Show loading only if we don't have initial data and are fetching
-  if (isPending && !whoopData) {
-    return (
-      <div className="space-y-4 px-4 lg:px-6">
-        <div className="flex items-center justify-between">
-          <div className="h-8 w-48 bg-gray-200 rounded animate-pulse"></div>
-          <div className="h-8 w-32 bg-gray-200 rounded animate-pulse"></div>
-        </div>
-        <div className="h-96 bg-gray-200 rounded animate-pulse"></div>
-      </div>
-    );
-  }
-
   if (!whoopData) {
     return (
       <div className="space-y-4 px-4 lg:px-6">
@@ -655,18 +620,6 @@ export function WhoopTable({ initialData }: WhoopTableProps) {
           <p className="text-gray-600 mt-2">
             No WHOOP data available. Connect your WHOOP account to see data.
           </p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefresh}
-            disabled={isPending}
-            className="mt-4"
-          >
-            <IconRefresh
-              className={`h-4 w-4 mr-2 ${isPending ? "animate-spin" : ""}`}
-            />
-            {isPending ? "Checking..." : "Check for Data"}
-          </Button>
         </div>
       </div>
     );
@@ -686,17 +639,6 @@ export function WhoopTable({ initialData }: WhoopTableProps) {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefresh}
-            disabled={isPending}
-          >
-            <IconRefresh
-              className={`h-4 w-4 mr-2 ${isPending ? "animate-spin" : ""}`}
-            />
-            {isPending ? "Refreshing..." : "Refresh"}
-          </Button>
           <Button variant="outline" size="sm" onClick={exportData}>
             <IconDownload className="h-4 w-4 mr-2" />
             Export
