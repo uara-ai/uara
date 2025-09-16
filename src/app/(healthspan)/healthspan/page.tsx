@@ -21,15 +21,15 @@ export default async function HealthspanPage() {
       <GreetingHeader className="ml-6 mb-2" />
 
       <WhoopCards whoopData={whoopSummary} whoopStats={whoopStats} />
-
-      <div className="px-4 lg:px-6">
-        <ChartAreaInteractive />
-      </div>
-      <SectionCards />
-
-      <DataTable data={data} />
     </div>
   );
 }
 
 // Cursor rules applied correctly.
+
+/*<div className="px-4 lg:px-6">
+        <ChartAreaInteractive />
+      </div>
+      <SectionCards />
+
+      <DataTable data={data} />*/

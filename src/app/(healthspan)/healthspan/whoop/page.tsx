@@ -61,45 +61,6 @@ function WhoopTableLoading() {
   );
 }
 
-// Separate components for optimized loading
-async function WhoopCardsSection() {
-  // Fetch summary data for cards (fast, cached)
-  const whoopSummary = await getWhoopSummaryServer(7); // Last 7 days only
-  const whoopStats = whoopSummary
-    ? await processWhoopDataToStats(whoopSummary)
-    : null;
-
-  return (
-    <div className="space-y-4">
-      <div className="px-4 lg:px-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">WHOOP Dashboard</h1>
-            <p className="text-muted-foreground">
-              View your WHOOP recovery, sleep, strain, and workout data in one
-              place.
-            </p>
-            {whoopSummary?._metadata && (
-              <p className="text-sm text-muted-foreground mt-2">
-                Last updated:{" "}
-                {new Date(whoopSummary._metadata.fetchedAt).toLocaleString()} •
-                Last 7 days •{" "}
-                {Object.values(whoopSummary._metadata.counts).reduce(
-                  (a, b) => a + b,
-                  0
-                )}{" "}
-                summary records
-              </p>
-            )}
-          </div>
-          <WhoopRefreshButton />
-        </div>
-      </div>
-      <WhoopCards whoopData={whoopSummary} whoopStats={whoopStats} />
-    </div>
-  );
-}
-
 async function WhoopTableSection() {
   // Fetch full data for table (slower, more comprehensive)
   const whoopData = await getWhoopDataServer(30, 25); // 30 days, 25 records limit
@@ -107,7 +68,12 @@ async function WhoopTableSection() {
   return <WhoopTable whoopData={whoopData} />;
 }
 
-export default function WhoopPage() {
+export default async function WhoopPage() {
+  // Fetch summary data for cards (fast, cached)
+  const whoopSummary = await getWhoopSummaryServer(7); // Last 7 days only
+  const whoopStats = whoopSummary
+    ? await processWhoopDataToStats(whoopSummary)
+    : null;
   return (
     <div className="flex-1 overflow-auto">
       <div className="space-y-8">
@@ -115,17 +81,38 @@ export default function WhoopPage() {
         <Suspense fallback={<WhoopCardsLoading />}>
           <WhoopCardsSection />
         </Suspense>*/}
+        {/* Section Header */}
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+          {/* Mobile: Simple title */}
+          <div className="block sm:hidden mb-4">
+            <h2 className="font-[family-name:var(--font-instrument-serif)] text-2xl font-normal text-[#085983] leading-tight">
+              Your WHOOP Insights
+            </h2>
+          </div>
 
-        <div className="px-4 lg:px-6">
-          <Separator />
+          {/* Desktop: Decorative title with lines */}
+          <div className="hidden sm:flex items-center justify-center mb-6">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#085983]/30"></div>
+            <h2 className="px-6 font-[family-name:var(--font-instrument-serif)] text-2xl sm:text-3xl lg:text-4xl font-normal text-[#085983]">
+              Your WHOOP Insights
+            </h2>
+            <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#085983]/30"></div>
+          </div>
+
+          <p className="font-[family-name:var(--font-geist-sans)] text-sm sm:text-base lg:text-lg text-[#085983]/80 max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
+            Real-time recovery, sleep, and strain insights from your WHOOP data,
+            designed to optimize your performance and longevity.
+          </p>
         </div>
 
-        {/* WHOOP Table Section - Slower loading but more data */}
+        <WhoopCards whoopData={whoopSummary} whoopStats={whoopStats} />
+
+        {/* WHOOP Table Section - Slower loading but more data 
         <div className="space-y-4">
           <Suspense fallback={<WhoopTableLoading />}>
             <WhoopTableSection />
           </Suspense>
-        </div>
+        </div>*/}
       </div>
     </div>
   );
