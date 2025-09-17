@@ -9,7 +9,7 @@ import { setContext } from "@/lib/ai/context";
 import { tools } from "@/lib/ai/tools";
 import { LONGEVITY_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
 import { myProvider } from "@/lib/ai/providers";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkRateLimit, createRateLimitHeaders } from "@/lib/rate-limit";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { ChatSDKError } from "@/lib/errors";
 
@@ -23,8 +23,8 @@ export async function POST(req: Request) {
   }
   const { messages }: { messages: UIMessage[] } = await req.json();
 
-  // Check rate limit
-  await checkRateLimit(user?.id);
+  // Check rate limit and get updated status
+  const rateLimitData = await checkRateLimit(user?.id);
 
   const stream = createUIMessageStream({
     execute: ({ writer }) => {
@@ -51,5 +51,11 @@ export async function POST(req: Request) {
     },
   });
 
-  return createUIMessageStreamResponse({ stream });
+  // Create response with rate limit headers
+  const response = createUIMessageStreamResponse({
+    stream,
+    headers: createRateLimitHeaders(rateLimitData),
+  });
+
+  return response;
 }

@@ -24,12 +24,25 @@ import { ChatInput } from "./chat-input";
 import { ChatAnalysisPanel } from "./chat-analysis-panel";
 import { cn } from "@/lib/utils";
 import { getWhoopAnalysisDataAction } from "@/actions/whoop-analysis-action";
+import { useRateLimitContext } from "@/hooks/use-rate-limit-context";
 
 export default function Chat() {
+  // Use rate limit context for automatic counter updates
+  const { decrementCounter, updateFromHeaders } = useRateLimitContext();
+
+  // Create custom transport with header interceptor
+  const customTransport = new DefaultChatTransport({
+    api: "/api/chat",
+    fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
+      const response = await fetch(input, init);
+      // Update rate limit from response headers after the request
+      updateFromHeaders(response.headers);
+      return response;
+    },
+  });
+
   const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({
-      api: "/api/chat",
-    }),
+    transport: customTransport,
   });
   const [input, setInput] = useState("");
   const [showBurnRateChart, setShowBurnRateChart] = useState(false);
@@ -254,6 +267,8 @@ export default function Chat() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim() && !isLoadingWhoopData) {
+      // Immediately decrement counter for instant visual feedback
+      decrementCounter();
       sendMessage({ text: input });
       setInput("");
     }
