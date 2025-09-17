@@ -6,11 +6,7 @@ interface ChatLayoutProps {
 }
 
 export default function ChatLayout({ children }: ChatLayoutProps) {
-  return (
-    <TooltipProvider>
-      <div className="flex h-screen flex-col overflow-hidden">{children}</div>
-    </TooltipProvider>
-  );
+  return <TooltipProvider>{children}</TooltipProvider>;
 }
 
 // Cursor rules applied correctly.
