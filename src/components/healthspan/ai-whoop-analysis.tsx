@@ -2,7 +2,15 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { IconBrain, IconMessage, IconArrowRight } from "@tabler/icons-react";
+import {
+  IconBrain,
+  IconMessage,
+  IconArrowRight,
+  IconRefresh,
+  IconLoader,
+  IconCheck,
+  IconX,
+} from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -35,6 +43,7 @@ interface AIWhoopAnalysisProps {
     tier?: string | null;
   } | null;
   className?: string;
+  onDataRefresh?: () => void;
 }
 
 export function AIWhoopAnalysis({
@@ -42,10 +51,16 @@ export function AIWhoopAnalysis({
   whoopStats,
   user,
   className,
+  onDataRefresh,
 }: AIWhoopAnalysisProps) {
   const [aiAnalysis, setAiAnalysis] = useState<AnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSyncing, setIsSyncing] = useState<boolean>(false);
+  const [syncStatus, setSyncStatus] = useState<"idle" | "success" | "error">(
+    "idle"
+  );
+  const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
 
   const generateAIAnalysis = useCallback(
     async (
@@ -75,6 +90,55 @@ export function AIWhoopAnalysis({
     },
     [whoopData, whoopStats]
   );
+
+  const syncWhoopData = useCallback(async () => {
+    setIsSyncing(true);
+    setSyncStatus("idle");
+
+    try {
+      // Call the WHOOP sync endpoint
+      const response = await fetch(
+        "/api/wearables/whoop/sync?days=7&type=all",
+        {
+          method: "POST",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to sync WHOOP data");
+      }
+
+      const result = await response.json();
+      console.log("WHOOP sync result:", result);
+
+      setSyncStatus("success");
+      setLastSyncTime(new Date());
+
+      // Clear current AI analysis to trigger refresh
+      setAiAnalysis(null);
+      setError(null);
+
+      // Call parent refresh function to reload data
+      if (onDataRefresh) {
+        onDataRefresh();
+      }
+
+      // Auto-clear success status after 3 seconds
+      setTimeout(() => {
+        setSyncStatus("idle");
+      }, 3000);
+    } catch (err) {
+      console.error("Error syncing WHOOP data:", err);
+      setSyncStatus("error");
+
+      // Auto-clear error status after 5 seconds
+      setTimeout(() => {
+        setSyncStatus("idle");
+      }, 5000);
+    } finally {
+      setIsSyncing(false);
+    }
+  }, [onDataRefresh]);
 
   useEffect(() => {
     if (whoopData && whoopStats && !aiAnalysis && !isLoading) {
@@ -110,22 +174,74 @@ export function AIWhoopAnalysis({
             <h1 className="text-3xl sm:text-4xl font-[family-name:var(--font-instrument-serif)] font-medium text-[#085983]">
               Health Analysis
             </h1>
-            <p className="text-base text-[#085983]/70 font-geist-sans">
-              Personalized insights from your WHOOP data for longevity
-              optimization
-            </p>
+            <div className="space-y-1">
+              <p className="text-base text-[#085983]/70 font-geist-sans">
+                Personalized insights from your WHOOP data for longevity
+                optimization
+              </p>
+              {whoopData?._metadata?.fetchedAt && (
+                <p className="text-sm text-[#085983]/60 font-geist-sans">
+                  Data from{" "}
+                  {new Date(whoopData._metadata.fetchedAt).toLocaleDateString()}{" "}
+                  •{whoopData._metadata.daysPeriod} days period
+                  {lastSyncTime && (
+                    <span className="ml-2">
+                      • Last synced {lastSyncTime.toLocaleTimeString()}
+                    </span>
+                  )}
+                </p>
+              )}
+            </div>
           </div>
-          <Link href="/healthspan/chat" className="shrink-0">
+          <div className="flex gap-3 shrink-0">
+            <Link href="/healthspan/chat">
+              <Button
+                variant="outline"
+                size="lg"
+                className="gap-2 text-[#085983] border-[#085983]/20 font-geist-sans font-medium"
+              >
+                <IconMessage className="h-4 w-4" />
+                Chat with AI
+                <IconArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
             <Button
+              onClick={syncWhoopData}
+              disabled={isSyncing}
               variant="outline"
               size="lg"
-              className="gap-2 text-[#085983] border-[#085983]/20 font-geist-sans font-medium"
+              className={cn(
+                "gap-2 font-geist-sans font-medium transition-all duration-200",
+                syncStatus === "success" &&
+                  "text-green-700 border-green-200 bg-green-50",
+                syncStatus === "error" &&
+                  "text-red-700 border-red-200 bg-red-50",
+                syncStatus === "idle" && "text-[#085983] border-[#085983]/20"
+              )}
             >
-              <IconMessage className="h-4 w-4" />
-              Get AI Analysis
-              <IconArrowRight className="h-4 w-4" />
+              {isSyncing ? (
+                <>
+                  <IconLoader className="h-4 w-4 animate-spin" />
+                  Syncing...
+                </>
+              ) : syncStatus === "success" ? (
+                <>
+                  <IconCheck className="h-4 w-4" />
+                  Synced
+                </>
+              ) : syncStatus === "error" ? (
+                <>
+                  <IconX className="h-4 w-4" />
+                  Failed
+                </>
+              ) : (
+                <>
+                  <IconRefresh className="h-4 w-4" />
+                  Sync WHOOP
+                </>
+              )}
             </Button>
-          </Link>
+          </div>
         </div>
 
         {/* Two Column Layout */}
@@ -135,6 +251,7 @@ export function AIWhoopAnalysis({
             aiAnalysis={aiAnalysis}
             whoopStats={whoopStats}
             isLoading={isLoading}
+            lastSyncTime={lastSyncTime}
           />
 
           {/* Right Column: Quick Metrics in 2x2 Grid */}

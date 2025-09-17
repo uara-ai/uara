@@ -128,13 +128,13 @@ export async function generateComprehensiveAnalysis(
   const recoveryRecommendations = includeRecommendations
     ? [
         recoveryScore < 70
-          ? "🎯 Focus on improving sleep quality and consistency - aim for 7-8 hours nightly"
-          : "✅ Maintain your current recovery practices, they're working well",
+          ? "Focus on improving sleep quality and consistency - aim for 7-8 hours nightly"
+          : "Maintain your current recovery practices, they're working well",
         hrvRmssd < 30
-          ? "🫁 Practice daily breathwork: try 4-7-8 breathing or box breathing (4-4-4-4) for 5-10 minutes"
-          : "💪 Continue stress management practices to maintain your excellent HRV",
-        "🧘 Consider adding meditation or yoga to your routine for better recovery",
-        "💊 Magnesium supplementation may help recovery (consult your healthcare provider)",
+          ? "Practice daily breathwork: try 4-7-8 breathing or box breathing (4-4-4-4) for 5-10 minutes"
+          : "Continue stress management practices to maintain your excellent HRV",
+        "Consider adding meditation or yoga to your routine for better recovery",
+        "Magnesium supplementation may help recovery (consult your healthcare provider)",
       ]
     : [];
 
@@ -158,13 +158,13 @@ export async function generateComprehensiveAnalysis(
   const sleepRecommendations = includeRecommendations
     ? [
         sleepScore < 75
-          ? "🌡️ Optimize sleep environment: keep room at 65-68°F, use blackout curtains, minimize noise"
-          : "🌟 Your sleep performance is excellent - maintain these habits",
+          ? "Optimize sleep environment: keep room at 65-68°F, use blackout curtains, minimize noise"
+          : "Your sleep performance is excellent - maintain these habits",
         sleepEfficiency < 85
-          ? "☕ Avoid caffeine after 2 PM and screens 1 hour before bed"
-          : "👌 Your sleep efficiency is excellent",
-        "📱 Create a consistent bedtime routine: same time nightly, wind-down activities",
-        "🛏️ Consider sleep tracking optimization: ensure WHOOP is properly positioned",
+          ? "Avoid caffeine after 2 PM and screens 1 hour before bed"
+          : "Your sleep efficiency is excellent",
+        "Create a consistent bedtime routine: same time nightly, wind-down activities",
+        "Consider sleep tracking optimization: ensure WHOOP is properly positioned",
       ]
     : [];
 
@@ -193,13 +193,13 @@ export async function generateComprehensiveAnalysis(
   const strainRecommendations = includeRecommendations
     ? [
         weeklyStrain < 8
-          ? "📈 Consider gradually increasing training intensity for better fitness gains"
+          ? "Consider gradually increasing training intensity for better fitness gains"
           : weeklyStrain > 15
-          ? "⚠️ Include more recovery days to prevent overtraining and injury risk"
-          : "⚖️ Your training load is well balanced for optimal adaptation",
-        "🧘‍♀️ Ensure 2 low-strain recovery days per week with yoga, walking, or stretching",
-        "📊 Monitor strain-to-recovery ratio: high strain days should be followed by adequate recovery",
-        "💡 Consider periodization: alternate higher and lower intensity weeks",
+          ? "Include more recovery days to prevent overtraining and injury risk"
+          : "Your training load is well balanced for optimal adaptation",
+        "Ensure 2 low-strain recovery days per week with yoga, walking, or stretching",
+        "Monitor strain-to-recovery ratio: high strain days should be followed by adequate recovery",
+        "Consider periodization: alternate higher and lower intensity weeks",
       ]
     : [];
 
@@ -214,8 +214,8 @@ export async function generateComprehensiveAnalysis(
         ...recoveryRecommendations.slice(0, 1),
         ...sleepRecommendations.slice(0, 1),
         ...strainRecommendations.slice(0, 1),
-        "📈 Focus on trends over daily fluctuations - consistency matters more than perfect scores",
-        "🩺 Consider consulting a longevity-focused physician for personalized optimization",
+        "Focus on trends over daily fluctuations - consistency matters more than perfect scores",
+        "Consider consulting a longevity-focused physician for personalized optimization",
       ]
         .filter(Boolean)
         .slice(0, 5)
@@ -291,15 +291,15 @@ function generateSummary(
   scores: { recoveryScore: number; sleepScore: number; weeklyStrain: number },
   factors: { riskFactors: string[]; positiveIndicators: string[] }
 ): string {
-  let summary = `## 🧠 WHOOP Health Analysis Summary\n\n`;
+  let summary = `## WHOOP Health Analysis Summary\n\n`;
   summary += `**Overall Health Score: ${overallScore}/100**\n\n`;
 
   if (overallScore >= 80) {
-    summary += `🌟 **Excellent Performance!** Your metrics show outstanding health optimization. `;
+    summary += `**Excellent Performance!** Your metrics show outstanding health optimization. `;
   } else if (overallScore >= 65) {
-    summary += `👍 **Good Health Status** with clear opportunities for improvement. `;
+    summary += `**Good Health Status** with clear opportunities for improvement. `;
   } else {
-    summary += `⚠️ **Health Attention Needed** - several metrics require optimization. `;
+    summary += `**Health Attention Needed** - several metrics require optimization. `;
   }
 
   // Focus area specific insights
@@ -335,7 +335,7 @@ function generateSummary(
 
   // Risk factors
   if (factors.riskFactors.length > 0) {
-    summary += `**⚠️ Priority Areas (${factors.riskFactors.length}):**\n`;
+    summary += `**Priority Areas (${factors.riskFactors.length}):**\n`;
     factors.riskFactors.slice(0, 2).forEach((risk, i) => {
       summary += `${i + 1}. ${risk}\n`;
     });
@@ -344,14 +344,14 @@ function generateSummary(
 
   // Positive indicators
   if (factors.positiveIndicators.length > 0) {
-    summary += `**✅ Strengths (${factors.positiveIndicators.length}):**\n`;
+    summary += `**Strengths (${factors.positiveIndicators.length}):**\n`;
     factors.positiveIndicators.slice(0, 2).forEach((positive, i) => {
       summary += `${i + 1}. ${positive}\n`;
     });
     summary += `\n`;
   }
 
-  summary += `💡 **Next Steps:** Focus on the priority recommendations above and track trends over 1-2 weeks for meaningful insights.`;
+  summary += `**Next Steps:** Focus on the priority recommendations above and track trends over 1-2 weeks for meaningful insights.`;
 
   return summary;
 }

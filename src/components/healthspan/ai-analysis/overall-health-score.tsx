@@ -18,12 +18,14 @@ interface OverallHealthScoreProps {
   aiAnalysis: AnalysisResult | null;
   whoopStats: WhoopStats | null;
   isLoading: boolean;
+  lastSyncTime?: Date | null;
 }
 
 export function OverallHealthScore({
   aiAnalysis,
   whoopStats,
   isLoading,
+  lastSyncTime,
 }: OverallHealthScoreProps) {
   const healthScore =
     aiAnalysis?.overallHealthScore ??
