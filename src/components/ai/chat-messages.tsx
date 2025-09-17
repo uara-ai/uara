@@ -16,6 +16,12 @@ interface ChatMessagesProps {
   status: "ready" | "streaming" | "submitted" | "error";
   hasData: boolean;
   onExampleClick: (text: string) => void;
+  whoopData?: {
+    recovery?: any[];
+    sleep?: any[];
+    strain?: any[];
+    workout?: any[];
+  };
   className?: string;
 }
 
@@ -24,28 +30,134 @@ export function ChatMessages({
   status,
   hasData,
   onExampleClick,
+  whoopData,
   className,
 }: ChatMessagesProps) {
+  // Generate detailed prompts with real WHOOP data
+  const generateWhoopPrompt = (
+    type: "recovery" | "sleep" | "strain" | "workout"
+  ) => {
+    const data = whoopData?.[type] || [];
+
+    if (data.length === 0) {
+      return `Automatically analyze WHOOP ${type} data with detailed insights`;
+    }
+
+    const recentData = data.slice(0, 5); // Get last 5 days
+
+    switch (type) {
+      case "recovery":
+        const recoveryPrompt = recentData
+          .map((d, i) => {
+            const date = new Date(d.date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            });
+            return `${date}: ${d.recoveryScore || 0}% recovery, ${
+              d.hrvRmssd || 0
+            }ms HRV, ${d.restingHeartRate || 0} bpm RHR`;
+          })
+          .join(". ");
+        return `Analyze WHOOP recovery data with detailed insights: ${recoveryPrompt}. Show recovery trends, HRV patterns, and optimization recommendations.`;
+
+      case "sleep":
+        const sleepPrompt = recentData
+          .map((d, i) => {
+            const date = new Date(d.date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            });
+            const duration =
+              Math.round(((d.totalInBedTime || 0) / 3600000) * 10) / 10; // Convert ms to hours
+            const remHours =
+              Math.round(((d.totalRemSleepTime || 0) / 3600000) * 10) / 10;
+            const deepHours =
+              Math.round(((d.totalSlowWaveSleepTime || 0) / 3600000) * 10) / 10;
+            const lightHours =
+              Math.round(((d.totalLightSleepTime || 0) / 3600000) * 10) / 10;
+            const awakeHours =
+              Math.round(((d.totalAwakeTime || 0) / 3600000) * 10) / 10;
+            return `${date}: ${duration}h sleep, ${
+              d.sleepPerformancePercentage || 0
+            }% performance, ${
+              d.sleepEfficiencyPercentage || 0
+            }% efficiency, ${remHours}h REM, ${deepHours}h deep, ${lightHours}h light, ${awakeHours}h awake, ${
+              d.sleepCycleCount || 0
+            } cycles`;
+          })
+          .join(". ");
+        return `Analyze WHOOP sleep data with detailed insights: ${sleepPrompt}. Show sleep stages, efficiency trends, and optimization tips.`;
+
+      case "strain":
+        const strainPrompt = recentData
+          .map((d, i) => {
+            const date = new Date(d.date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            });
+            const kilojoules =
+              Math.round(((d.kilojoule || 0) / 1000) * 10) / 10; // Convert to k
+            return `${date}: ${d.strain || 0} strain, ${
+              d.averageHeartRate || 0
+            } avg HR, ${
+              d.maxHeartRate || 0
+            } max HR, ${kilojoules}k kilojoules, ${
+              d.percentRecorded || 0
+            }% recorded`;
+          })
+          .join(". ");
+        return `Analyze WHOOP strain data with training insights: ${strainPrompt}. Show strain-recovery balance and training load recommendations.`;
+
+      case "workout":
+        const workoutPrompt = recentData
+          .map((d, i) => {
+            const date = new Date(d.date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            });
+            const durationMin = Math.round((d.duration || 0) / 60000); // Convert ms to minutes
+            const kilojoules =
+              Math.round(((d.kilojoule || 0) / 1000) * 10) / 10;
+            const distance = d.distanceMeters
+              ? `${Math.round((d.distanceMeters / 1000) * 10) / 10}km`
+              : "";
+            const sportName = d.sportId ? `Sport ${d.sportId}` : "Workout";
+            return `${date}: ${sportName}, ${durationMin}min, ${
+              d.strain || 0
+            } strain, ${d.averageHeartRate || 0} avg HR, ${
+              d.maxHeartRate || 0
+            } max HR${
+              distance ? `, ${distance}` : ""
+            }, ${kilojoules}k kilojoules`;
+          })
+          .join(". ");
+        return `Analyze WHOOP workout data with performance insights: ${workoutPrompt}. Show workout performance trends and training optimization.`;
+
+      default:
+        return `Automatically analyze WHOOP ${type} data with detailed insights`;
+    }
+  };
+
   const examplePrompts = [
     {
-      text: "Analyze my recent recovery trends and suggest improvements",
+      text: generateWhoopPrompt("recovery"),
       icon: "🔄",
       category: "Recovery Analysis",
     },
     {
-      text: "What does my sleep data tell you about my health?",
+      text: generateWhoopPrompt("sleep"),
       icon: "💤",
-      category: "Sleep Insights",
+      category: "Sleep Analysis",
     },
     {
-      text: "How can I optimize my training based on my strain data?",
+      text: generateWhoopPrompt("strain"),
       icon: "💪",
-      category: "Training Optimization",
+      category: "Strain Analysis",
     },
     {
-      text: "Give me personalized longevity recommendations",
-      icon: "🎯",
-      category: "Longevity Focus",
+      text: generateWhoopPrompt("workout"),
+      icon: "🏋️",
+      category: "Workout Analysis",
     },
   ];
 

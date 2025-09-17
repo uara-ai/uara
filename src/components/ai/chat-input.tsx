@@ -1,6 +1,6 @@
 "use client";
 
-import { Send, Plus, Mic, Paperclip } from "lucide-react";
+import { Send, Plus, Mic, Paperclip, BarChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -9,12 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  IconMessage,
-  IconChartBar,
-  IconHeart,
-  IconMoon,
-} from "@tabler/icons-react";
+import { IconHeart, IconMoon, IconActivity } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { useState, useRef, useEffect } from "react";
 
@@ -23,6 +18,12 @@ interface ChatInputProps {
   setInput: (value: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   status: "ready" | "streaming" | "submitted" | "error";
+  whoopData?: {
+    recovery?: any[];
+    sleep?: any[];
+    strain?: any[];
+    workout?: any[];
+  };
   className?: string;
 }
 
@@ -31,6 +32,7 @@ export function ChatInput({
   setInput,
   onSubmit,
   status,
+  whoopData,
   className,
 }: ChatInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -51,27 +53,131 @@ export function ChatInput({
     }
   };
 
+  // Generate detailed prompts with real WHOOP data
+  const generateWhoopPrompt = (
+    type: "recovery" | "sleep" | "strain" | "workout"
+  ) => {
+    const data = whoopData?.[type] || [];
+
+    if (data.length === 0) {
+      return `Automatically analyze WHOOP ${type} data with detailed insights`;
+    }
+
+    const recentData = data.slice(0, 5); // Get last 5 days
+
+    switch (type) {
+      case "recovery":
+        const recoveryPrompt = recentData
+          .map((d, i) => {
+            const date = new Date(d.date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            });
+            return `${date}: ${d.recoveryScore || 0}% recovery, ${
+              d.hrvRmssd || 0
+            }ms HRV, ${d.restingHeartRate || 0} bpm RHR`;
+          })
+          .join(". ");
+        return `Analyze WHOOP recovery data with detailed insights: ${recoveryPrompt}. Show recovery trends, HRV patterns, and optimization recommendations.`;
+
+      case "sleep":
+        const sleepPrompt = recentData
+          .map((d, i) => {
+            const date = new Date(d.date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            });
+            const duration =
+              Math.round(((d.totalInBedTime || 0) / 3600000) * 10) / 10; // Convert ms to hours
+            const remHours =
+              Math.round(((d.totalRemSleepTime || 0) / 3600000) * 10) / 10;
+            const deepHours =
+              Math.round(((d.totalSlowWaveSleepTime || 0) / 3600000) * 10) / 10;
+            const lightHours =
+              Math.round(((d.totalLightSleepTime || 0) / 3600000) * 10) / 10;
+            const awakeHours =
+              Math.round(((d.totalAwakeTime || 0) / 3600000) * 10) / 10;
+            return `${date}: ${duration}h sleep, ${
+              d.sleepPerformancePercentage || 0
+            }% performance, ${
+              d.sleepEfficiencyPercentage || 0
+            }% efficiency, ${remHours}h REM, ${deepHours}h deep, ${lightHours}h light, ${awakeHours}h awake, ${
+              d.sleepCycleCount || 0
+            } cycles`;
+          })
+          .join(". ");
+        return `Analyze WHOOP sleep data with detailed insights: ${sleepPrompt}. Show sleep stages, efficiency trends, and optimization tips.`;
+
+      case "strain":
+        const strainPrompt = recentData
+          .map((d, i) => {
+            const date = new Date(d.date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            });
+            const kilojoules =
+              Math.round(((d.kilojoule || 0) / 1000) * 10) / 10; // Convert to k
+            return `${date}: ${d.strain || 0} strain, ${
+              d.averageHeartRate || 0
+            } avg HR, ${
+              d.maxHeartRate || 0
+            } max HR, ${kilojoules}k kilojoules, ${
+              d.percentRecorded || 0
+            }% recorded`;
+          })
+          .join(". ");
+        return `Analyze WHOOP strain data with training insights: ${strainPrompt}. Show strain-recovery balance and training load recommendations.`;
+
+      case "workout":
+        const workoutPrompt = recentData
+          .map((d, i) => {
+            const date = new Date(d.date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            });
+            const durationMin = Math.round((d.duration || 0) / 60000); // Convert ms to minutes
+            const kilojoules =
+              Math.round(((d.kilojoule || 0) / 1000) * 10) / 10;
+            const distance = d.distanceMeters
+              ? `${Math.round((d.distanceMeters / 1000) * 10) / 10}km`
+              : "";
+            const sportName = d.sportId ? `Sport ${d.sportId}` : "Workout";
+            return `${date}: ${sportName}, ${durationMin}min, ${
+              d.strain || 0
+            } strain, ${d.averageHeartRate || 0} avg HR, ${
+              d.maxHeartRate || 0
+            } max HR${
+              distance ? `, ${distance}` : ""
+            }, ${kilojoules}k kilojoules`;
+          })
+          .join(". ");
+        return `Analyze WHOOP workout data with performance insights: ${workoutPrompt}. Show workout performance trends and training optimization.`;
+
+      default:
+        return `Automatically analyze WHOOP ${type} data with detailed insights`;
+    }
+  };
+
   const quickActions = [
     {
       icon: <IconHeart className="h-4 w-4" />,
-      label: "Analyze Recovery",
-      prompt:
-        "Analyze my recent recovery trends and give me actionable insights",
+      label: "Recovery Analysis",
+      prompt: generateWhoopPrompt("recovery"),
     },
     {
       icon: <IconMoon className="h-4 w-4" />,
       label: "Sleep Analysis",
-      prompt: "What patterns do you see in my sleep data? Any recommendations?",
+      prompt: generateWhoopPrompt("sleep"),
     },
     {
-      icon: <IconChartBar className="h-4 w-4" />,
-      label: "Health Summary",
-      prompt: "Give me a comprehensive health summary based on all my data",
+      icon: <IconActivity className="h-4 w-4" />,
+      label: "Strain Analysis",
+      prompt: generateWhoopPrompt("strain"),
     },
     {
-      icon: <IconMessage className="h-4 w-4" />,
-      label: "Ask Anything",
-      prompt: "",
+      icon: <BarChart className="h-4 w-4" />,
+      label: "Workout Analysis",
+      prompt: generateWhoopPrompt("workout"),
     },
   ];
 

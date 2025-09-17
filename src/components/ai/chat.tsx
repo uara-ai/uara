@@ -20,6 +20,7 @@ import { ChatMessages } from "./chat-messages";
 import { ChatInput } from "./chat-input";
 import { ChatAnalysisPanel } from "./chat-analysis-panel";
 import { cn } from "@/lib/utils";
+import { getWhoopAnalysisDataAction } from "@/actions/whoop-analysis-action";
 
 export default function Chat() {
   const { messages, sendMessage, status } = useChat({
@@ -35,6 +36,12 @@ export default function Chat() {
   }>({ type: "recovery", isOpen: false });
   const [hasData, setHasData] = useState(false);
   const [showAnalysisPanel, setShowAnalysisPanel] = useState(false);
+  const [whoopData, setWhoopData] = useState<{
+    recovery?: any[];
+    sleep?: any[];
+    strain?: any[];
+    workout?: any[];
+  }>({});
 
   // Use artifacts with event listeners
   const burnRateData = useArtifact(BurnRateArtifact, {
@@ -169,6 +176,45 @@ export default function Chat() {
     },
   });
 
+  // Fetch WHOOP data on component mount
+  useEffect(() => {
+    const fetchWhoopData = async () => {
+      try {
+        const [recoveryResult, sleepResult, strainResult, workoutResult] =
+          await Promise.all([
+            getWhoopAnalysisDataAction({ analysisType: "recovery", days: 7 }),
+            getWhoopAnalysisDataAction({ analysisType: "sleep", days: 7 }),
+            getWhoopAnalysisDataAction({ analysisType: "strain", days: 7 }),
+            getWhoopAnalysisDataAction({ analysisType: "workout", days: 7 }),
+          ]);
+
+        setWhoopData({
+          recovery:
+            recoveryResult.data && "recoveryData" in recoveryResult.data
+              ? recoveryResult.data.recoveryData
+              : [],
+          sleep:
+            sleepResult.data && "sleepData" in sleepResult.data
+              ? sleepResult.data.sleepData
+              : [],
+          strain:
+            strainResult.data && "strainData" in strainResult.data
+              ? strainResult.data.strainData
+              : [],
+          workout:
+            workoutResult.data && "workoutData" in workoutResult.data
+              ? workoutResult.data.workoutData
+              : [],
+        });
+      } catch (error) {
+        console.log("WHOOP data not available - user may not be connected");
+        // Silently fail - user may not have WHOOP connected
+      }
+    };
+
+    fetchWhoopData();
+  }, []);
+
   // Track when we have data to trigger animation
   useEffect(() => {
     const hasAnyData =
@@ -248,6 +294,7 @@ export default function Chat() {
             status={status}
             hasData={hasData}
             onExampleClick={handleExampleClick}
+            whoopData={whoopData}
             className="flex-1"
           />
 
@@ -257,6 +304,7 @@ export default function Chat() {
             setInput={setInput}
             onSubmit={handleFormSubmit}
             status={status}
+            whoopData={whoopData}
           />
         </div>
 
