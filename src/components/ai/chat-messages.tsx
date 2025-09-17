@@ -1,9 +1,11 @@
 "use client";
 
-import { Brain, User } from "lucide-react";
+import { Brain, User, BarChart, ArrowRight } from "lucide-react";
+import { IconHeart, IconMoon, IconActivity } from "@tabler/icons-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Message {
   id: string;
@@ -22,6 +24,7 @@ interface ChatMessagesProps {
     strain?: any[];
     workout?: any[];
   };
+  isLoadingWhoopData?: boolean;
   className?: string;
 }
 
@@ -31,12 +34,17 @@ export function ChatMessages({
   hasData,
   onExampleClick,
   whoopData,
+  isLoadingWhoopData,
   className,
 }: ChatMessagesProps) {
   // Generate detailed prompts with real WHOOP data
   const generateWhoopPrompt = (
     type: "recovery" | "sleep" | "strain" | "workout"
   ) => {
+    if (isLoadingWhoopData) {
+      return `Loading your WHOOP ${type} data...`;
+    }
+
     const data = whoopData?.[type] || [];
 
     if (data.length === 0) {
@@ -141,23 +149,27 @@ export function ChatMessages({
   const examplePrompts = [
     {
       text: generateWhoopPrompt("recovery"),
-      icon: "🔄",
+      icon: <IconHeart className="h-4 w-4" />,
       category: "Recovery Analysis",
+      description: "Analyze trends and patterns",
     },
     {
       text: generateWhoopPrompt("sleep"),
-      icon: "💤",
+      icon: <IconMoon className="h-4 w-4" />,
       category: "Sleep Analysis",
+      description: "Review stages and efficiency",
     },
     {
       text: generateWhoopPrompt("strain"),
-      icon: "💪",
+      icon: <IconActivity className="h-4 w-4" />,
       category: "Strain Analysis",
+      description: "Examine training load",
     },
     {
       text: generateWhoopPrompt("workout"),
-      icon: "🏋️",
+      icon: <BarChart className="h-4 w-4" />,
       category: "Workout Analysis",
+      description: "Track performance trends",
     },
   ];
 
@@ -184,28 +196,59 @@ export function ChatMessages({
 
             {/* Example Prompts */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl mt-8">
-              {examplePrompts.map((prompt, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  onClick={() => onExampleClick(prompt.text)}
-                  className="p-4 h-auto text-left border-[#085983]/20 hover:border-[#085983]/40 hover:bg-[#085983]/5 transition-all duration-200 group"
-                >
-                  <div className="flex items-start gap-3 w-full">
-                    <span className="text-lg shrink-0 group-hover:scale-110 transition-transform">
-                      {prompt.icon}
-                    </span>
-                    <div className="space-y-1 text-left">
-                      <div className="text-xs font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)]">
-                        {prompt.category}
+              {isLoadingWhoopData
+                ? // Show loading skeletons
+                  [...Array(4)].map((_, index) => (
+                    <Card
+                      key={`skeleton-${index}`}
+                      className="bg-white rounded-lg border border-[#085983]/10 cursor-not-allowed"
+                    >
+                      <div className="p-3">
+                        <div className="flex items-center gap-3">
+                          <div className="p-1.5 rounded-md bg-[#085983]/10">
+                            <Skeleton className="h-4 w-4" />
+                          </div>
+                          <div className="space-y-1 flex-1">
+                            <Skeleton className="h-3 w-20" />
+                            <Skeleton className="h-2 w-24" />
+                          </div>
+                          <Skeleton className="h-6 w-6 rounded" />
+                        </div>
                       </div>
-                      <div className="text-sm text-[#085983] font-[family-name:var(--font-geist-sans)]">
-                        {prompt.text}
+                    </Card>
+                  ))
+                : // Show actual example prompts
+                  examplePrompts.map((prompt, index) => (
+                    <Card
+                      key={index}
+                      className="bg-white rounded-lg border border-[#085983]/10 hover:border-[#085983]/20 transition-all duration-200 group hover:shadow-sm"
+                    >
+                      <div className="px-3">
+                        <div className="flex items-center gap-3">
+                          <div className="p-1.5 rounded-md bg-[#085983]/10 text-[#085983] group-hover:bg-[#085983]/15 transition-colors">
+                            {prompt.icon}
+                          </div>
+                          <div className="space-y-0.5 flex-1 min-w-0">
+                            <div className="text-sm font-medium text-[#085983] font-[family-name:var(--font-geist-sans)]">
+                              {prompt.category}
+                            </div>
+                            <div className="text-xs text-[#085983]/60 font-[family-name:var(--font-geist-sans)] truncate">
+                              {prompt.description}
+                            </div>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => onExampleClick(prompt.text)}
+                            disabled={isLoadingWhoopData}
+                            className="h-6 w-6 p-0 text-[#085983]/60 hover:text-[#085983] hover:bg-[#085983]/10 shrink-0"
+                          >
+                            <ArrowRight className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </Button>
-              ))}
+                    </Card>
+                  ))}
             </div>
           </div>
         )}

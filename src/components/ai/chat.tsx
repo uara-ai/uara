@@ -45,6 +45,7 @@ export default function Chat() {
     strain?: any[];
     workout?: any[];
   }>({});
+  const [isLoadingWhoopData, setIsLoadingWhoopData] = useState(true);
 
   // Use artifacts with event listeners
   const burnRateData = useArtifact(BurnRateArtifact, {
@@ -182,6 +183,7 @@ export default function Chat() {
   // Fetch WHOOP data on component mount
   useEffect(() => {
     const fetchWhoopData = async () => {
+      setIsLoadingWhoopData(true);
       try {
         const [recoveryResult, sleepResult, strainResult, workoutResult] =
           await Promise.all([
@@ -212,6 +214,8 @@ export default function Chat() {
       } catch (error) {
         console.log("WHOOP data not available - user may not be connected");
         // Silently fail - user may not have WHOOP connected
+      } finally {
+        setIsLoadingWhoopData(false);
       }
     };
 
@@ -249,14 +253,16 @@ export default function Chat() {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (input.trim()) {
+    if (input.trim() && !isLoadingWhoopData) {
       sendMessage({ text: input });
       setInput("");
     }
   };
 
   const handleExampleClick = (text: string) => {
-    setInput(text);
+    if (!isLoadingWhoopData) {
+      setInput(text);
+    }
   };
 
   const handleBackClick = () => {
@@ -298,6 +304,7 @@ export default function Chat() {
             hasData={hasData}
             onExampleClick={handleExampleClick}
             whoopData={whoopData}
+            isLoadingWhoopData={isLoadingWhoopData}
             className="flex-1"
           />
 
@@ -308,6 +315,7 @@ export default function Chat() {
             onSubmit={handleFormSubmit}
             status={status}
             whoopData={whoopData}
+            isLoadingWhoopData={isLoadingWhoopData}
           />
         </div>
 
