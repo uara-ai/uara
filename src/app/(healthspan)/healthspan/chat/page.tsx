@@ -1,11 +1,9 @@
-import { ChatInterface } from "@/components/ai/chat-interface";
+import Chat from "@/components/ai/chat";
 
 export default function ChatPage() {
   return (
-    <div className="h-screen overflow-hidden">
-      <ChatInterface />
+    <div className="font-sans h-screen overflow-hidden">
+      <Chat />
     </div>
   );
 }
-
-// Cursor rules applied correctly.

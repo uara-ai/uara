@@ -15,7 +15,7 @@ import { BurnRateLoading } from "./tools/burn-rate-loading";
 export default function Chat() {
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
-      api: "/api/v2/chat",
+      api: "/api/chat",
     }),
   });
   const [input, setInput] = useState("");
