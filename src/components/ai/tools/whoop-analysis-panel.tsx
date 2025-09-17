@@ -205,7 +205,7 @@ export function WhoopAnalysisPanel({
   }
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn("space-y-4", className)}>
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="p-3 rounded-xl bg-[#085983]/10">{typeConfig.icon}</div>
@@ -219,14 +219,14 @@ export function WhoopAnalysisPanel({
         </div>
       </div>
 
-      {/* Chart Preview */}
-      <Card className="bg-white rounded-xl border-[#085983]/10">
-        <CardHeader className="pb-3">
+      {/* Chart Preview - Full Width */}
+      <div className="w-full bg-white rounded-xl border-[#085983]/10 border">
+        <div className="px-6 py-4 border-b border-[#085983]/10">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
+            <h3 className="text-lg font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
               {typeConfig.title} Trend
-            </CardTitle>
+            </h3>
             {chartData.length > 0 && (
               <Button
                 variant="outline"
@@ -239,10 +239,10 @@ export function WhoopAnalysisPanel({
               </Button>
             )}
           </div>
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div className="p-6">
           {chartData.length > 0 ? (
-            <div className="h-48">
+            <div className="h-60 w-full">
               <ChartContainer
                 config={{
                   recoveryScore: {
@@ -258,7 +258,7 @@ export function WhoopAnalysisPanel({
                     color: "#dc2626",
                   },
                 }}
-                className="h-full"
+                className="h-full w-full"
               >
                 {type === "strain" || type === "workout" ? (
                   <BarChart data={chartData.slice(-7)}>
@@ -332,7 +332,7 @@ export function WhoopAnalysisPanel({
               </ChartContainer>
             </div>
           ) : (
-            <div className="h-48 flex items-center justify-center bg-gray-50 rounded-lg">
+            <div className="h-60 flex items-center justify-center bg-gray-50 rounded-lg">
               <div className="text-center">
                 <div className="p-2 rounded-lg bg-[#085983]/10 mx-auto w-fit mb-2">
                   <BarChart3 className="h-6 w-6 text-[#085983]" />
@@ -345,8 +345,8 @@ export function WhoopAnalysisPanel({
               </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
