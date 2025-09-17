@@ -150,10 +150,12 @@ export function UserInfoTab() {
   }
 
   return (
-    <Card>
+    <Card className="bg-white rounded-xl sm:rounded-2xl border-[#085983]/20">
       <CardHeader>
-        <CardTitle>Personal Information</CardTitle>
-        <CardDescription>
+        <CardTitle className="font-[family-name:var(--font-instrument-serif)] text-[#085983]">
+          Personal Information
+        </CardTitle>
+        <CardDescription className="text-[#085983]/70">
           Update your personal details and health information.
         </CardDescription>
       </CardHeader>
@@ -322,7 +324,7 @@ export function UserInfoTab() {
             <Button
               type="submit"
               disabled={isSaving}
-              className="w-full md:w-auto"
+              className="w-full md:w-auto bg-[#085983] hover:bg-[#085983]/90 text-white"
             >
               {isSaving ? (
                 <>

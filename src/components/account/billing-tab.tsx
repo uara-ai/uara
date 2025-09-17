@@ -115,14 +115,14 @@ export function BillingTab() {
     : "-";
 
   return (
-    <div className="space-y-6">
-      <Card>
+    <div className="space-y-6 sm:space-y-8">
+      <Card className="bg-white rounded-xl sm:rounded-2xl border-[#085983]/20">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Crown className="h-5 w-5 text-blue-500" />
+          <CardTitle className="flex items-center gap-2 font-[family-name:var(--font-instrument-serif)] text-[#085983]">
+            <Crown className="h-5 w-5 text-[#085983]" />
             Current Plan
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-[#085983]/70">
             Your subscription details and billing information.
           </CardDescription>
         </CardHeader>
@@ -197,7 +197,7 @@ export function BillingTab() {
                   variant="outline"
                   onClick={handleManageBilling}
                   disabled={isManaging}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 border-[#085983]/20 text-[#085983] hover:bg-[#085983]/5"
                 >
                   <CreditCard className="h-4 w-4" />
                   {isManaging ? "Loading..." : "Manage Billing"}
@@ -208,13 +208,13 @@ export function BillingTab() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="bg-white rounded-xl sm:rounded-2xl border-[#085983]/20">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 font-[family-name:var(--font-instrument-serif)] text-[#085983]">
             <CreditCard className="h-5 w-5" />
             Payment Method
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-[#085983]/70">
             Your default payment method for subscriptions.
           </CardDescription>
         </CardHeader>
@@ -248,6 +248,7 @@ export function BillingTab() {
             size="sm"
             onClick={handleManageBilling}
             disabled={isManaging}
+            className="border-[#085983]/20 text-[#085983] hover:bg-[#085983]/5"
           >
             Update Payment Method
           </Button>

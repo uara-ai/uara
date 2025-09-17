@@ -112,7 +112,7 @@ const data = {
   navSecondary: [
     {
       title: "Settings",
-      url: "#",
+      url: "/healthspan/account",
       icon: IconSettings,
     },
     {
@@ -165,8 +165,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
+      <SidebarFooter className="flex justify-center items-center">
+        <p className="text-xs text-[#085983]/60 font-[family-name:var(--font-geist-sans)]">
+          beta v0.1.0
+        </p>
       </SidebarFooter>
     </Sidebar>
   );
