@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MarkdownParser } from "@/components/markdown-parser";
 
 interface Message {
   id: string;
@@ -302,17 +303,29 @@ export function ChatMessages({
                   </div>
                   <div
                     className={cn(
-                      "text-sm font-[family-name:var(--font-geist-sans)] leading-relaxed",
-                      message.role === "user" ? "text-white" : "text-[#085983]"
+                      message.role === "user"
+                        ? "text-sm font-[family-name:var(--font-geist-sans)] leading-relaxed text-white"
+                        : ""
                     )}
                   >
                     {message.parts.map((part, partIndex) => {
                       if (part.type === "text") {
-                        return (
-                          <span key={`${message.id}-part-${partIndex}`}>
-                            {part.text}
-                          </span>
-                        );
+                        // Use markdown parser for assistant messages, plain text for user messages
+                        if (message.role === "assistant") {
+                          return (
+                            <MarkdownParser
+                              key={`${message.id}-part-${partIndex}`}
+                              content={part.text || ""}
+                              className="prose-sm"
+                            />
+                          );
+                        } else {
+                          return (
+                            <span key={`${message.id}-part-${partIndex}`}>
+                              {part.text}
+                            </span>
+                          );
+                        }
                       }
                       return null;
                     })}

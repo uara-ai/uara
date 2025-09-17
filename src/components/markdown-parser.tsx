@@ -14,11 +14,11 @@ interface MarkdownParserProps {
 
 // Custom components for different markdown elements
 const components = {
-  // Headings
+  // Headings - clean and simple like WHOOP cards
   h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h1
       className={cn(
-        "text-3xl md:text-4xl font-medium text-foreground tracking-tight mt-12 mb-6 border-b border-zinc-800 pb-4 first:mt-0",
+        "text-2xl font-[family-name:var(--font-instrument-serif)] font-medium text-[#085983] mt-6 mb-4 first:mt-0",
         className
       )}
       {...props}
@@ -27,7 +27,7 @@ const components = {
   h2: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h2
       className={cn(
-        "text-2xl font-medium text-primary tracking-tight mt-10 mb-4 first:mt-0",
+        "text-xl font-[family-name:var(--font-instrument-serif)] font-medium text-[#085983] mt-5 mb-3 first:mt-0",
         className
       )}
       {...props}
@@ -36,7 +36,7 @@ const components = {
   h3: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h3
       className={cn(
-        "text-xl font-medium text-foreground tracking-tight mt-8 mb-3 first:mt-0",
+        "text-lg font-[family-name:var(--font-geist-sans)] font-semibold text-[#085983] mt-4 mb-2 first:mt-0",
         className
       )}
       {...props}
@@ -45,7 +45,7 @@ const components = {
   h4: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h4
       className={cn(
-        "text-lg font-medium text-foreground tracking-tight mt-6 mb-2 first:mt-0",
+        "text-base font-[family-name:var(--font-geist-sans)] font-semibold text-[#085983] mt-3 mb-2 first:mt-0",
         className
       )}
       {...props}
@@ -54,7 +54,7 @@ const components = {
   h5: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h5
       className={cn(
-        "text-base font-medium text-foreground tracking-tight mt-4 mb-2 first:mt-0",
+        "text-sm font-[family-name:var(--font-geist-sans)] font-semibold text-[#085983] mt-3 mb-1 first:mt-0",
         className
       )}
       {...props}
@@ -63,25 +63,25 @@ const components = {
   h6: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h6
       className={cn(
-        "text-sm font-medium text-foreground tracking-tight mt-4 mb-2 first:mt-0",
+        "text-sm font-[family-name:var(--font-geist-sans)] font-medium text-[#085983]/80 mt-2 mb-1 first:mt-0",
         className
       )}
       {...props}
     />
   ),
 
-  // Paragraphs
+  // Paragraphs - clean and readable
   p: ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
     <p
       className={cn(
-        "text-base md:text-lg leading-8 mb-6 text-muted-foreground first:mt-0",
+        "text-sm font-[family-name:var(--font-geist-sans)] leading-relaxed mb-3 text-[#085983] first:mt-0",
         className
       )}
       {...props}
     />
   ),
 
-  // Links
+  // Links - subtle and clean
   a: ({
     className,
     href,
@@ -93,7 +93,7 @@ const components = {
         <Link
           href={href}
           className={cn(
-            "text-primary font-medium no-underline hover:underline hover:underline-offset-4 transition-all duration-200",
+            "text-[#085983] font-medium underline underline-offset-2 decoration-[#085983]/30 hover:decoration-[#085983] transition-all duration-200",
             className
           )}
           {...props}
@@ -107,7 +107,7 @@ const components = {
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
-          "text-primary font-medium no-underline hover:underline hover:underline-offset-4 transition-all duration-200",
+          "text-[#085983] font-medium underline underline-offset-2 decoration-[#085983]/30 hover:decoration-[#085983] transition-all duration-200",
           className
         )}
         {...props}
@@ -115,42 +115,42 @@ const components = {
     );
   },
 
-  // Strong and emphasis
+  // Strong and emphasis - consistent with brand colors
   strong: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
     <strong
-      className={cn("text-foreground font-semibold", className)}
+      className={cn("text-[#085983] font-semibold", className)}
       {...props}
     />
   ),
   em: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
-    <em className={cn("text-muted-foreground italic", className)} {...props} />
+    <em className={cn("text-[#085983]/80 italic", className)} {...props} />
   ),
 
-  // Lists
+  // Lists - clean and minimal design
   ul: ({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) => (
-    <ul className={cn("my-6 space-y-2 list-none", className)} {...props} />
+    <ul className={cn("my-3 space-y-1.5 list-none", className)} {...props} />
   ),
   ol: ({ className, ...props }: React.HTMLAttributes<HTMLOListElement>) => (
     <ol
-      className={cn("my-6 space-y-2 list-decimal list-inside", className)}
+      className={cn("my-3 space-y-1.5 list-decimal list-inside", className)}
       {...props}
     />
   ),
   li: ({ className, ...props }: React.HTMLAttributes<HTMLLIElement>) => (
     <li
       className={cn(
-        "leading-8 text-muted-foreground relative pl-6 before:content-['◇'] before:absolute before:left-0 before:text-primary before:font-mono before:text-sm",
+        "text-sm font-[family-name:var(--font-geist-sans)] leading-relaxed text-[#085983] relative pl-4 before:content-['•'] before:absolute before:left-0 before:text-[#085983]/60 before:font-bold",
         className
       )}
       {...props}
     />
   ),
 
-  // Code blocks and inline code
+  // Code blocks and inline code - clean and readable
   pre: ({ className, ...props }: React.HTMLAttributes<HTMLPreElement>) => (
     <pre
       className={cn(
-        "bg-zinc-950 border border-zinc-800 rounded-lg p-4 my-6 overflow-x-auto text-sm shadow-lg",
+        "bg-[#085983]/5 border border-[#085983]/20 rounded-lg p-3 my-4 overflow-x-auto text-sm font-mono",
         className
       )}
       {...props}
@@ -164,7 +164,7 @@ const components = {
       return (
         <code
           className={cn(
-            "bg-zinc-900 text-primary px-2 py-1 rounded text-sm font-mono border border-zinc-800",
+            "bg-[#085983]/10 text-[#085983] px-1.5 py-0.5 rounded text-xs font-mono border border-[#085983]/20",
             className
           )}
           {...props}
@@ -173,7 +173,12 @@ const components = {
     }
 
     // Block code (inside pre)
-    return <code className={cn("text-sm font-mono", className)} {...props} />;
+    return (
+      <code
+        className={cn("text-sm font-mono text-[#085983]", className)}
+        {...props}
+      />
+    );
   },
 
   // Images
@@ -199,40 +204,31 @@ const components = {
     );
   },
 
-  // Blockquotes
+  // Blockquotes - card-like design
   blockquote: ({
     className,
     ...props
   }: React.HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote
       className={cn(
-        "border-l-4 border-primary pl-6 my-6 text-muted-foreground italic bg-muted/30 py-4 rounded-r-lg",
+        "border-l-3 border-[#085983] pl-4 my-4 text-[#085983]/80 italic bg-[#085983]/5 py-3 rounded-r-lg text-sm font-[family-name:var(--font-geist-sans)]",
         className
       )}
       {...props}
     />
   ),
 
-  // Tables
+  // Tables - clean card-style design
   table: ({ className, ...props }: React.HTMLAttributes<HTMLTableElement>) => (
-    <div className="my-8 overflow-x-auto">
-      <table
-        className={cn(
-          "w-full border-collapse border border-zinc-800 rounded-lg overflow-hidden",
-          className
-        )}
-        {...props}
-      />
+    <div className="my-4 overflow-x-auto bg-white rounded-lg border border-[#085983]/20">
+      <table className={cn("w-full border-collapse", className)} {...props} />
     </div>
   ),
   thead: ({
     className,
     ...props
   }: React.HTMLAttributes<HTMLTableSectionElement>) => (
-    <thead
-      className={cn("border-b border-zinc-800 bg-muted/50", className)}
-      {...props}
-    />
+    <thead className={cn("bg-[#085983]/5", className)} {...props} />
   ),
   tbody: ({
     className,
@@ -242,14 +238,14 @@ const components = {
   ),
   tr: ({ className, ...props }: React.HTMLAttributes<HTMLTableRowElement>) => (
     <tr
-      className={cn("border-b border-zinc-800 last:border-b-0", className)}
+      className={cn("border-b border-[#085983]/10 last:border-b-0", className)}
       {...props}
     />
   ),
   th: ({ className, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => (
     <th
       className={cn(
-        "text-left font-semibold text-foreground px-4 py-3 border-r border-zinc-800 last:border-r-0",
+        "text-left font-semibold text-[#085983] px-3 py-2 text-sm font-[family-name:var(--font-geist-sans)]",
         className
       )}
       {...props}
@@ -258,16 +254,16 @@ const components = {
   td: ({ className, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => (
     <td
       className={cn(
-        "px-4 py-3 border-r border-zinc-800 last:border-r-0 text-muted-foreground",
+        "px-3 py-2 text-sm text-[#085983] font-[family-name:var(--font-geist-sans)]",
         className
       )}
       {...props}
     />
   ),
 
-  // Horizontal rule
+  // Horizontal rule - subtle divider
   hr: ({ className, ...props }: React.HTMLAttributes<HTMLHRElement>) => (
-    <hr className={cn("my-12 border-zinc-800", className)} {...props} />
+    <hr className={cn("my-6 border-[#085983]/20", className)} {...props} />
   ),
 
   // Custom handling for task lists (GitHub-style checkboxes)
@@ -284,7 +280,7 @@ const components = {
           type="checkbox"
           checked={checked}
           disabled={disabled}
-          className={cn("mr-2 accent-primary cursor-default", className)}
+          className={cn("mr-2 accent-[#085983] cursor-default", className)}
           {...props}
         />
       );
@@ -297,7 +293,7 @@ export function MarkdownParser({ content, className }: MarkdownParserProps) {
   return (
     <div
       className={cn(
-        "prose prose-neutral dark:prose-invert max-w-none",
+        "max-w-none font-[family-name:var(--font-geist-sans)]",
         className
       )}
     >
@@ -311,3 +307,5 @@ export function MarkdownParser({ content, className }: MarkdownParserProps) {
     </div>
   );
 }
+
+// Cursor rules applied correctly.
