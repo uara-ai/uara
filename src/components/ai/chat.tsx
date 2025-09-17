@@ -14,7 +14,10 @@ import {
   WhoopWorkoutArtifact,
 } from "@/lib/ai";
 import { BurnRateChart } from "./tools/burn-rate-chart";
-import { WhoopAnalysisChart } from "./tools/whoop-analysis-chart";
+import { WhoopRecoveryChart } from "./tools/whoop-recovery-chart";
+import { WhoopSleepChart } from "./tools/whoop-sleep-chart";
+import { WhoopStrainChart } from "./tools/whoop-strain-chart";
+import { WhoopWorkoutChart } from "./tools/whoop-workout-chart";
 import { ChatHeader } from "./chat-header";
 import { ChatMessages } from "./chat-messages";
 import { ChatInput } from "./chat-input";
@@ -330,12 +333,39 @@ export default function Chat() {
         />
       )}
 
-      {/* WHOOP Analysis Chart Modal */}
-      <WhoopAnalysisChart
-        type={showWhoopChart.type}
-        isOpen={showWhoopChart.isOpen}
-        onClose={() => setShowWhoopChart({ ...showWhoopChart, isOpen: false })}
-      />
+      {/* WHOOP Analysis Chart Modals */}
+      {showWhoopChart.type === "recovery" && (
+        <WhoopRecoveryChart
+          isOpen={showWhoopChart.isOpen}
+          onClose={() =>
+            setShowWhoopChart({ ...showWhoopChart, isOpen: false })
+          }
+        />
+      )}
+      {showWhoopChart.type === "sleep" && (
+        <WhoopSleepChart
+          isOpen={showWhoopChart.isOpen}
+          onClose={() =>
+            setShowWhoopChart({ ...showWhoopChart, isOpen: false })
+          }
+        />
+      )}
+      {showWhoopChart.type === "strain" && (
+        <WhoopStrainChart
+          isOpen={showWhoopChart.isOpen}
+          onClose={() =>
+            setShowWhoopChart({ ...showWhoopChart, isOpen: false })
+          }
+        />
+      )}
+      {showWhoopChart.type === "workout" && (
+        <WhoopWorkoutChart
+          isOpen={showWhoopChart.isOpen}
+          onClose={() =>
+            setShowWhoopChart({ ...showWhoopChart, isOpen: false })
+          }
+        />
+      )}
 
       <AIDevtools />
     </>

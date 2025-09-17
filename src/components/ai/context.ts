@@ -1,4 +1,3 @@
-import type { User } from "@/lib/db/schema";
 import type {
   WhoopDataResponse,
   WhoopStats,

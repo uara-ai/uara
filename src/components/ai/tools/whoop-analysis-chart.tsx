@@ -72,6 +72,16 @@ export function WhoopAnalysisChart({
   const chartData = artifactData?.data?.chartData || [];
   const summary = artifactData?.data?.summary;
 
+  // Debug log to see what data is available
+  console.log(`WHOOP Chart Debug - Type: ${type}`, {
+    hasArtifactData: !!artifactData,
+    hasData: !!artifactData?.data,
+    stage,
+    chartDataLength: chartData.length,
+    chartDataSample: chartData[0],
+    hasSummary: !!summary,
+  });
+
   // Format date for display
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -109,8 +119,8 @@ export function WhoopAnalysisChart({
         return {
           icon: <IconTarget className="h-5 w-5 text-[#085983]" />,
           color: "#059669",
-          primaryMetric: "totalStrain",
-          primaryLabel: "Total Workout Strain",
+          primaryMetric: "strain",
+          primaryLabel: "Workout Strain",
         };
       default:
         return {
@@ -286,408 +296,493 @@ export function WhoopAnalysisChart({
           <div className="flex-1 overflow-auto p-6 bg-gray-50/30">
             {activeTab === "chart" && (
               <div className="space-y-6">
-                {/* Primary Chart */}
-                <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                  <h3 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium mb-4 text-[#085983]">
-                    {typeConfig.primaryLabel} Trend
-                  </h3>
-                  <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      {type === "strain" || type === "workout" ? (
-                        <BarChart data={chartData}>
-                          <CartesianGrid
-                            strokeDasharray="3 3"
-                            stroke="#085983"
-                            strokeOpacity={0.1}
-                          />
-                          <XAxis
-                            dataKey="date"
-                            tickFormatter={formatDate}
-                            tick={{ fontSize: 12, fill: "#085983" }}
-                            axisLine={{ stroke: "#085983", strokeOpacity: 0.2 }}
-                          />
-                          <YAxis
-                            tick={{ fontSize: 12, fill: "#085983" }}
-                            axisLine={{ stroke: "#085983", strokeOpacity: 0.2 }}
-                          />
-                          <Tooltip
-                            contentStyle={{
-                              backgroundColor: "white",
-                              border: `1px solid #085983`,
-                              borderRadius: "8px",
-                              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                            }}
-                            labelFormatter={(date) => formatDate(date)}
-                          />
-                          <Legend />
-                          <Bar
-                            dataKey={typeConfig.primaryMetric}
-                            fill={typeConfig.color}
-                            name={typeConfig.primaryLabel}
-                            radius={[4, 4, 0, 0]}
-                          />
-                        </BarChart>
-                      ) : (
-                        <AreaChart data={chartData}>
-                          <defs>
-                            <linearGradient
-                              id={`gradient-${type}`}
-                              x1="0"
-                              y1="0"
-                              x2="0"
-                              y2="1"
-                            >
-                              <stop
-                                offset="5%"
-                                stopColor={typeConfig.color}
-                                stopOpacity={0.3}
-                              />
-                              <stop
-                                offset="95%"
-                                stopColor={typeConfig.color}
-                                stopOpacity={0.05}
-                              />
-                            </linearGradient>
-                          </defs>
-                          <CartesianGrid
-                            strokeDasharray="3 3"
-                            stroke="#085983"
-                            strokeOpacity={0.1}
-                          />
-                          <XAxis
-                            dataKey="date"
-                            tickFormatter={formatDate}
-                            tick={{ fontSize: 12, fill: "#085983" }}
-                            axisLine={{ stroke: "#085983", strokeOpacity: 0.2 }}
-                          />
-                          <YAxis
-                            tick={{ fontSize: 12, fill: "#085983" }}
-                            axisLine={{ stroke: "#085983", strokeOpacity: 0.2 }}
-                          />
-                          <Tooltip
-                            contentStyle={{
-                              backgroundColor: "white",
-                              border: `1px solid #085983`,
-                              borderRadius: "8px",
-                              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                            }}
-                            labelFormatter={(date) => formatDate(date)}
-                          />
-                          <Legend />
-                          <Area
-                            type="monotone"
-                            dataKey={typeConfig.primaryMetric}
-                            stroke={typeConfig.color}
-                            strokeWidth={2}
-                            fill={`url(#gradient-${type})`}
-                            name={typeConfig.primaryLabel}
-                          />
-                        </AreaChart>
-                      )}
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                {/* Secondary Charts based on type */}
-                {type === "recovery" && chartData.length > 0 && (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                      <h3 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium mb-4 text-[#085983]">
-                        HRV Trend
-                      </h3>
-                      <div className="h-64">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <LineChart data={chartData}>
-                            <CartesianGrid
-                              strokeDasharray="3 3"
-                              stroke="#085983"
-                              strokeOpacity={0.1}
-                            />
-                            <XAxis
-                              dataKey="date"
-                              tickFormatter={formatDate}
-                              tick={{ fontSize: 12, fill: "#085983" }}
-                            />
-                            <YAxis tick={{ fontSize: 12, fill: "#085983" }} />
-                            <Tooltip
-                              labelFormatter={(date) => formatDate(date)}
-                            />
-                            <Line
-                              type="monotone"
-                              dataKey="hrvRmssd"
-                              stroke="#10b981"
-                              strokeWidth={2}
-                              name="HRV (ms)"
-                            />
-                          </LineChart>
-                        </ResponsiveContainer>
-                      </div>
+                {/* Show message if no chart data */}
+                {chartData.length === 0 ? (
+                  <div className="bg-white rounded-xl p-8 border border-[#085983]/10 text-center">
+                    <div className="p-4 rounded-lg bg-[#085983]/10 mx-auto w-fit mb-4">
+                      {typeConfig.icon}
                     </div>
-                    <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                      <h3 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium mb-4 text-[#085983]">
-                        Resting Heart Rate
-                      </h3>
-                      <div className="h-64">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <LineChart data={chartData}>
-                            <CartesianGrid
-                              strokeDasharray="3 3"
-                              stroke="#085983"
-                              strokeOpacity={0.1}
-                            />
-                            <XAxis
-                              dataKey="date"
-                              tickFormatter={formatDate}
-                              tick={{ fontSize: 12, fill: "#085983" }}
-                            />
-                            <YAxis tick={{ fontSize: 12, fill: "#085983" }} />
-                            <Tooltip
-                              labelFormatter={(date) => formatDate(date)}
-                            />
-                            <Line
-                              type="monotone"
-                              dataKey="restingHeartRate"
-                              stroke="#ef4444"
-                              strokeWidth={2}
-                              name="RHR (bpm)"
-                            />
-                          </LineChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {type === "sleep" && chartData.length > 0 && (
-                  <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                    <h3 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium mb-4 text-[#085983]">
-                      Sleep Duration vs Efficiency
+                    <h3 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium mb-2 text-[#085983]">
+                      No Chart Data Available
                     </h3>
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={chartData}>
-                          <CartesianGrid
-                            strokeDasharray="3 3"
-                            stroke="#085983"
-                            strokeOpacity={0.1}
+                    <p className="text-sm text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-4">
+                      {stage === "complete"
+                        ? "The analysis completed but no chart data was generated."
+                        : "Chart data will appear once the analysis is complete."}
+                    </p>
+                    {stage !== "complete" && (
+                      <div className="w-64 mx-auto">
+                        <div className="w-full bg-[#085983]/10 rounded-full h-2 mb-2">
+                          <div
+                            className="bg-[#085983] h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${progress * 100}%` }}
                           />
-                          <XAxis
-                            dataKey="date"
-                            tickFormatter={formatDate}
-                            tick={{ fontSize: 12, fill: "#085983" }}
-                          />
-                          <YAxis tick={{ fontSize: 12, fill: "#085983" }} />
-                          <Tooltip
-                            labelFormatter={(date) => formatDate(date)}
-                          />
-                          <Legend />
-                          <Line
-                            type="monotone"
-                            dataKey="sleepDuration"
-                            stroke="#8b5cf6"
-                            strokeWidth={2}
-                            name="Duration (hrs)"
-                            yAxisId="duration"
-                          />
-                          <Line
-                            type="monotone"
-                            dataKey="sleepEfficiency"
-                            stroke="#06b6d4"
-                            strokeWidth={2}
-                            name="Efficiency (%)"
-                            yAxisId="efficiency"
-                          />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </div>
+                        </div>
+                        <p className="text-xs text-[#085983]/60 font-[family-name:var(--font-geist-sans)]">
+                          {Math.round(progress * 100)}% complete
+                        </p>
+                      </div>
+                    )}
                   </div>
+                ) : (
+                  <>
+                    {/* Primary Chart */}
+                    <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                      <h3 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium mb-4 text-[#085983]">
+                        {typeConfig.primaryLabel} Trend
+                      </h3>
+                      <div className="h-80">
+                        <ResponsiveContainer width="100%" height="100%">
+                          {type === "strain" || type === "workout" ? (
+                            <BarChart data={chartData}>
+                              <CartesianGrid
+                                strokeDasharray="3 3"
+                                stroke="#085983"
+                                strokeOpacity={0.1}
+                              />
+                              <XAxis
+                                dataKey="date"
+                                tickFormatter={formatDate}
+                                tick={{ fontSize: 12, fill: "#085983" }}
+                                axisLine={{
+                                  stroke: "#085983",
+                                  strokeOpacity: 0.2,
+                                }}
+                              />
+                              <YAxis
+                                tick={{ fontSize: 12, fill: "#085983" }}
+                                axisLine={{
+                                  stroke: "#085983",
+                                  strokeOpacity: 0.2,
+                                }}
+                              />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: "white",
+                                  border: `1px solid #085983`,
+                                  borderRadius: "8px",
+                                  boxShadow:
+                                    "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                                }}
+                                labelFormatter={(date) => formatDate(date)}
+                              />
+                              <Legend />
+                              <Bar
+                                dataKey={typeConfig.primaryMetric}
+                                fill={typeConfig.color}
+                                name={typeConfig.primaryLabel}
+                                radius={[4, 4, 0, 0]}
+                              />
+                            </BarChart>
+                          ) : (
+                            <AreaChart data={chartData}>
+                              <defs>
+                                <linearGradient
+                                  id={`gradient-${type}`}
+                                  x1="0"
+                                  y1="0"
+                                  x2="0"
+                                  y2="1"
+                                >
+                                  <stop
+                                    offset="5%"
+                                    stopColor={typeConfig.color}
+                                    stopOpacity={0.3}
+                                  />
+                                  <stop
+                                    offset="95%"
+                                    stopColor={typeConfig.color}
+                                    stopOpacity={0.05}
+                                  />
+                                </linearGradient>
+                              </defs>
+                              <CartesianGrid
+                                strokeDasharray="3 3"
+                                stroke="#085983"
+                                strokeOpacity={0.1}
+                              />
+                              <XAxis
+                                dataKey="date"
+                                tickFormatter={formatDate}
+                                tick={{ fontSize: 12, fill: "#085983" }}
+                                axisLine={{
+                                  stroke: "#085983",
+                                  strokeOpacity: 0.2,
+                                }}
+                              />
+                              <YAxis
+                                tick={{ fontSize: 12, fill: "#085983" }}
+                                axisLine={{
+                                  stroke: "#085983",
+                                  strokeOpacity: 0.2,
+                                }}
+                              />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: "white",
+                                  border: `1px solid #085983`,
+                                  borderRadius: "8px",
+                                  boxShadow:
+                                    "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                                }}
+                                labelFormatter={(date) => formatDate(date)}
+                              />
+                              <Legend />
+                              <Area
+                                type="monotone"
+                                dataKey={typeConfig.primaryMetric}
+                                stroke={typeConfig.color}
+                                strokeWidth={2}
+                                fill={`url(#gradient-${type})`}
+                                name={typeConfig.primaryLabel}
+                              />
+                            </AreaChart>
+                          )}
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+
+                    {/* Secondary Charts based on type */}
+                    {type === "recovery" && chartData.length > 0 && (
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                          <h3 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium mb-4 text-[#085983]">
+                            HRV Trend
+                          </h3>
+                          <div className="h-64">
+                            <ResponsiveContainer width="100%" height="100%">
+                              <LineChart data={chartData}>
+                                <CartesianGrid
+                                  strokeDasharray="3 3"
+                                  stroke="#085983"
+                                  strokeOpacity={0.1}
+                                />
+                                <XAxis
+                                  dataKey="date"
+                                  tickFormatter={formatDate}
+                                  tick={{ fontSize: 12, fill: "#085983" }}
+                                />
+                                <YAxis
+                                  tick={{ fontSize: 12, fill: "#085983" }}
+                                />
+                                <Tooltip
+                                  labelFormatter={(date) => formatDate(date)}
+                                />
+                                <Line
+                                  type="monotone"
+                                  dataKey="hrvRmssd"
+                                  stroke="#10b981"
+                                  strokeWidth={2}
+                                  name="HRV (ms)"
+                                />
+                              </LineChart>
+                            </ResponsiveContainer>
+                          </div>
+                        </div>
+                        <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                          <h3 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium mb-4 text-[#085983]">
+                            Resting Heart Rate
+                          </h3>
+                          <div className="h-64">
+                            <ResponsiveContainer width="100%" height="100%">
+                              <LineChart data={chartData}>
+                                <CartesianGrid
+                                  strokeDasharray="3 3"
+                                  stroke="#085983"
+                                  strokeOpacity={0.1}
+                                />
+                                <XAxis
+                                  dataKey="date"
+                                  tickFormatter={formatDate}
+                                  tick={{ fontSize: 12, fill: "#085983" }}
+                                />
+                                <YAxis
+                                  tick={{ fontSize: 12, fill: "#085983" }}
+                                />
+                                <Tooltip
+                                  labelFormatter={(date) => formatDate(date)}
+                                />
+                                <Line
+                                  type="monotone"
+                                  dataKey="restingHeartRate"
+                                  stroke="#ef4444"
+                                  strokeWidth={2}
+                                  name="RHR (bpm)"
+                                />
+                              </LineChart>
+                            </ResponsiveContainer>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {type === "sleep" && chartData.length > 0 && (
+                      <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                        <h3 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium mb-4 text-[#085983]">
+                          Sleep Duration vs Efficiency
+                        </h3>
+                        <div className="h-64">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={chartData}>
+                              <CartesianGrid
+                                strokeDasharray="3 3"
+                                stroke="#085983"
+                                strokeOpacity={0.1}
+                              />
+                              <XAxis
+                                dataKey="date"
+                                tickFormatter={formatDate}
+                                tick={{ fontSize: 12, fill: "#085983" }}
+                              />
+                              <YAxis tick={{ fontSize: 12, fill: "#085983" }} />
+                              <Tooltip
+                                labelFormatter={(date) => formatDate(date)}
+                                formatter={(value, name) => {
+                                  if (name === "Duration (hrs)") {
+                                    return [
+                                      ((value as number) / 3600000).toFixed(1),
+                                      name,
+                                    ];
+                                  }
+                                  return [value, name];
+                                }}
+                              />
+                              <Legend />
+                              <Line
+                                type="monotone"
+                                dataKey="sleepDuration"
+                                stroke="#8b5cf6"
+                                strokeWidth={2}
+                                name="Duration (hrs)"
+                                yAxisId="duration"
+                              />
+                              <Line
+                                type="monotone"
+                                dataKey="sleepEfficiency"
+                                stroke="#06b6d4"
+                                strokeWidth={2}
+                                name="Efficiency (%)"
+                                yAxisId="efficiency"
+                              />
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             )}
 
-            {activeTab === "insights" && summary && (
+            {activeTab === "insights" && (
               <div className="space-y-6">
-                {/* Key Metrics Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {/* Render different metrics based on type */}
-                  {type === "recovery" && "averageRecovery" in summary && (
-                    <>
-                      <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                        <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
-                          Average Recovery
-                        </h4>
-                        <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
-                          {summary.averageRecovery}%
-                        </p>
-                      </div>
-                      <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                        <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
-                          Average HRV
-                        </h4>
-                        <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
-                          {summary.avgHrv} ms
-                        </p>
-                      </div>
-                      <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                        <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
-                          Consistency Score
-                        </h4>
-                        <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
-                          {summary.consistencyScore}%
-                        </p>
-                      </div>
-                    </>
-                  )}
-
-                  {type === "sleep" && "averageSleepPerformance" in summary && (
-                    <>
-                      <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                        <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
-                          Sleep Performance
-                        </h4>
-                        <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
-                          {summary.averageSleepPerformance}%
-                        </p>
-                      </div>
-                      <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                        <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
-                          Sleep Duration
-                        </h4>
-                        <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
-                          {summary.averageSleepDuration}h
-                        </p>
-                      </div>
-                      <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                        <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
-                          Sleep Debt
-                        </h4>
-                        <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
-                          {summary.sleepDebt}h
-                        </p>
-                      </div>
-                    </>
-                  )}
-
-                  {type === "strain" && "averageStrain" in summary && (
-                    <>
-                      <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                        <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
-                          Average Strain
-                        </h4>
-                        <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
-                          {summary.averageStrain}
-                        </p>
-                      </div>
-                      <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                        <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
-                          Total Workouts
-                        </h4>
-                        <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
-                          {summary.totalWorkouts}
-                        </p>
-                      </div>
-                      <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                        <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
-                          Fatigue Risk
-                        </h4>
-                        <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983] capitalize">
-                          {summary.fatigueRisk}
-                        </p>
-                      </div>
-                    </>
-                  )}
-
-                  {type === "workout" && "totalWorkouts" in summary && (
-                    <>
-                      <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                        <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
-                          Total Workouts
-                        </h4>
-                        <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
-                          {summary.totalWorkouts}
-                        </p>
-                      </div>
-                      {"averageWorkoutDuration" in summary && (
-                        <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                          <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
-                            Average Duration
-                          </h4>
-                          <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
-                            {summary.averageWorkoutDuration}m
-                          </p>
-                        </div>
-                      )}
-                      {"workoutFrequency" in summary && (
-                        <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                          <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
-                            Workout Frequency
-                          </h4>
-                          <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
-                            {summary.workoutFrequency}/wk
-                          </p>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-
-                {/* Insights */}
-                {summary.insights && summary.insights.length > 0 && (
-                  <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                    <h4 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium mb-4 text-[#085983] flex items-center">
-                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                      Key Insights
-                    </h4>
-                    <div className="space-y-3">
-                      {summary.insights.map((insight, index) => (
-                        <div
-                          key={index}
-                          className={cn(
-                            "p-4 rounded-lg border",
-                            insight.impact === "positive" &&
-                              "bg-green-50 border-green-200",
-                            insight.impact === "negative" &&
-                              "bg-red-50 border-red-200",
-                            insight.impact === "neutral" &&
-                              "bg-gray-50 border-gray-200"
-                          )}
-                        >
-                          <div className="font-medium text-sm mb-1 text-[#085983]">
-                            {insight.title}
-                          </div>
-                          <p className="text-sm text-[#085983]/70 font-[family-name:var(--font-geist-sans)]">
-                            {insight.description}
-                          </p>
-                        </div>
-                      ))}
+                {!summary ? (
+                  <div className="bg-white rounded-xl p-8 border border-[#085983]/10 text-center">
+                    <div className="p-4 rounded-lg bg-[#085983]/10 mx-auto w-fit mb-4">
+                      {typeConfig.icon}
                     </div>
+                    <h3 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium mb-2 text-[#085983]">
+                      No Insights Available
+                    </h3>
+                    <p className="text-sm text-[#085983]/60 font-[family-name:var(--font-geist-sans)]">
+                      {stage === "complete"
+                        ? "The analysis completed but no insights were generated."
+                        : "Insights will appear once the analysis is complete."}
+                    </p>
                   </div>
-                )}
-
-                {/* Recommendations */}
-                {summary.recommendations &&
-                  summary.recommendations.length > 0 && (
-                    <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
-                      <h4 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium mb-4 text-[#085983] flex items-center">
-                        <AlertTriangle className="h-5 w-5 text-blue-500 mr-2" />
-                        Recommendations
-                      </h4>
-                      <div className="space-y-3">
-                        {summary.recommendations.map(
-                          (recommendation, index) => (
-                            <div
-                              key={index}
-                              className="p-4 rounded-lg bg-blue-50 border border-blue-200"
-                            >
-                              <p className="text-sm text-blue-800 font-[family-name:var(--font-geist-sans)]">
-                                {recommendation}
+                ) : (
+                  <>
+                    {/* Key Metrics Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {/* Render different metrics based on type */}
+                      {type === "recovery" &&
+                        summary &&
+                        "averageRecovery" in summary && (
+                          <>
+                            <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                              <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
+                                Average Recovery
+                              </h4>
+                              <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
+                                {summary.averageRecovery}%
                               </p>
                             </div>
-                          )
+                            <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                              <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
+                                Average HRV
+                              </h4>
+                              <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
+                                {summary.avgHrv} ms
+                              </p>
+                            </div>
+                            <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                              <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
+                                Consistency Score
+                              </h4>
+                              <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
+                                {summary.consistencyScore}%
+                              </p>
+                            </div>
+                          </>
                         )}
-                      </div>
+
+                      {type === "sleep" &&
+                        summary &&
+                        "averageSleepPerformance" in summary && (
+                          <>
+                            <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                              <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
+                                Sleep Performance
+                              </h4>
+                              <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
+                                {summary.averageSleepPerformance}%
+                              </p>
+                            </div>
+                            <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                              <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
+                                Sleep Duration
+                              </h4>
+                              <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
+                                {summary.averageSleepDuration}h
+                              </p>
+                            </div>
+                            <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                              <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
+                                Sleep Debt
+                              </h4>
+                              <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
+                                {summary.sleepDebt}h
+                              </p>
+                            </div>
+                          </>
+                        )}
+
+                      {type === "strain" &&
+                        summary &&
+                        "averageStrain" in summary && (
+                          <>
+                            <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                              <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
+                                Average Strain
+                              </h4>
+                              <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
+                                {summary.averageStrain}
+                              </p>
+                            </div>
+                            <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                              <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
+                                Total Workouts
+                              </h4>
+                              <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
+                                {summary.totalWorkouts}
+                              </p>
+                            </div>
+                            <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                              <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
+                                Fatigue Risk
+                              </h4>
+                              <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983] capitalize">
+                                {summary.fatigueRisk}
+                              </p>
+                            </div>
+                          </>
+                        )}
+
+                      {type === "workout" &&
+                        summary &&
+                        "totalWorkouts" in summary && (
+                          <>
+                            <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                              <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
+                                Total Workouts
+                              </h4>
+                              <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
+                                {summary.totalWorkouts}
+                              </p>
+                            </div>
+                            {"averageWorkoutDuration" in summary && (
+                              <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                                <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
+                                  Average Duration
+                                </h4>
+                                <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
+                                  {summary.averageWorkoutDuration}m
+                                </p>
+                              </div>
+                            )}
+                            {"workoutFrequency" in summary && (
+                              <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                                <h4 className="text-sm font-medium text-[#085983]/60 font-[family-name:var(--font-geist-sans)] mb-2">
+                                  Workout Frequency
+                                </h4>
+                                <p className="text-3xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
+                                  {summary.workoutFrequency}/wk
+                                </p>
+                              </div>
+                            )}
+                          </>
+                        )}
                     </div>
-                  )}
+
+                    {/* Insights */}
+                    {summary.insights && summary.insights.length > 0 && (
+                      <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                        <h4 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium mb-4 text-[#085983] flex items-center">
+                          <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                          Key Insights
+                        </h4>
+                        <div className="space-y-3">
+                          {summary.insights.map((insight, index) => (
+                            <div
+                              key={index}
+                              className={cn(
+                                "p-4 rounded-lg border",
+                                insight.impact === "positive" &&
+                                  "bg-green-50 border-green-200",
+                                insight.impact === "negative" &&
+                                  "bg-red-50 border-red-200",
+                                insight.impact === "neutral" &&
+                                  "bg-gray-50 border-gray-200"
+                              )}
+                            >
+                              <div className="font-medium text-sm mb-1 text-[#085983]">
+                                {insight.title}
+                              </div>
+                              <p className="text-sm text-[#085983]/70 font-[family-name:var(--font-geist-sans)]">
+                                {insight.description}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Recommendations */}
+                    {summary.recommendations &&
+                      summary.recommendations.length > 0 && (
+                        <div className="bg-white rounded-xl p-6 border border-[#085983]/10">
+                          <h4 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium mb-4 text-[#085983] flex items-center">
+                            <AlertTriangle className="h-5 w-5 text-blue-500 mr-2" />
+                            Recommendations
+                          </h4>
+                          <div className="space-y-3">
+                            {summary.recommendations.map(
+                              (recommendation, index) => (
+                                <div
+                                  key={index}
+                                  className="p-4 rounded-lg bg-blue-50 border border-blue-200"
+                                >
+                                  <p className="text-sm text-blue-800 font-[family-name:var(--font-geist-sans)]">
+                                    {recommendation}
+                                  </p>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      )}
+                  </>
+                )}
               </div>
             )}
           </div>

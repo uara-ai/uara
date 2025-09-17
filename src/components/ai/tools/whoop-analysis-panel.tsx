@@ -23,7 +23,25 @@ import {
   IconChartBar,
 } from "@tabler/icons-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  AreaChart,
+  Area,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+} from "recharts";
 
 interface WhoopAnalysisPanelProps {
   type: "recovery" | "sleep" | "strain" | "workout";
@@ -204,24 +222,129 @@ export function WhoopAnalysisPanel({
       {/* Chart Preview */}
       <Card className="bg-white rounded-xl border-[#085983]/10">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] flex items-center gap-2">
-            <BarChart3 className="h-4 w-4" />
-            {typeConfig.title} Trend
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              {typeConfig.title} Trend
+            </CardTitle>
+            {chartData.length > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onOpenChart(type)}
+                className="text-[#085983] border-[#085983]/20 hover:bg-[#085983]/5"
+              >
+                <IconChartBar className="h-4 w-4 mr-1" />
+                View Full Chart
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="h-32 flex items-center justify-center bg-gray-50 rounded-lg">
-            <div className="text-center">
-              <div className="p-2 rounded-lg bg-[#085983]/10 mx-auto w-fit mb-2">
-                <BarChart3 className="h-6 w-6 text-[#085983]" />
-              </div>
-              <p className="text-sm text-[#085983]/60 font-[family-name:var(--font-geist-sans)]">
-                {chartData.length > 0
-                  ? "Interactive chart available"
-                  : "Processing chart data..."}
-              </p>
+          {chartData.length > 0 ? (
+            <div className="h-48">
+              <ChartContainer
+                config={{
+                  recoveryScore: {
+                    label: "Recovery Score",
+                    color: "#085983",
+                  },
+                  sleepPerformance: {
+                    label: "Sleep Performance",
+                    color: "#4c1d95",
+                  },
+                  strain: {
+                    label: "Strain",
+                    color: "#dc2626",
+                  },
+                }}
+                className="h-full"
+              >
+                {type === "strain" || type === "workout" ? (
+                  <BarChart data={chartData.slice(-7)}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="date"
+                      tickFormatter={(value) =>
+                        new Date(value).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })
+                      }
+                      tick={{ fontSize: 10 }}
+                    />
+                    <YAxis tick={{ fontSize: 10 }} />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Bar
+                      dataKey="strain"
+                      fill={typeConfig.color}
+                      radius={[2, 2, 0, 0]}
+                    />
+                  </BarChart>
+                ) : (
+                  <AreaChart data={chartData.slice(-7)}>
+                    <defs>
+                      <linearGradient
+                        id={`gradient-${type}`}
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor={typeConfig.color}
+                          stopOpacity={0.3}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor={typeConfig.color}
+                          stopOpacity={0.05}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="date"
+                      tickFormatter={(value) =>
+                        new Date(value).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })
+                      }
+                      tick={{ fontSize: 10 }}
+                    />
+                    <YAxis tick={{ fontSize: 10 }} />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Area
+                      type="monotone"
+                      dataKey={
+                        type === "recovery"
+                          ? "recoveryScore"
+                          : "sleepPerformance"
+                      }
+                      stroke={typeConfig.color}
+                      strokeWidth={2}
+                      fill={`url(#gradient-${type})`}
+                    />
+                  </AreaChart>
+                )}
+              </ChartContainer>
             </div>
-          </div>
+          ) : (
+            <div className="h-48 flex items-center justify-center bg-gray-50 rounded-lg">
+              <div className="text-center">
+                <div className="p-2 rounded-lg bg-[#085983]/10 mx-auto w-fit mb-2">
+                  <BarChart3 className="h-6 w-6 text-[#085983]" />
+                </div>
+                <p className="text-sm text-[#085983]/60 font-[family-name:var(--font-geist-sans)]">
+                  {hasAnalysisData
+                    ? "No chart data available"
+                    : "Processing chart data..."}
+                </p>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -446,17 +569,10 @@ export function WhoopAnalysisPanel({
 
       {/* Action Buttons */}
       {hasAnalysisData && (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="flex justify-center">
           <button
             type="button"
-            onClick={() => onOpenChart(type)}
-            className="px-4 py-3 bg-[#085983]/5 hover:bg-[#085983]/10 text-[#085983] rounded-lg transition-colors text-sm font-medium font-[family-name:var(--font-geist-sans)]"
-          >
-            View Full Chart
-          </button>
-          <button
-            type="button"
-            className="px-4 py-3 bg-[#085983]/5 hover:bg-[#085983]/10 text-[#085983] rounded-lg transition-colors text-sm font-medium font-[family-name:var(--font-geist-sans)]"
+            className="px-6 py-3 bg-[#085983]/5 hover:bg-[#085983]/10 text-[#085983] rounded-lg transition-colors text-sm font-medium font-[family-name:var(--font-geist-sans)]"
           >
             Export Analysis
           </button>

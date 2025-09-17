@@ -177,61 +177,10 @@ export function ChatAnalysisPanel({
   return (
     <div
       className={cn(
-        "w-full lg:w-1/2 border-l border-[#085983]/10 flex flex-col h-full bg-gray-50/50",
+        "w-full lg:w-1/2 border-l border-[#085983]/10 flex flex-col h-full",
         className
       )}
     >
-      {/* Analysis Header */}
-      <div className="flex items-center justify-between p-4 border-b border-[#085983]/10 bg-white">
-        <div className="flex items-center gap-2">
-          <div className="p-2 rounded-lg bg-[#085983]/10">
-            <IconChartBar className="h-4 w-4 text-[#085983]" />
-          </div>
-          <div>
-            <h2 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium text-[#085983]">
-              Health Analysis
-            </h2>
-            <p className="text-xs text-[#085983]/60 font-[family-name:var(--font-geist-sans)]">
-              Real-time insights from your data
-            </p>
-          </div>
-        </div>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="p-2 hover:bg-[#085983]/5 rounded-lg transition-colors text-[#085983]"
-            >
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={onOpenBurnRateChart}>
-              <IconChartBar className="mr-2 h-4 w-4" />
-              View Full Chart
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <IconPin className="mr-2 h-4 w-4" />
-              Pin Analysis
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <IconDownload className="mr-2 h-4 w-4" />
-              Export Report
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <IconShare className="mr-2 h-4 w-4" />
-              Share Insights
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <IconSettings className="mr-2 h-4 w-4" />
-              Analysis Settings
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
       {/* Analysis Content */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {/* Show WHOOP analysis if available, otherwise burn rate */}
