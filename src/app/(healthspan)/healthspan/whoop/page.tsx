@@ -1,11 +1,13 @@
 import React, { Suspense } from "react";
 import { WhoopCards } from "@/components/healthspan/whoop-cards";
 import { WhoopTable } from "@/components/healthspan/whoop-table";
+import { WhoopManagementMenu } from "@/components/healthspan/whoop-management-menu";
 import { Separator } from "@/components/ui/separator";
 import { WhoopRefreshButton } from "@/components/healthspan/whoop-refresh-button";
 import {
   getWhoopSummaryServer,
   getWhoopDataServer,
+  getWhoopUserServer,
   processWhoopDataToStats,
 } from "@/actions/whoop-data-action";
 
@@ -69,18 +71,19 @@ async function WhoopTableSection() {
 }
 
 export default async function WhoopPage() {
-  // Fetch summary data for cards (fast, cached)
-  const whoopSummary = await getWhoopSummaryServer(7); // Last 7 days only
+  // Fetch data in parallel for better performance
+  const [whoopSummary, whoopUser] = await Promise.all([
+    getWhoopSummaryServer(7), // Last 7 days only
+    getWhoopUserServer(),
+  ]);
+
   const whoopStats = whoopSummary
     ? await processWhoopDataToStats(whoopSummary)
     : null;
+
   return (
     <div className="flex-1 overflow-auto">
       <div className="space-y-8">
-        {/* WHOOP Cards Section - Fast loading 
-        <Suspense fallback={<WhoopCardsLoading />}>
-          <WhoopCardsSection />
-        </Suspense>*/}
         {/* Section Header */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
           {/* Mobile: Simple title */}
@@ -105,7 +108,20 @@ export default async function WhoopPage() {
           </p>
         </div>
 
-        <WhoopCards whoopData={whoopSummary} whoopStats={whoopStats} />
+        {/* WHOOP Cards - Only show when connected and have data */}
+        {whoopUser && (
+          <WhoopCards whoopData={whoopSummary} whoopStats={whoopStats} />
+        )}
+
+        {/* WHOOP Management Menu */}
+        <div className="mx-auto px-4 sm:px-6 mb-8">
+          <div className="max-w-md mx-auto">
+            <WhoopManagementMenu
+              whoopUser={whoopUser}
+              isConnected={!!whoopUser}
+            />
+          </div>
+        </div>
 
         {/* WHOOP Table Section - Slower loading but more data 
         <div className="space-y-4">

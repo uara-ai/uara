@@ -529,6 +529,36 @@ export async function revalidateWhoopData() {
   revalidateTag("whoop-data");
 }
 
+// Get WHOOP user information
+export async function getWhoopUserServer(): Promise<{
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  lastSyncAt?: Date | null;
+} | null> {
+  try {
+    const { user } = await withAuth();
+    if (!user?.id) {
+      return null;
+    }
+
+    const whoopUser = await prisma.whoopUser.findUnique({
+      where: { userId: user.id },
+      select: {
+        firstName: true,
+        lastName: true,
+        email: true,
+        lastSyncAt: true,
+      },
+    });
+
+    return whoopUser;
+  } catch (error) {
+    console.error("Error fetching WHOOP user:", error);
+    return null;
+  }
+}
+
 // Export for use in client components via useAction
 export { getWhoopDataAction as default };
 

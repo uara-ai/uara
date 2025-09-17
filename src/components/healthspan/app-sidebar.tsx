@@ -43,15 +43,10 @@ const data = {
     {
       title: "Healthspan",
       url: "/healthspan",
-      icon: IconDashboard,
-    },
-    {
-      title: "AI Analysis",
-      url: "/healthspan/ai-analysis",
       icon: IconBrain,
     },
     {
-      title: "WHOOP Data",
+      title: "WHOOP",
       url: "/healthspan/whoop",
       icon: IconActivity,
     },
