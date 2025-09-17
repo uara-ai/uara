@@ -63,7 +63,7 @@ export function ChatInput({
       return `Automatically analyze WHOOP ${type} data with detailed insights`;
     }
 
-    const recentData = data.slice(0, 5); // Get last 5 days
+    const recentData = data.slice(0, 14); // Get last 14 days
 
     switch (type) {
       case "recovery":

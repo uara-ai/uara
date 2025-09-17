@@ -1,6 +1,16 @@
 import { tool } from "ai";
 import { z } from "zod";
-import { getWhoopAnalysisDataAction } from "@/actions/whoop-analysis-action";
+import {
+  getCurrentUser,
+  preloadWhoopData,
+  getWhoopData,
+} from "@/lib/ai/context";
+import {
+  WhoopRecoveryArtifact,
+  WhoopSleepArtifact,
+  WhoopStrainArtifact,
+  WhoopWorkoutArtifact,
+} from "@/lib/ai";
 
 // Auto WHOOP Recovery Analysis Tool
 export const autoWhoopRecoveryTool = tool({
@@ -16,32 +26,48 @@ export const autoWhoopRecoveryTool = tool({
   }),
   execute: async ({ days }) => {
     try {
-      // Fetch recovery data automatically
-      const result = await getWhoopAnalysisDataAction({
-        analysisType: "recovery",
-        days,
-      });
+      // Get current user context
+      const user = getCurrentUser();
 
-      if (!result.data) {
+      // Try to get preloaded data first, otherwise fetch it
+      let whoopData = getWhoopData("recovery");
+      if (!whoopData) {
+        whoopData = await preloadWhoopData("recovery", days);
+      }
+
+      if (!whoopData) {
         return {
-          error: result.serverError || "Failed to fetch WHOOP recovery data",
-          hasData: false,
+          parts: [],
+          text: "Failed to fetch WHOOP recovery data. Please ensure your WHOOP account is connected.",
         };
       }
 
-      // Return simple success message - the actual analysis will be triggered via artifacts
-      const recoveryData =
-        "recoveryData" in result.data ? result.data.recoveryData : [];
+      // Return simple success message - let the system handle the detailed analysis
       return {
-        text: `Successfully fetched WHOOP recovery data for analysis. Found ${recoveryData.length} recovery records.`,
-        hasData: true,
+        parts: [
+          {
+            type: `data-artifact-${WhoopRecoveryArtifact.id}`,
+            data: {
+              id: whoopData.id,
+              version: 1,
+              status: "complete" as const,
+              progress: 1,
+              payload: whoopData,
+              createdAt: Date.now(),
+            },
+          },
+        ],
+        text: `Successfully fetched WHOOP recovery data for ${
+          user.fullName
+        }. Found ${
+          whoopData.recoveryData?.length || 0
+        } recovery records. You can now ask for detailed recovery analysis.`,
       };
     } catch (error) {
       console.error("Error in auto recovery analysis:", error);
       return {
-        error:
-          "Failed to analyze WHOOP recovery data. Please ensure your WHOOP account is connected.",
-        hasData: false,
+        parts: [],
+        text: "Failed to analyze WHOOP recovery data. Please ensure your WHOOP account is connected.",
       };
     }
   },
@@ -61,31 +87,48 @@ export const autoWhoopSleepTool = tool({
   }),
   execute: async ({ days }) => {
     try {
-      // Fetch sleep data automatically
-      const result = await getWhoopAnalysisDataAction({
-        analysisType: "sleep",
-        days,
-      });
+      // Get current user context
+      const user = getCurrentUser();
 
-      if (!result.data) {
+      // Try to get preloaded data first, otherwise fetch it
+      let whoopData = getWhoopData("sleep");
+      if (!whoopData) {
+        whoopData = await preloadWhoopData("sleep", days);
+      }
+
+      if (!whoopData) {
         return {
-          error: result.serverError || "Failed to fetch WHOOP sleep data",
-          hasData: false,
+          parts: [],
+          text: "Failed to fetch WHOOP sleep data. Please ensure your WHOOP account is connected.",
         };
       }
 
-      // Return simple success message - the actual analysis will be triggered via artifacts
-      const sleepData = "sleepData" in result.data ? result.data.sleepData : [];
+      // Return simple success message - let the system handle the detailed analysis
       return {
-        text: `Successfully fetched WHOOP sleep data for analysis. Found ${sleepData.length} sleep records.`,
-        hasData: true,
+        parts: [
+          {
+            type: `data-artifact-${WhoopSleepArtifact.id}`,
+            data: {
+              id: whoopData.id,
+              version: 1,
+              status: "complete" as const,
+              progress: 1,
+              payload: whoopData,
+              createdAt: Date.now(),
+            },
+          },
+        ],
+        text: `Successfully fetched WHOOP sleep data for ${
+          user.fullName
+        }. Found ${
+          whoopData.sleepData?.length || 0
+        } sleep records. You can now ask for detailed sleep analysis.`,
       };
     } catch (error) {
       console.error("Error in auto sleep analysis:", error);
       return {
-        error:
-          "Failed to analyze WHOOP sleep data. Please ensure your WHOOP account is connected.",
-        hasData: false,
+        parts: [],
+        text: "Failed to analyze WHOOP sleep data. Please ensure your WHOOP account is connected.",
       };
     }
   },
@@ -105,32 +148,48 @@ export const autoWhoopStrainTool = tool({
   }),
   execute: async ({ days }) => {
     try {
-      // Fetch strain data automatically
-      const result = await getWhoopAnalysisDataAction({
-        analysisType: "strain",
-        days,
-      });
+      // Get current user context
+      const user = getCurrentUser();
 
-      if (!result.data) {
+      // Try to get preloaded data first, otherwise fetch it
+      let whoopData = getWhoopData("strain");
+      if (!whoopData) {
+        whoopData = await preloadWhoopData("strain", days);
+      }
+
+      if (!whoopData) {
         return {
-          error: result.serverError || "Failed to fetch WHOOP strain data",
-          hasData: false,
+          parts: [],
+          text: "Failed to fetch WHOOP strain data. Please ensure your WHOOP account is connected.",
         };
       }
 
-      // Return simple success message - the actual analysis will be triggered via artifacts
-      const strainData =
-        "strainData" in result.data ? result.data.strainData : [];
+      // Return simple success message - let the system handle the detailed analysis
       return {
-        text: `Successfully fetched WHOOP strain data for analysis. Found ${strainData.length} strain records.`,
-        hasData: true,
+        parts: [
+          {
+            type: `data-artifact-${WhoopStrainArtifact.id}`,
+            data: {
+              id: whoopData.id,
+              version: 1,
+              status: "complete" as const,
+              progress: 1,
+              payload: whoopData,
+              createdAt: Date.now(),
+            },
+          },
+        ],
+        text: `Successfully fetched WHOOP strain data for ${
+          user.fullName
+        }. Found ${
+          whoopData.strainData?.length || 0
+        } strain records. You can now ask for detailed strain analysis.`,
       };
     } catch (error) {
       console.error("Error in auto strain analysis:", error);
       return {
-        error:
-          "Failed to analyze WHOOP strain data. Please ensure your WHOOP account is connected.",
-        hasData: false,
+        parts: [],
+        text: "Failed to analyze WHOOP strain data. Please ensure your WHOOP account is connected.",
       };
     }
   },
@@ -150,32 +209,48 @@ export const autoWhoopWorkoutTool = tool({
   }),
   execute: async ({ days }) => {
     try {
-      // Fetch workout data automatically
-      const result = await getWhoopAnalysisDataAction({
-        analysisType: "workout",
-        days,
-      });
+      // Get current user context
+      const user = getCurrentUser();
 
-      if (!result.data) {
+      // Try to get preloaded data first, otherwise fetch it
+      let whoopData = getWhoopData("workout");
+      if (!whoopData) {
+        whoopData = await preloadWhoopData("workout", days);
+      }
+
+      if (!whoopData) {
         return {
-          error: result.serverError || "Failed to fetch WHOOP workout data",
-          hasData: false,
+          parts: [],
+          text: "Failed to fetch WHOOP workout data. Please ensure your WHOOP account is connected.",
         };
       }
 
-      // Return simple success message - the actual analysis will be triggered via artifacts
-      const workoutData =
-        "workoutData" in result.data ? result.data.workoutData : [];
+      // Return simple success message - let the system handle the detailed analysis
       return {
-        text: `Successfully fetched WHOOP workout data for analysis. Found ${workoutData.length} workout records.`,
-        hasData: true,
+        parts: [
+          {
+            type: `data-artifact-${WhoopWorkoutArtifact.id}`,
+            data: {
+              id: whoopData.id,
+              version: 1,
+              status: "complete" as const,
+              progress: 1,
+              payload: whoopData,
+              createdAt: Date.now(),
+            },
+          },
+        ],
+        text: `Successfully fetched WHOOP workout data for ${
+          user.fullName
+        }. Found ${
+          whoopData.workoutData?.length || 0
+        } workout records. You can now ask for detailed workout analysis.`,
       };
     } catch (error) {
       console.error("Error in auto workout analysis:", error);
       return {
-        error:
-          "Failed to analyze WHOOP workout data. Please ensure your WHOOP account is connected.",
-        hasData: false,
+        parts: [],
+        text: "Failed to analyze WHOOP workout data. Please ensure your WHOOP account is connected.",
       };
     }
   },

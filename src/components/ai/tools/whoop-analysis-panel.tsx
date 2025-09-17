@@ -568,16 +568,7 @@ export function WhoopAnalysisPanel({
         )}
 
       {/* Action Buttons */}
-      {hasAnalysisData && (
-        <div className="flex justify-center">
-          <button
-            type="button"
-            className="px-6 py-3 bg-[#085983]/5 hover:bg-[#085983]/10 text-[#085983] rounded-lg transition-colors text-sm font-medium font-[family-name:var(--font-geist-sans)]"
-          >
-            Export Analysis
-          </button>
-        </div>
-      )}
+      {hasAnalysisData && <div className="flex justify-center"></div>}
     </div>
   );
 }

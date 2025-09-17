@@ -185,10 +185,10 @@ export default function Chat() {
       try {
         const [recoveryResult, sleepResult, strainResult, workoutResult] =
           await Promise.all([
-            getWhoopAnalysisDataAction({ analysisType: "recovery", days: 7 }),
-            getWhoopAnalysisDataAction({ analysisType: "sleep", days: 7 }),
-            getWhoopAnalysisDataAction({ analysisType: "strain", days: 7 }),
-            getWhoopAnalysisDataAction({ analysisType: "workout", days: 7 }),
+            getWhoopAnalysisDataAction({ analysisType: "recovery", days: 14 }),
+            getWhoopAnalysisDataAction({ analysisType: "sleep", days: 14 }),
+            getWhoopAnalysisDataAction({ analysisType: "strain", days: 14 }),
+            getWhoopAnalysisDataAction({ analysisType: "workout", days: 14 }),
           ]);
 
         setWhoopData({
@@ -278,7 +278,7 @@ export default function Chat() {
   return (
     <>
       {/* Main Chat Container - Full height minus header */}
-      <div className="h-[calc(100vh-var(--header-height))] flex flex-col lg:flex-row bg-gray-50/30">
+      <div className="h-[calc(100vh-var(--header-height)-50px)] flex flex-col lg:flex-row bg-gray-50/30">
         {/* Chat Panel */}
         <div
           className={cn(
@@ -288,8 +288,8 @@ export default function Chat() {
               : "w-full h-full"
           )}
         >
-          {/* Chat Header */}
-          <ChatHeader hasData={hasData} onBackClick={handleBackClick} />
+          {/* Chat Header 
+          <ChatHeader hasData={hasData} onBackClick={handleBackClick} />*/}
 
           {/* Chat Messages */}
           <ChatMessages
