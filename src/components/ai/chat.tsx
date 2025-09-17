@@ -76,11 +76,98 @@ export default function Chat() {
     },
   });
 
-  // Use WHOOP artifacts
-  const whoopRecoveryData = useArtifact(WhoopRecoveryArtifact);
-  const whoopSleepData = useArtifact(WhoopSleepArtifact);
-  const whoopStrainData = useArtifact(WhoopStrainArtifact);
-  const whoopWorkoutData = useArtifact(WhoopWorkoutArtifact);
+  // Use WHOOP artifacts with event listeners
+  const whoopRecoveryData = useArtifact(WhoopRecoveryArtifact, {
+    onStatusChange: (newStatus, oldStatus) => {
+      if (newStatus === "loading" && oldStatus === "idle") {
+        toast.loading("Starting recovery analysis...", {
+          id: "whoop-recovery-analysis",
+        });
+      } else if (newStatus === "complete") {
+        toast.success("Recovery analysis complete!", {
+          id: "whoop-recovery-analysis",
+        });
+      } else if (newStatus === "error") {
+        toast.error("Recovery analysis failed.", {
+          id: "whoop-recovery-analysis",
+        });
+      }
+    },
+    onError: (error) => {
+      toast.error(`Recovery analysis failed: ${error}`, {
+        id: "whoop-recovery-analysis",
+      });
+    },
+  });
+
+  const whoopSleepData = useArtifact(WhoopSleepArtifact, {
+    onStatusChange: (newStatus, oldStatus) => {
+      if (newStatus === "loading" && oldStatus === "idle") {
+        toast.loading("Starting sleep analysis...", {
+          id: "whoop-sleep-analysis",
+        });
+      } else if (newStatus === "complete") {
+        toast.success("Sleep analysis complete!", {
+          id: "whoop-sleep-analysis",
+        });
+      } else if (newStatus === "error") {
+        toast.error("Sleep analysis failed.", {
+          id: "whoop-sleep-analysis",
+        });
+      }
+    },
+    onError: (error) => {
+      toast.error(`Sleep analysis failed: ${error}`, {
+        id: "whoop-sleep-analysis",
+      });
+    },
+  });
+
+  const whoopStrainData = useArtifact(WhoopStrainArtifact, {
+    onStatusChange: (newStatus, oldStatus) => {
+      if (newStatus === "loading" && oldStatus === "idle") {
+        toast.loading("Starting strain analysis...", {
+          id: "whoop-strain-analysis",
+        });
+      } else if (newStatus === "complete") {
+        toast.success("Strain analysis complete!", {
+          id: "whoop-strain-analysis",
+        });
+      } else if (newStatus === "error") {
+        toast.error("Strain analysis failed.", {
+          id: "whoop-strain-analysis",
+        });
+      }
+    },
+    onError: (error) => {
+      toast.error(`Strain analysis failed: ${error}`, {
+        id: "whoop-strain-analysis",
+      });
+    },
+  });
+
+  const whoopWorkoutData = useArtifact(WhoopWorkoutArtifact, {
+    onStatusChange: (newStatus, oldStatus) => {
+      if (newStatus === "loading" && oldStatus === "idle") {
+        toast.loading("Starting workout analysis...", {
+          id: "whoop-workout-analysis",
+        });
+      } else if (newStatus === "complete") {
+        toast.success("Workout analysis complete!", {
+          id: "whoop-workout-analysis",
+        });
+      } else if (newStatus === "error") {
+        toast.error("Workout analysis failed.", {
+          id: "whoop-workout-analysis",
+        });
+      }
+    },
+    onError: (error) => {
+      toast.error(`Workout analysis failed: ${error}`, {
+        id: "whoop-workout-analysis",
+      });
+    },
+  });
 
   // Track when we have data to trigger animation
   useEffect(() => {
@@ -128,6 +215,17 @@ export default function Chat() {
     setShowAnalysisPanel(false);
   };
 
+  // Chart opening handlers
+  const handleOpenBurnRateChart = () => {
+    setShowBurnRateChart(true);
+  };
+
+  const handleOpenWhoopChart = (
+    type: "recovery" | "sleep" | "strain" | "workout"
+  ) => {
+    setShowWhoopChart({ type, isOpen: true });
+  };
+
   return (
     <>
       {/* Main Chat Container - Full height minus header */}
@@ -166,6 +264,8 @@ export default function Chat() {
         {showAnalysisPanel && (
           <ChatAnalysisPanel
             hasAnalysisData={hasAnalysisData || false}
+            onOpenBurnRateChart={handleOpenBurnRateChart}
+            onOpenWhoopChart={handleOpenWhoopChart}
             className={cn(
               "transition-all duration-500 ease-in-out",
               "h-1/2 lg:h-full lg:w-1/2"

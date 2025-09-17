@@ -27,11 +27,13 @@ import { cn } from "@/lib/utils";
 
 interface WhoopAnalysisPanelProps {
   type: "recovery" | "sleep" | "strain" | "workout";
+  onOpenChart: (type: "recovery" | "sleep" | "strain" | "workout") => void;
   className?: string;
 }
 
 export function WhoopAnalysisPanel({
   type,
+  onOpenChart,
   className,
 }: WhoopAnalysisPanelProps) {
   const recoveryData = useArtifact(WhoopRecoveryArtifact);
@@ -447,6 +449,7 @@ export function WhoopAnalysisPanel({
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
+            onClick={() => onOpenChart(type)}
             className="px-4 py-3 bg-[#085983]/5 hover:bg-[#085983]/10 text-[#085983] rounded-lg transition-colors text-sm font-medium font-[family-name:var(--font-geist-sans)]"
           >
             View Full Chart
