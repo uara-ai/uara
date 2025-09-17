@@ -175,7 +175,7 @@ export function ChatMessages({
   ];
 
   return (
-    <div className={cn("flex-1 overflow-y-auto", className)}>
+    <div className={cn("flex-1 overflow-y-auto scrollbar-hide", className)}>
       <div className="p-4 sm:p-6 space-y-4 min-h-full">
         {/* Welcome State */}
         {messages.length === 0 && !hasData && (

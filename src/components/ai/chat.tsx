@@ -284,7 +284,7 @@ export default function Chat() {
   return (
     <>
       {/* Main Chat Container - Full height minus header */}
-      <div className="h-[calc(100vh-var(--header-height)-50px)] flex flex-col lg:flex-row bg-gray-50/30">
+      <div className="h-[calc(100vh-var(--header-height)-50px)] flex flex-col lg:flex-row bg-gray-50/30 overflow-hidden">
         {/* Chat Panel */}
         <div
           className={cn(
