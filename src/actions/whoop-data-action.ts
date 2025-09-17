@@ -44,6 +44,15 @@ export interface WhoopStats {
     totalInBedTime: number | null;
     date: string;
   };
+  latestWorkout?: {
+    strain: number | null;
+    averageHeartRate: number | null;
+    maxHeartRate: number | null;
+    distanceMeters: number | null;
+    kilojoule: number | null;
+    duration: number | null;
+    date: string;
+  };
   weeklyStrain?: {
     averageStrain: number;
     maxStrain: number;
@@ -53,6 +62,7 @@ export interface WhoopStats {
     recoveryTrend: "up" | "down" | "stable";
     sleepTrend: "up" | "down" | "stable";
     strainTrend: "up" | "down" | "stable";
+    workoutTrend: "up" | "down" | "stable";
   };
 }
 
@@ -360,6 +370,7 @@ export async function processWhoopDataToStats(
       recoveryTrend: "stable",
       sleepTrend: "stable",
       strainTrend: "stable",
+      workoutTrend: "stable",
     },
   };
 
@@ -425,6 +436,48 @@ export async function processWhoopDataToStats(
 
         stats.trends.sleepTrend =
           change > 5 ? "up" : change < -5 ? "down" : "stable";
+      }
+    }
+  }
+
+  // Latest Workout Data
+  if (data.workouts && data.workouts.length > 0) {
+    const latestWorkout = data.workouts[0];
+    const duration =
+      latestWorkout.end && latestWorkout.start
+        ? new Date(latestWorkout.end).getTime() -
+          new Date(latestWorkout.start).getTime()
+        : null;
+
+    stats.latestWorkout = {
+      strain: latestWorkout.strain,
+      averageHeartRate: latestWorkout.averageHeartRate,
+      maxHeartRate: latestWorkout.maxHeartRate,
+      distanceMeters: latestWorkout.distanceMeters,
+      kilojoule: latestWorkout.kilojoule,
+      duration: duration,
+      date: latestWorkout.start,
+    };
+
+    // Calculate workout trend (compare recent workouts strain)
+    if (data.workouts.length >= 6) {
+      const recent = data.workouts
+        .slice(0, 3)
+        .map((w) => w.strain)
+        .filter(Boolean);
+      const previous = data.workouts
+        .slice(3, 6)
+        .map((w) => w.strain)
+        .filter(Boolean);
+
+      if (recent.length && previous.length) {
+        const recentAvg = recent.reduce((a, b) => a + b, 0) / recent.length;
+        const previousAvg =
+          previous.reduce((a, b) => a + b, 0) / previous.length;
+        const change = ((recentAvg - previousAvg) / previousAvg) * 100;
+
+        stats.trends.workoutTrend =
+          change > 10 ? "up" : change < -10 ? "down" : "stable";
       }
     }
   }

@@ -159,7 +159,7 @@ export function WhoopCards({
 
   return (
     <section className="relative w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="mx-auto px-4 sm:px-6">
         {/* Cards Grid */}
         <div className="grid grid-cols-1 gap-6 sm:gap-8 lg:gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Enhanced Recovery Score Card */}
@@ -570,16 +570,16 @@ export function WhoopCards({
             </CardContent>
           </Card>
 
-          {/* Health Profile Card */}
+          {/* Enhanced Workout Card */}
           <Card className="relative overflow-hidden bg-white rounded-xl sm:rounded-2xl">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-2 rounded-lg bg-[#085983]/10">
-                    <IconUser className="h-4 w-4 text-[#085983]" />
+                    <IconBolt className="h-4 w-4 text-[#085983]" />
                   </div>
                   <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983] text-[#085983]/80">
-                    Health Profile
+                    Recent Workout
                   </CardDescription>
                 </div>
                 <DropdownMenu>
@@ -591,11 +591,15 @@ export function WhoopCards({
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem>
                       <IconSettings className="mr-2 h-4 w-4" />
-                      Edit Profile
+                      Workout Details
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <IconTarget className="mr-2 h-4 w-4" />
+                      Set Goals
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <IconShare className="mr-2 h-4 w-4" />
-                      Export Profile
+                      Share Workout
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -603,122 +607,131 @@ export function WhoopCards({
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <CardTitle className="font-[family-name:var(--font-instrument-serif)] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-normal text-[#085983]">
-                  {whoopUser?.firstName && whoopUser?.lastName
-                    ? `${whoopUser.firstName} ${whoopUser.lastName}`
-                    : user?.tier || "Member"}
-                </CardTitle>
-                <div className="font-[family-name:var(--font-geist-sans)] text-sm text-[#085983]/70">
-                  {user?.profileCompleted
-                    ? "Profile Complete"
-                    : "Setup in Progress"}{" "}
-                  •{" "}
-                  {user?.tier
-                    ? user.tier.replace("tier_", "Tier ")
-                    : "Free Plan"}
+                <div className="flex items-center gap-3">
+                  <CardTitle
+                    className={cn(
+                      "font-[family-name:var(--font-instrument-serif)] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-normal tabular-nums",
+                      getScoreColor(
+                        whoopStats.latestWorkout?.strain || null,
+                        "strain"
+                      )
+                    )}
+                  >
+                    {whoopStats.latestWorkout?.strain
+                      ? whoopStats.latestWorkout.strain.toFixed(1)
+                      : "N/A"}
+                  </CardTitle>
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      "text-xs font-medium text-[#085983]",
+                      getTrendColor(whoopStats.trends.workoutTrend)
+                    )}
+                  >
+                    {getTrendIcon(whoopStats.trends.workoutTrend)}
+                    {whoopStats.trends.workoutTrend === "up"
+                      ? "Intense"
+                      : whoopStats.trends.workoutTrend === "down"
+                      ? "Light"
+                      : "Steady"}
+                  </Badge>
+                </div>
+
+                {/* Workout strain progress */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-[#085983]/60">
+                      Target Strain: 15.0
+                    </span>
+                    <span className="font-medium text-[#085983]">
+                      {whoopStats.latestWorkout?.strain
+                        ? `${Math.round(
+                            getProgressValue(
+                              whoopStats.latestWorkout.strain,
+                              15
+                            )
+                          )}%`
+                        : "0%"}
+                    </span>
+                  </div>
+                  <Progress
+                    value={getProgressValue(
+                      whoopStats.latestWorkout?.strain || null,
+                      15
+                    )}
+                    className="h-2"
+                  />
                 </div>
               </div>
 
-              {/* Health Metrics Grid */}
+              {/* Workout metrics */}
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="space-y-1">
                   <div className="flex items-center gap-1">
-                    <IconRuler2 className="h-3 w-3 text-[#085983]/60" />
-                    <span className="text-[#085983]/60 text-xs">Height</span>
-                  </div>
-                  <div className="font-medium text-[#085983] text-[#085983]">
-                    {user?.heightCm
-                      ? `${user.heightCm} cm`
-                      : whoopUser?.heightMeter
-                      ? `${(whoopUser.heightMeter * 100).toFixed(0)} cm`
-                      : "N/A"}
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-1">
-                    <IconScale className="h-3 w-3 text-[#085983]/60" />
-                    <span className="text-[#085983]/60 text-xs">Weight</span>
-                  </div>
-                  <div className="font-medium text-[#085983] text-[#085983]">
-                    {user?.weightKg
-                      ? `${user.weightKg.toFixed(1)} kg`
-                      : whoopUser?.weightKilogram
-                      ? `${whoopUser.weightKilogram.toFixed(1)} kg`
-                      : "N/A"}
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-1">
                     <IconHeart className="h-3 w-3 text-[#085983]/60" />
-                    <span className="text-[#085983]/60 text-xs">Blood</span>
+                    <span className="text-[#085983]/60 text-xs">Avg HR</span>
                   </div>
-                  <div className="font-medium text-[#085983]">
-                    {whoopUser?.maxHeartRate
-                      ? `${whoopUser.maxHeartRate.toString()}`
+                  <div className="font-medium text-[#085983] text-[#085983]">
+                    {whoopStats.latestWorkout?.averageHeartRate
+                      ? `${whoopStats.latestWorkout.averageHeartRate} bpm`
+                      : "N/A"}
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <IconBolt className="h-3 w-3 text-[#085983]/60" />
+                    <span className="text-[#085983]/60 text-xs">Max HR</span>
+                  </div>
+                  <div className="font-medium text-[#085983] text-[#085983]">
+                    {whoopStats.latestWorkout?.maxHeartRate
+                      ? `${whoopStats.latestWorkout.maxHeartRate} bpm`
                       : "N/A"}
                   </div>
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-1">
                     <IconTarget className="h-3 w-3 text-[#085983]/60" />
-                    <span className="text-[#085983]/60 text-xs">Age</span>
+                    <span className="text-[#085983]/60 text-xs">Distance</span>
                   </div>
-                  <div className="font-medium text-[#085983]">
-                    {user?.dateOfBirth
-                      ? `${Math.floor(
-                          (Date.now() - new Date(user.dateOfBirth).getTime()) /
-                            (365.25 * 24 * 60 * 60 * 1000)
-                        )} yrs`
+                  <div className="font-medium text-[#085983] text-[#085983]">
+                    {whoopStats.latestWorkout?.distanceMeters
+                      ? whoopStats.latestWorkout.distanceMeters >= 1000
+                        ? `${(
+                            whoopStats.latestWorkout.distanceMeters / 1000
+                          ).toFixed(1)} km`
+                        : `${Math.round(
+                            whoopStats.latestWorkout.distanceMeters
+                          )} m`
+                      : "N/A"}
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1">
+                    <IconActivity className="h-3 w-3 text-[#085983]/60" />
+                    <span className="text-[#085983]/60 text-xs">Energy</span>
+                  </div>
+                  <div className="font-medium text-[#085983] text-[#085983]">
+                    {whoopStats.latestWorkout?.kilojoule
+                      ? `${Math.round(whoopStats.latestWorkout.kilojoule)} kJ`
                       : "N/A"}
                   </div>
                 </div>
               </div>
 
-              {/* BMI Calculation */}
-              {((user?.heightCm && user?.weightKg) ||
-                (whoopUser?.heightMeter && whoopUser?.weightKilogram)) && (
-                <div className="space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-[#085983]/60">BMI</span>
-                    <span className="font-medium text-[#085983] text-[#085983]">
-                      {(() => {
-                        const height = user?.heightCm
-                          ? user.heightCm / 100
-                          : whoopUser?.heightMeter || 0;
-                        const weight =
-                          user?.weightKg || whoopUser?.weightKilogram || 0;
-                        const bmi = weight / (height * height);
-                        return isNaN(bmi) ? "N/A" : bmi.toFixed(1);
-                      })()}
-                    </span>
-                  </div>
-                  <Progress
-                    value={(() => {
-                      const height = user?.heightCm
-                        ? user.heightCm / 100
-                        : whoopUser?.heightMeter || 0;
-                      const weight =
-                        user?.weightKg || whoopUser?.weightKilogram || 0;
-                      const bmi = weight / (height * height);
-                      // Normalize BMI to 0-100 scale (18.5-25 = optimal range)
-                      return Math.min(
-                        Math.max(((bmi - 18.5) / (25 - 18.5)) * 100, 0),
-                        100
-                      );
-                    })()}
-                    className="h-2"
-                  />
-                </div>
-              )}
-
-              {/* Last sync info */}
+              {/* Workout type and duration */}
               <div className="pt-2 border-t">
                 <div className="flex justify-between text-xs">
-                  <span className="text-[#085983]/60">Last WHOOP sync:</span>
-                  <span className="font-medium text-[#085983] text-[#085983]">
-                    {whoopUser?.lastSyncAt
-                      ? new Date(whoopUser.lastSyncAt).toLocaleDateString()
-                      : "Never"}
+                  <span className="text-[#085983]/60">
+                    {whoopStats.latestWorkout?.date
+                      ? `Workout on ${new Date(
+                          whoopStats.latestWorkout.date
+                        ).toLocaleDateString()}`
+                      : "No recent workouts"}
+                  </span>
+                  <span className="font-medium text-[#085983]">
+                    {whoopStats.latestWorkout?.duration
+                      ? formatTime(whoopStats.latestWorkout.duration)
+                      : "N/A"}
                   </span>
                 </div>
               </div>
