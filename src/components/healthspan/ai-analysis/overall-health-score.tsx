@@ -117,17 +117,6 @@ export function OverallHealthScore({
         <div className="grid grid-cols-3 gap-3 pt-3 border-t border-[#085983]/10">
           <div className="text-center space-y-1">
             <div className="text-lg sm:text-xl font-[family-name:var(--font-instrument-serif)] font-medium text-[#085983]">
-              {aiAnalysis?.recoveryAnalysis.score ??
-                whoopStats?.latestRecovery?.recoveryScore?.toFixed(0) ??
-                "--"}
-              <span className="text-xs ml-1">%</span>
-            </div>
-            <div className="text-xs text-[#085983]/60 font-geist-sans font-medium uppercase tracking-wide">
-              Recovery
-            </div>
-          </div>
-          <div className="text-center space-y-1">
-            <div className="text-lg sm:text-xl font-[family-name:var(--font-instrument-serif)] font-medium text-[#085983]">
               {aiAnalysis?.sleepAnalysis.score ??
                 whoopStats?.latestSleep?.sleepPerformancePercentage?.toFixed(
                   0
@@ -137,6 +126,17 @@ export function OverallHealthScore({
             </div>
             <div className="text-xs text-[#085983]/60 font-geist-sans font-medium uppercase tracking-wide">
               Sleep
+            </div>
+          </div>
+          <div className="text-center space-y-1">
+            <div className="text-lg sm:text-xl font-[family-name:var(--font-instrument-serif)] font-medium text-[#085983]">
+              {aiAnalysis?.recoveryAnalysis.score ??
+                whoopStats?.latestRecovery?.recoveryScore?.toFixed(0) ??
+                "--"}
+              <span className="text-xs ml-1">%</span>
+            </div>
+            <div className="text-xs text-[#085983]/60 font-geist-sans font-medium uppercase tracking-wide">
+              Recovery
             </div>
           </div>
           <div className="text-center space-y-1">

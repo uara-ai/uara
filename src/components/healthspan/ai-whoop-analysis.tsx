@@ -49,7 +49,6 @@ interface AIWhoopAnalysisProps {
 export function AIWhoopAnalysis({
   whoopData,
   whoopStats,
-  user,
   className,
   onDataRefresh,
 }: AIWhoopAnalysisProps) {
@@ -61,21 +60,40 @@ export function AIWhoopAnalysis({
     "idle"
   );
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
+  const [refreshedData, setRefreshedData] = useState<{
+    whoopData: WhoopDataResponse | null;
+    whoopStats: WhoopStats | null;
+  } | null>(null);
+
+  // Use refreshed data if available, otherwise fall back to props
+  const currentWhoopData = refreshedData?.whoopData || whoopData;
+  const currentWhoopStats = refreshedData?.whoopStats || whoopStats;
 
   const generateAIAnalysis = useCallback(
     async (
-      focusArea: "recovery" | "sleep" | "strain" | "overall" = "overall"
+      focusArea: "sleep" | "recovery" | "strain" | "overall" = "overall",
+      forceRefresh = false
     ) => {
-      if (!whoopData || !whoopStats) return;
+      if (!currentWhoopData || !currentWhoopStats) return;
 
       setIsLoading(true);
       setError(null);
 
+      // If refreshing, clear the current analysis to show skeleton
+      if (forceRefresh) {
+        setAiAnalysis(null);
+      }
+
       try {
+        // Add a small delay to show the skeleton state
+        if (forceRefresh) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        }
+
         // Call the analysis function directly
         const result = await generateComprehensiveAnalysis(
-          whoopData,
-          whoopStats,
+          currentWhoopData,
+          currentWhoopStats,
           focusArea,
           true
         );
@@ -88,7 +106,7 @@ export function AIWhoopAnalysis({
         setIsLoading(false);
       }
     },
-    [whoopData, whoopStats]
+    [currentWhoopData, currentWhoopStats]
   );
 
   const syncWhoopData = useCallback(async () => {
@@ -98,7 +116,7 @@ export function AIWhoopAnalysis({
     try {
       // Call the WHOOP sync endpoint
       const response = await fetch(
-        "/api/wearables/whoop/sync?days=7&type=all",
+        "/api/wearables/whoop/sync?days=30&type=all",
         {
           method: "POST",
         }
@@ -114,13 +132,32 @@ export function AIWhoopAnalysis({
       setSyncStatus("success");
       setLastSyncTime(new Date());
 
-      // Clear current AI analysis to trigger refresh
-      setAiAnalysis(null);
-      setError(null);
+      // Fetch fresh data after sync
+      try {
+        const [whoopDataResponse, whoopStatsResponse] = await Promise.all([
+          fetch("/api/wearables/whoop/summary?days=30"),
+          fetch("/api/wearables/whoop/stats?days=30"),
+        ]);
 
-      // Call parent refresh function to reload data
-      if (onDataRefresh) {
-        onDataRefresh();
+        if (whoopDataResponse.ok && whoopStatsResponse.ok) {
+          const newWhoopData = await whoopDataResponse.json();
+          const newWhoopStats = await whoopStatsResponse.json();
+
+          setRefreshedData({
+            whoopData: newWhoopData,
+            whoopStats: newWhoopStats,
+          });
+
+          // Clear current AI analysis to trigger refresh with new data
+          setAiAnalysis(null);
+          setError(null);
+        }
+      } catch (fetchError) {
+        console.error("Error fetching fresh data after sync:", fetchError);
+        // Fall back to parent refresh if API calls fail
+        if (onDataRefresh) {
+          onDataRefresh();
+        }
       }
 
       // Auto-clear success status after 3 seconds
@@ -141,12 +178,18 @@ export function AIWhoopAnalysis({
   }, [onDataRefresh]);
 
   useEffect(() => {
-    if (whoopData && whoopStats && !aiAnalysis && !isLoading) {
+    if (currentWhoopData && currentWhoopStats && !aiAnalysis && !isLoading) {
       generateAIAnalysis();
     }
-  }, [whoopData, whoopStats, aiAnalysis, isLoading, generateAIAnalysis]);
+  }, [
+    currentWhoopData,
+    currentWhoopStats,
+    aiAnalysis,
+    isLoading,
+    generateAIAnalysis,
+  ]);
 
-  if (!whoopData || !whoopStats) {
+  if (!currentWhoopData || !currentWhoopStats) {
     return (
       <div className={cn("w-full", className)}>
         <Card className="bg-white rounded-xl sm:rounded-2xl">
@@ -179,11 +222,13 @@ export function AIWhoopAnalysis({
                 Personalized insights from your WHOOP data for longevity
                 optimization
               </p>
-              {whoopData?._metadata?.fetchedAt && (
+              {currentWhoopData?._metadata?.fetchedAt && (
                 <p className="text-sm text-[#085983]/60 font-geist-sans">
                   Data from{" "}
-                  {new Date(whoopData._metadata.fetchedAt).toLocaleDateString()}{" "}
-                  •{whoopData._metadata.daysPeriod} days period
+                  {new Date(
+                    currentWhoopData._metadata.fetchedAt
+                  ).toLocaleDateString()}{" "}
+                  •{currentWhoopData._metadata.daysPeriod} days period
                   {lastSyncTime && (
                     <span className="ml-2">
                       • Last synced {lastSyncTime.toLocaleTimeString()}
@@ -249,14 +294,14 @@ export function AIWhoopAnalysis({
           {/* Left Column: Overall Health Score */}
           <OverallHealthScore
             aiAnalysis={aiAnalysis}
-            whoopStats={whoopStats}
+            whoopStats={currentWhoopStats}
             isLoading={isLoading}
             lastSyncTime={lastSyncTime}
           />
 
           {/* Right Column: Quick Metrics in 2x2 Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <QuickMetrics whoopStats={whoopStats} />
+            <QuickMetrics whoopStats={currentWhoopStats} />
           </div>
         </div>
 
@@ -266,14 +311,16 @@ export function AIWhoopAnalysis({
             aiAnalysis={aiAnalysis}
             isLoading={isLoading}
             error={error}
-            onRefreshAnalysis={() => generateAIAnalysis()}
+            onRefreshAnalysis={() => generateAIAnalysis("overall", true)}
           />
 
           {/* Detailed Analysis Sections */}
-          {aiAnalysis && <DetailedAnalysis aiAnalysis={aiAnalysis} />}
+          {aiAnalysis && !isLoading && (
+            <DetailedAnalysis aiAnalysis={aiAnalysis} />
+          )}
 
           {/* Risk Factors and Positive Indicators */}
-          {aiAnalysis && (
+          {aiAnalysis && !isLoading && (
             <RiskFactorsAndPositiveIndicators aiAnalysis={aiAnalysis} />
           )}
         </div>

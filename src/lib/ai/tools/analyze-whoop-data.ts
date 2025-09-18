@@ -127,14 +127,22 @@ export async function generateComprehensiveAnalysis(
 
   const recoveryRecommendations = includeRecommendations
     ? [
-        recoveryScore < 70
-          ? "Focus on improving sleep quality and consistency - aim for 7-8 hours nightly"
-          : "Maintain your current recovery practices, they're working well",
-        hrvRmssd < 30
-          ? "Practice daily breathwork: try 4-7-8 breathing or box breathing (4-4-4-4) for 5-10 minutes"
-          : "Continue stress management practices to maintain your excellent HRV",
-        "Consider adding meditation or yoga to your routine for better recovery",
-        "Magnesium supplementation may help recovery (consult your healthcare provider)",
+        recoveryScore < 50
+          ? "**Priority**: Your recovery is critically low. Take 1-2 complete rest days with only light walking or gentle stretching"
+          : recoveryScore < 70
+          ? "**Sleep Focus**: Optimize sleep environment - blackout curtains, 65-68°F temperature, consistent 8-hour sleep schedule"
+          : "**Maintain**: Your recovery is excellent - continue current sleep and stress management practices",
+        hrvRmssd < 20
+          ? "**Daily Practice**: Implement 4-7-8 breathing technique: 4 seconds inhale, 7 hold, 8 exhale. Do 4 cycles twice daily"
+          : hrvRmssd < 35
+          ? "**Stress Management**: Add 10-minute guided meditation using Headspace, Calm, or Waking Up app"
+          : "**HRV Optimization**: Your HRV is strong - consider cold exposure (cold showers 2-3x/week) for further improvement",
+        restingHR > 65
+          ? "**Cardio Base**: Add 2-3 Zone 2 cardio sessions weekly (can maintain conversation while exercising)"
+          : "**Recovery Support**: Consider magnesium glycinate 200-400mg before bed (consult healthcare provider first)",
+        recoveryTrend === "down"
+          ? "**Trend Alert**: Recovery declining - review recent stressors, alcohol intake, and sleep consistency"
+          : "**Morning Routine**: Establish consistent wake time and get 10-15 minutes of morning sunlight for circadian rhythm support",
       ]
     : [];
 
@@ -157,14 +165,23 @@ export async function generateComprehensiveAnalysis(
 
   const sleepRecommendations = includeRecommendations
     ? [
-        sleepScore < 75
-          ? "Optimize sleep environment: keep room at 65-68°F, use blackout curtains, minimize noise"
-          : "Your sleep performance is excellent - maintain these habits",
-        sleepEfficiency < 85
-          ? "Avoid caffeine after 2 PM and screens 1 hour before bed"
-          : "Your sleep efficiency is excellent",
-        "Create a consistent bedtime routine: same time nightly, wind-down activities",
-        "Consider sleep tracking optimization: ensure WHOOP is properly positioned",
+        sleepScore < 50
+          ? "**Sleep Emergency**: Prioritize 8+ hours sleep opportunity. Set strict bedtime 9 hours before wake time"
+          : sleepScore < 75
+          ? "**Environment**: Cool (65-68°F), dark (blackout curtains), quiet (earplugs/white noise) bedroom setup"
+          : "**Sleep Champion**: Your sleep is optimized - maintain these excellent habits for longevity",
+        sleepEfficiency < 75
+          ? "**Digital Sunset**: No screens 2 hours before bed. Use blue light glasses if necessary. Read physical books instead"
+          : sleepEfficiency < 85
+          ? "**Caffeine Cutoff**: No caffeine after 2 PM. Switch to herbal tea (chamomile, passionflower) in evening"
+          : "**Sleep Efficiency Master**: Your efficiency is excellent - consider tracking consistency across weekends too",
+        sleepTrend === "down"
+          ? "**Sleep Hygiene**: Review alcohol intake (affects REM), room temperature, and stress levels before bed"
+          : "**Consistency**: Maintain same bedtime/wake time ±30 minutes, even on weekends for circadian health",
+        whoopStats.latestSleep?.totalInBedTime &&
+        whoopStats.latestSleep.totalInBedTime < 7 * 60 * 60 * 1000
+          ? "**Duration**: Increase sleep opportunity to 8 hours minimum. Quality starts with adequate time"
+          : "**Wind-down**: Create 30-minute pre-sleep routine: dim lights, gentle stretching, gratitude journaling",
       ]
     : [];
 
@@ -192,14 +209,26 @@ export async function generateComprehensiveAnalysis(
 
   const strainRecommendations = includeRecommendations
     ? [
-        weeklyStrain < 8
-          ? "Consider gradually increasing training intensity for better fitness gains"
+        weeklyStrain < 6
+          ? "**Build Base**: Gradually increase activity. Add 1-2 Zone 2 cardio sessions (30-45 min) and 2 strength sessions weekly"
+          : weeklyStrain > 18
+          ? "**Overtraining Risk**: Reduce intensity by 20%. Add extra recovery day and prioritize sleep (8+ hours)"
           : weeklyStrain > 15
-          ? "Include more recovery days to prevent overtraining and injury risk"
-          : "Your training load is well balanced for optimal adaptation",
-        "Ensure 2 low-strain recovery days per week with yoga, walking, or stretching",
-        "Monitor strain-to-recovery ratio: high strain days should be followed by adequate recovery",
-        "Consider periodization: alternate higher and lower intensity weeks",
+          ? "**Recovery Focus**: Excellent strain! Ensure 2 complete rest days weekly with only walking/yoga"
+          : "**Optimal Training**: Perfect strain balance - maintain this level for consistent adaptation",
+        workoutCount < 3
+          ? "**Frequency**: Increase to 4-5 sessions weekly: 2 strength, 2-3 cardio, 1 flexibility/mobility"
+          : workoutCount > 6
+          ? "**Rest Days**: Mandatory 1-2 complete rest days. Active recovery: gentle yoga, walking, or massage"
+          : "**Training Consistency**: Excellent workout frequency for longevity and fitness",
+        maxStrain > 20
+          ? "**High Intensity**: Great effort! Follow with 24-48h easy recovery. Track HRV for readiness"
+          : maxStrain < 12
+          ? "**Intensity Boost**: Add 1-2 higher intensity sessions: HIIT (20 min) or strength circuits weekly"
+          : "**Strain Variety**: Mix intensities - 80% easy/moderate, 20% hard for optimal adaptation",
+        strainTrend === "up"
+          ? "**Monitor Recovery**: Increasing strain detected. Watch sleep quality and resting HR closely"
+          : "**Strain Balance**: Maintain 2:1 recovery-to-strain ratio. High strain days need extra sleep and nutrition",
       ]
     : [];
 
@@ -208,17 +237,41 @@ export async function generateComprehensiveAnalysis(
     (recoveryScore + sleepScore + Math.min(weeklyStrain * 6, 100)) / 3
   );
 
-  // Generate key recommendations
+  // Generate key recommendations with priority order
   const keyRecommendations = includeRecommendations
     ? [
-        ...recoveryRecommendations.slice(0, 1),
-        ...sleepRecommendations.slice(0, 1),
-        ...strainRecommendations.slice(0, 1),
-        "Focus on trends over daily fluctuations - consistency matters more than perfect scores",
-        "Consider consulting a longevity-focused physician for personalized optimization",
+        // Priority 1: Critical issues first
+        recoveryScore < 50 || sleepScore < 50 || weeklyStrain > 18
+          ? recoveryScore < 50
+            ? recoveryRecommendations[0]
+            : sleepScore < 50
+            ? sleepRecommendations[0]
+            : strainRecommendations[0]
+          : null,
+
+        // Priority 2: Sleep optimization (most impactful for longevity)
+        sleepScore < 75 || sleepEfficiency < 85
+          ? sleepRecommendations[0]
+          : null,
+
+        // Priority 3: Recovery enhancement
+        recoveryScore < 75 || hrvRmssd < 35 ? recoveryRecommendations[0] : null,
+
+        // Priority 4: Training optimization
+        weeklyStrain < 8 || weeklyStrain > 15 || workoutCount < 3
+          ? strainRecommendations[0]
+          : null,
+
+        // Priority 5: Consistency and habits
+        "**Track Trends**: Focus on 7-day averages rather than daily scores. Consistency beats perfection for longevity",
+
+        // Priority 6: Professional guidance
+        overallHealthScore < 60
+          ? "**Expert Consultation**: Consider working with a longevity-focused physician or certified trainer for personalized optimization"
+          : "**Longevity Protocol**: Excellent health metrics! Consider advanced interventions: sauna, cold therapy, or continuous glucose monitoring",
       ]
-        .filter(Boolean)
-        .slice(0, 5)
+        .filter((item): item is string => Boolean(item))
+        .slice(0, 6)
     : [];
 
   // Identify risk factors

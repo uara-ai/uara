@@ -13,6 +13,12 @@ import {
   IconBulb,
   IconAlertTriangle,
   IconChevronRight,
+  IconClock,
+  IconActivity,
+  IconHeart,
+  IconMoon,
+  IconTrendingUp,
+  IconFlag,
 } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,6 +30,7 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { MarkdownParser } from "@/components/markdown-parser";
 import type { AnalysisResult } from "@/lib/ai/tools/analyze-whoop-data";
 
 interface AnalysisResultsProps {
@@ -44,25 +51,93 @@ interface AnalysisInstructionsProps {
   error: string | null;
 }
 
-// Simple markdown parser for AI responses
-function parseMarkdown(text: string): string {
-  return text
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Bold
-    .replace(/\*(.*?)\*/g, "<em>$1</em>") // Italic
-    .replace(
-      /`(.*?)`/g,
-      '<code class="bg-[#085983]/10 text-[#085983] px-1.5 py-0.5 rounded text-sm font-mono">$1</code>'
-    ) // Inline code
-    .replace(
-      /^- (.+)$/gm,
-      '<div class="flex items-start gap-2 mb-2"><div class="w-1.5 h-1.5 bg-[#085983] rounded-full mt-2 shrink-0"></div><span>$1</span></div>'
-    ) // Bullet points
-    .replace(
-      /^\d+\. (.+)$/gm,
-      '<div class="flex items-start gap-2 mb-2"><div class="w-5 h-5 bg-[#085983]/10 text-[#085983] rounded-full flex items-center justify-center text-xs font-semibold shrink-0">•</div><span>$1</span></div>'
-    ) // Numbered lists
-    .replace(/\n\n/g, "<br/><br/>") // Double line breaks
-    .replace(/\n/g, "<br/>"); // Single line breaks
+function AnalysisStreamingSkeleton() {
+  return (
+    <div className="space-y-6">
+      {/* Analysis Summary Card Skeleton */}
+      <Card className="bg-white border-[#085983]/10 rounded-xl sm:rounded-2xl">
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-lg bg-[#085983]/10">
+                <IconLoader className="h-4 w-4 text-[#085983] animate-spin" />
+              </div>
+              <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983]/80">
+                AI Analysis Summary
+              </CardDescription>
+            </div>
+            <Badge
+              variant="outline"
+              className="text-xs font-medium text-blue-600 bg-blue-50 border-blue-200"
+            >
+              <IconLoader className="h-3 w-3 mr-1 animate-spin" />
+              Analyzing...
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-3">
+            <div className="h-4 bg-gradient-to-r from-[#085983]/10 via-[#085983]/20 to-[#085983]/10 bg-[length:200%_100%] animate-[shimmer_2s_ease-in-out_infinite] rounded"></div>
+            <div className="h-4 bg-[#085983]/20 rounded w-4/5 animate-pulse"></div>
+            <div className="h-4 bg-[#085983]/15 rounded w-3/4 animate-pulse"></div>
+            <div className="h-4 bg-[#085983]/20 rounded w-5/6 animate-pulse"></div>
+          </div>
+
+          <div className="flex items-center gap-2 pt-2">
+            <div className="flex gap-1">
+              <div className="w-2 h-2 bg-[#085983] rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-[#085983]/60 rounded-full animate-bounce [animation-delay:0.1s]"></div>
+              <div className="w-2 h-2 bg-[#085983]/40 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+            </div>
+            <span className="text-xs text-[#085983]/60 font-geist-sans">
+              Processing your health data...
+            </span>
+          </div>
+
+          <Separator className="bg-[#085983]/10" />
+
+          <div className="flex items-center justify-between">
+            <div className="h-3 bg-[#085983]/10 rounded w-24 animate-pulse"></div>
+            <div className="h-6 bg-[#085983]/10 rounded w-16 animate-pulse"></div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Priority Action Items Skeleton */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <IconTarget className="h-5 w-5 text-[#085983]" />
+          <div className="h-6 bg-[#085983]/10 rounded w-48 animate-pulse"></div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {[1, 2, 3, 4].map((index) => (
+            <Card key={index} className="border-[#085983]/10 rounded-xl">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-[#085983]/10 rounded-full animate-pulse"></div>
+                    <div>
+                      <div className="h-3 bg-[#085983]/10 rounded w-20 animate-pulse mb-1"></div>
+                      <div className="h-4 bg-[#085983]/10 rounded w-16 animate-pulse"></div>
+                    </div>
+                  </div>
+                  <div className="h-4 w-4 bg-[#085983]/10 rounded animate-pulse"></div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="space-y-2">
+                  <div className="h-3 bg-[#085983]/10 rounded animate-pulse"></div>
+                  <div className="h-3 bg-[#085983]/10 rounded w-4/5 animate-pulse"></div>
+                  <div className="h-3 bg-[#085983]/10 rounded w-3/4 animate-pulse"></div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function AnalysisSuccess({
@@ -95,10 +170,9 @@ function AnalysisSuccess({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-sm text-[#085983]/90 font-geist-sans leading-relaxed">
-            <div
-              dangerouslySetInnerHTML={{
-                __html: parseMarkdown(aiAnalysis.summary),
-              }}
+            <MarkdownParser
+              content={aiAnalysis.summary}
+              className="prose-sm max-w-none [&>*]:text-[#085983]/90 [&>*]:leading-relaxed"
             />
           </div>
 
@@ -126,34 +200,63 @@ function AnalysisSuccess({
         </CardContent>
       </Card>
 
-      {/* Action Items Grid */}
+      {/* Priority Action Items */}
       {aiAnalysis.keyRecommendations.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {aiAnalysis.keyRecommendations
-            .slice(0, 4)
-            .map((recommendation, index) => (
-              <Card
-                key={index}
-                className="bg-white border-[#085983]/10 rounded-xl hover:shadow-sm transition-all duration-200 hover:border-[#085983]/20 cursor-pointer group"
-              >
-                <CardHeader className="pb-2">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded-lg bg-[#085983]/10 group-hover:bg-[#085983]/15 transition-colors">
-                      <IconTarget className="h-3.5 w-3.5 text-[#085983]" />
-                    </div>
-                    <CardDescription className="font-[family-name:var(--font-geist-sans)] text-xs font-medium text-[#085983]/70 uppercase tracking-wide">
-                      Action Item {index + 1}
-                    </CardDescription>
-                    <IconChevronRight className="h-3 w-3 text-[#085983]/40 ml-auto group-hover:text-[#085983]/60 transition-colors" />
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <p className="text-sm text-[#085983]/80 font-geist-sans leading-relaxed line-clamp-3">
-                    {recommendation}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <IconTarget className="h-5 w-5 text-[#085983]" />
+            <h3 className="text-lg font-[family-name:var(--font-instrument-serif)] font-medium text-[#085983]">
+              Priority Action Items
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {aiAnalysis.keyRecommendations
+              .slice(0, 4)
+              .map((recommendation, index) => {
+                const priorities = ["High", "Medium", "Medium", "Low"];
+                const priorityColors = [
+                  "border-red-200 bg-red-50 text-red-700",
+                  "border-orange-200 bg-orange-50 text-orange-700",
+                  "border-orange-200 bg-orange-50 text-orange-700",
+                  "border-blue-200 bg-blue-50 text-blue-700",
+                ];
+
+                return (
+                  <Card
+                    key={index}
+                    className="border-[#085983]/10 rounded-xl group"
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-gradient-to-br from-[#085983]/10 to-[#085983]/20 text-[#085983] rounded-full flex items-center justify-center text-sm font-bold group-hover:from-[#085983]/15 group-hover:to-[#085983]/25 transition-all">
+                            {index + 1}
+                          </div>
+                          <div>
+                            <CardDescription className="font-[family-name:var(--font-geist-sans)] text-xs font-medium text-[#085983]/70 uppercase tracking-wide">
+                              Action Item {index + 1}
+                            </CardDescription>
+                            <Badge
+                              variant="outline"
+                              className={`text-xs mt-1 ${priorityColors[index]}`}
+                            >
+                              {priorities[index]} Priority
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <MarkdownParser
+                        content={recommendation}
+                        className="prose-sm max-w-none [&>*]:text-[#085983]/80 [&>*]:text-sm [&>*]:leading-relaxed [&>*]:mb-1 [&>p]:line-clamp-3"
+                      />
+                    </CardContent>
+                  </Card>
+                );
+              })}
+          </div>
         </div>
       )}
 
@@ -345,6 +448,11 @@ export function AnalysisResults({
   error,
   onRefreshAnalysis,
 }: AnalysisResultsProps) {
+  // Show skeleton when loading and no analysis exists yet, or when refreshing
+  if (isLoading) {
+    return <AnalysisStreamingSkeleton />;
+  }
+
   if (aiAnalysis) {
     return (
       <AnalysisSuccess
