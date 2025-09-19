@@ -103,9 +103,39 @@ export function EarlyAdoptersSection({ className }: EarlyAdoptersSectionProps) {
         className
       )}
       id="early-adopters"
+      data-fast-scroll="scroll_to_early_adopters"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Background Image Container */}
+        {/* Section Header - Problem Statement */}
+        <div className="text-center mb-12 sm:mb-16 lg:mb-20">
+          {/* Mobile: Simple title without decorative lines */}
+          <div className="block sm:hidden mb-6">
+            <h2 className="font-[family-name:var(--font-instrument-serif)] text-3xl font-normal text-[#085983] leading-tight mb-4">
+              Your health data is scattered
+            </h2>
+            <p className="font-[family-name:var(--font-geist-sans)] text-base text-[#085983]/80 leading-relaxed px-4">
+              Wearables. Labs. Apps. All disconnected. You're drowning in data
+              but starving for insights.
+            </p>
+          </div>
+
+          {/* Desktop: Decorative title with lines */}
+          <div className="hidden sm:flex items-center justify-center mb-6">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#085983]/30"></div>
+            <h2 className="px-6 font-[family-name:var(--font-instrument-serif)] text-3xl sm:text-4xl lg:text-5xl font-normal text-[#085983]">
+              Your health data is scattered
+            </h2>
+            <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#085983]/30"></div>
+          </div>
+
+          <p className="font-[family-name:var(--font-geist-sans)] text-base sm:text-lg lg:text-xl text-[#085983]/80 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0">
+            Wearables. Labs. Apps. All disconnected. You're drowning in data but
+            starving for insights. Early adopters are already ahead of the
+            curve.
+          </p>
+        </div>
+
+        {/* Success Story Section */}
         <div className="relative overflow-hidden rounded-2xl lg:rounded-3xl shadow-2xl">
           {/* Background Image */}
           <div className="absolute inset-0">
@@ -113,12 +143,12 @@ export function EarlyAdoptersSection({ className }: EarlyAdoptersSectionProps) {
               src="/adopters.png"
               width={1200}
               height={800}
-              alt="Scenic mountain landscape background"
+              alt="Early adopters success landscape"
               className="w-full h-full object-cover"
               priority
             />
             {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#085983]/30 via-[#085983]/50 to-[#085983]/70"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#085983]/40 via-[#085983]/60 to-[#085983]/40"></div>
             {/* Additional overlay for better text contrast */}
             <div className="absolute inset-0 bg-black/30"></div>
           </div>
@@ -126,86 +156,167 @@ export function EarlyAdoptersSection({ className }: EarlyAdoptersSectionProps) {
           {/* Content */}
           <div className="relative z-10 p-8 sm:p-12 lg:p-16 min-h-[600px] lg:min-h-[700px] flex items-center justify-center">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full max-w-6xl">
-              {/* Left Side - Main Title and Social Proof */}
+              {/* Left Side - Success Story */}
               <div className="text-white space-y-8 lg:space-y-10 text-center lg:text-left">
                 <div className="space-y-6">
                   <h2 className="font-[family-name:var(--font-instrument-serif)] text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-normal leading-tight">
-                    Trusted by{" "}
-                    <span className="block text-blue-200">early adopters,</span>
+                    Instead of scattered data,{" "}
+                    <span className="block text-blue-200 bg-gradient-to-r from-blue-200 to-blue-400 bg-clip-text font-[family-name:var(--font-geist-sans)]">
+                      unified insights
+                    </span>
                   </h2>
-                  <h3 className="font-[family-name:var(--font-instrument-serif)] text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-normal leading-tight">
-                    backed by results
-                  </h3>
                 </div>
 
-                {/* Social Proof Section */}
-                <div className="space-y-6">
-                  <p className="font-[family-name:var(--font-geist-sans)] text-lg sm:text-xl lg:text-2xl font-normal text-white/90 leading-relaxed">
-                    Real people. Real health improvements. Uara is already
-                    transforming lives
-                  </p>
-
-                  {/* Avatar Display with Count */}
-                  <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-4 lg:space-y-0 lg:space-x-6">
-                    <div className="flex items-center justify-center">
-                      <AvatarCircles
-                        numPeople={subscriberData.count}
-                        avatarUrls={subscriberData.avatars}
-                        className="scale-110"
-                      />
-                    </div>
-                    <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 border-2 border-white/30">
-                      <span className="font-[family-name:var(--font-instrument-serif)] text-2xl sm:text-3xl font-semibold text-white tracking-wider">
-                        {displayCount}
-                      </span>
+                {/* Social Proof & Results */}
+                <div className="space-y-8">
+                  <div className="flex items-center justify-center gap-4">
+                    <AvatarCircles
+                      numPeople={subscriberData.count}
+                      avatarUrls={subscriberData.avatars}
+                      className="scale-110"
+                    />
+                    <div className="text-center lg:text-left">
+                      <p className="font-[family-name:var(--font-geist-sans)] text-sm text-white/80">
+                        <strong className="text-blue-200 underline underline-offset-4">
+                          {displayCount}
+                        </strong>{" "}
+                        amazing humans reserved their spot with Uara
+                      </p>
                     </div>
                   </div>
-                </div>
 
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                    <div className="text-2xl sm:text-3xl font-bold text-blue-200 mb-2">
-                      5+
-                    </div>
-                    <p className="font-[family-name:var(--font-geist-sans)] text-sm font-normal text-white/90 leading-relaxed">
-                      hours saved per month on data analysis
-                    </p>
-                  </div>
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                    <div className="text-2xl sm:text-3xl font-bold text-blue-200 mb-2">
-                      78%
-                    </div>
-                    <p className="font-[family-name:var(--font-geist-sans)] text-sm font-normal text-white/90 leading-relaxed">
-                      improvement in energy levels after 4 weeks
-                    </p>
+                  {/* Results Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                    <ResultCard
+                      metric="3x"
+                      description="Spot health trends three times faster → before they become problems"
+                      icon={
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="icon icon-tabler icons-tabler-outline icon-tabler-trending-up"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M3 17l6 -6l4 4l8 -8" />
+                          <path d="M14 7l7 0l0 7" />
+                        </svg>
+                      }
+                    />
+                    <ResultCard
+                      metric="∞"
+                      description="Endless hours saved each month → no more spreadsheets or manual tracking"
+                      icon={
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="icon icon-tabler icons-tabler-outline icon-tabler-stopwatch"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M5 13a7 7 0 1 0 14 0a7 7 0 0 0 -14 0z" />
+                          <path d="M14.5 10.5l-2.5 2.5" />
+                          <path d="M17 8l1 -1" />
+                          <path d="M14 3h-4" />
+                        </svg>
+                      }
+                    />
+                    <ResultCard
+                      metric="4 weeks"
+                      description="See the first measurable improvements in just 4 weeks"
+                      icon={
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="icon icon-tabler icons-tabler-outline icon-tabler-calendar-week"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+                          <path d="M16 3v4" />
+                          <path d="M8 3v4" />
+                          <path d="M4 11h16" />
+                          <path d="M7 14h.013" />
+                          <path d="M10.01 14h.005" />
+                          <path d="M13.01 14h.005" />
+                          <path d="M16.015 14h.005" />
+                          <path d="M13.015 17h.005" />
+                          <path d="M7.01 17h.005" />
+                          <path d="M10.01 17h.005" />
+                        </svg>
+                      }
+                    />
+                    <ResultCard
+                      metric="More years"
+                      description="Extend your healthspan by slowing down biological aging"
+                      icon={
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="icon icon-tabler icons-tabler-outline icon-tabler-heartbeat"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M19.5 13.572l-7.5 7.428l-2.896 -2.868m-6.117 -8.104a5 5 0 0 1 9.013 -3.022a5 5 0 1 1 7.5 6.572" />
+                          <path d="M3 13h2l2 3l2 -6l1 3h3" />
+                        </svg>
+                      }
+                    />
                   </div>
                 </div>
               </div>
 
               {/* Right Side - CTA Section */}
               <div className="text-white space-y-8 text-center lg:text-left">
-                {/* Waitlist Section */}
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 lg:p-8 border border-white/20">
+                {/* Main CTA */}
+                <div className="bg-gradient-to-br from-white/15 via-white/10 to-white/5 backdrop-blur-md rounded-2xl p-6 lg:p-8 border border-white/20">
                   <div className="space-y-6">
                     <div className="space-y-3">
-                      <h4 className="font-[family-name:var(--font-instrument-serif)] text-2xl lg:text-3xl font-semibold text-white">
-                        Join the waitlist
-                      </h4>
-                      <p className="font-[family-name:var(--font-geist-sans)] text-base text-white/80">
-                        Get early access when we launch
+                      <h3 className="font-[family-name:var(--font-geist-sans)] text-2xl lg:text-3xl font-semibold text-white">
+                        Join the movement
+                      </h3>
+                      <p className="font-[family-name:var(--font-geist-sans)] text-base text-white/80 leading-relaxed">
+                        Don't let another month pass juggling health apps. Get
+                        the clarity you deserve.
                       </p>
                     </div>
                     <SubscribeInput />
+                    <p className="font-[family-name:var(--font-geist-sans)] text-xs text-white/60 text-center">
+                      Early access when we launch
+                    </p>
                   </div>
                 </div>
 
                 {/* Lifetime Deal CTA */}
-                <div className="bg-gradient-to-br from-blue-100/20 via-white/10 to-blue-50/20 backdrop-blur-md rounded-2xl p-6 lg:p-8 border-2 border-white/30">
+                <div className="bg-gradient-to-br from-blue-100/20 via-white/15 to-blue-50/20 backdrop-blur-md rounded-2xl p-6 lg:p-8 border-2 border-white/30">
                   <div className="space-y-6">
                     <div className="space-y-3">
-                      <h4 className="font-[family-name:var(--font-instrument-serif)] text-xl lg:text-2xl font-semibold text-white">
-                        Or secure lifetime access
+                      <h4 className="font-[family-name:var(--font-geist-sans)] text-xl lg:text-2xl font-semibold text-white">
+                        Or secure lifetime access now
                       </h4>
                       <div className="flex items-center justify-center lg:justify-start gap-3">
                         <span className="font-[family-name:var(--font-geist-sans)] text-lg text-white/90">
@@ -225,10 +336,10 @@ export function EarlyAdoptersSection({ className }: EarlyAdoptersSectionProps) {
                           </span>
                         </div>
                         <span className="font-[family-name:var(--font-geist-sans)] text-lg text-white/90">
-                          spots left at
+                          spots left
                         </span>
                       </div>
-                      <div className="font-[family-name:var(--font-instrument-serif)] text-3xl lg:text-4xl font-bold text-white">
+                      <div className="font-[family-name:var(--font-geist)] text-3xl lg:text-4xl font-bold text-white tracking-wider justify-center items-center text-center">
                         {tierInfo ? (
                           tierInfo.currentTier.displayPrice
                         ) : (
@@ -239,7 +350,7 @@ export function EarlyAdoptersSection({ className }: EarlyAdoptersSectionProps) {
 
                     <Button
                       size="lg"
-                      className="w-full bg-gradient-to-b from-[#085983] via-[#0a6b99] to-[#085983] hover:from-[#074a6b] hover:via-[#085983] hover:to-[#074a6b] text-white font-[family-name:var(--font-instrument-serif)] text-lg font-bold py-4 px-6 rounded-full shadow-2xl transition-all duration-300 hover:shadow-3xl hover:scale-105 tracking-wider border-2 border-[#085983]/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                      className="w-full bg-gradient-to-b from-[#085983] via-[#0a6b99] to-[#085983] hover:from-[#074a6b] hover:via-[#085983] hover:to-[#074a6b] text-white font-[family-name:var(--font-geist-sans)] text-lg font-bold py-4 px-6 rounded-full shadow-2xl transition-all duration-300 hover:shadow-3xl hover:scale-105 tracking-wider border-2 border-[#085983]/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                       style={{
                         boxShadow:
                           "0 8px 20px rgba(8, 89, 131, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.1)",
@@ -254,7 +365,7 @@ export function EarlyAdoptersSection({ className }: EarlyAdoptersSectionProps) {
                         : "CLAIM LIFETIME ACCESS"}
                     </Button>
 
-                    <p className="font-[family-name:var(--font-geist-sans)] text-sm text-white/70 text-center">
+                    <p className="font-[family-name:var(--font-geist-sans)] text-sm text-white/70 text-center font-semibold">
                       {tierInfo &&
                         !tierInfo.isLastTier &&
                         tierInfo.nextTier && (
@@ -267,8 +378,169 @@ export function EarlyAdoptersSection({ className }: EarlyAdoptersSectionProps) {
             </div>
           </div>
         </div>
+
+        {/* Bottom CTA Bridge */}
+        <div className="text-center mt-16 lg:mt-20 space-y-6">
+          <p className="font-[family-name:var(--font-geist-sans)] text-base sm:text-lg lg:text-xl text-[#085983]/80 max-w-3xl mx-auto leading-relaxed">
+            Ready to see how we turn your scattered health data into clear,
+            actionable insights?
+          </p>
+          <Button
+            className="flex justify-center"
+            variant="ghost"
+            size="lg"
+            asChild
+          >
+            <Link
+              href="#pricing"
+              data-fast-goal="click_reserve_your_spot"
+              className="inline-flex items-center gap-2 font-[family-name:var(--font-geist-sans)] text-lg font-medium text-[#085983] hover:text-[#074a6b] transition-colors group"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="icon icon-tabler icons-tabler-outline icon-tabler-lock-heart"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M11.5 21h-4.5a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2h10c.38 0 .734 .106 1.037 .29" />
+                <path d="M8 11v-4a4 4 0 1 1 8 0v4" />
+                <path d="M18 22l3.35 -3.284a2.143 2.143 0 0 0 .005 -3.071a2.242 2.242 0 0 0 -3.129 -.006l-.224 .22l-.223 -.22a2.242 2.242 0 0 0 -3.128 -.006a2.143 2.143 0 0 0 -.006 3.071l3.355 3.296z" />
+              </svg>
+              Reserve your spot
+            </Link>
+          </Button>
+        </div>
       </div>
     </section>
+  );
+}
+
+// Helper Components
+interface PainPointCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  intensity: "high" | "medium" | "low";
+}
+
+function PainPointCard({
+  icon,
+  title,
+  description,
+  intensity,
+}: PainPointCardProps) {
+  const getIntensityStyles = (intensity: "high" | "medium" | "low") => {
+    switch (intensity) {
+      case "high":
+        return {
+          bg: "bg-gradient-to-br from-[#085983]/10 to-[#085983]/20",
+          border: "border-[#085983]/30",
+          iconBg: "bg-[#085983]/20",
+          iconColor: "text-[#085983]",
+          titleColor: "text-[#085983]",
+          descColor: "text-[#085983]/80",
+          hoverBg: "hover:from-[#085983]/15 hover:to-[#085983]/25",
+        };
+      case "medium":
+        return {
+          bg: "bg-gradient-to-br from-[#085983]/5 to-[#085983]/15",
+          border: "border-[#085983]/20",
+          iconBg: "bg-[#085983]/15",
+          iconColor: "text-[#085983]/90",
+          titleColor: "text-[#085983]/90",
+          descColor: "text-[#085983]/70",
+          hoverBg: "hover:from-[#085983]/10 hover:to-[#085983]/20",
+        };
+      case "low":
+        return {
+          bg: "bg-gradient-to-br from-[#085983]/3 to-[#085983]/8",
+          border: "border-[#085983]/15",
+          iconBg: "bg-[#085983]/10",
+          iconColor: "text-[#085983]/80",
+          titleColor: "text-[#085983]/80",
+          descColor: "text-[#085983]/60",
+          hoverBg: "hover:from-[#085983]/8 hover:to-[#085983]/15",
+        };
+    }
+  };
+
+  const styles = getIntensityStyles(intensity);
+
+  return (
+    <div
+      className={cn(
+        "relative overflow-hidden p-6 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 hover:shadow-lg hover:scale-105 group",
+        styles.bg,
+        styles.border,
+        styles.hoverBg
+      )}
+    >
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-50"></div>
+
+      <div className="relative z-10">
+        <div
+          className={cn(
+            "w-12 h-12 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110",
+            styles.iconBg
+          )}
+        >
+          <div className={styles.iconColor}>{icon}</div>
+        </div>
+
+        <h3
+          className={cn(
+            "font-[family-name:var(--font-geist-sans)] text-lg font-semibold mb-2 transition-colors",
+            styles.titleColor
+          )}
+        >
+          {title}
+        </h3>
+
+        <p
+          className={cn(
+            "font-[family-name:var(--font-geist-sans)] text-sm leading-relaxed transition-colors",
+            styles.descColor
+          )}
+        >
+          {description}
+        </p>
+      </div>
+
+      {/* Decorative corner element */}
+      <div className="absolute top-2 right-2 w-8 h-8 bg-[#085983]/5 rounded-full blur-lg"></div>
+    </div>
+  );
+}
+
+interface ResultCardProps {
+  metric: string;
+  description: string;
+  icon: React.ReactNode;
+}
+
+function ResultCard({ metric, description, icon }: ResultCardProps) {
+  return (
+    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 transition-all duration-300 hover:bg-white/15 group">
+      <div className="flex items-center justify-between mb-2">
+        <div className="font-[family-name:var(--font-instrument-serif)] text-2xl sm:text-3xl font-bold text-blue-200 transition-all duration-300 group-hover:text-blue-100 tabular-nums">
+          {metric}
+        </div>
+        <div className="text-blue-200 transition-all duration-300 group-hover:scale-110 group-hover:text-blue-100">
+          {icon}
+        </div>
+      </div>
+      <p className="font-[family-name:var(--font-geist-sans)] text-sm font-normal text-white/90 leading-relaxed transition-colors group-hover:text-white">
+        {description}
+      </p>
+    </div>
   );
 }
 

@@ -13,7 +13,6 @@ export function MainSection() {
           AI
         </span>
       </h1>
-
       {/* Subtitle */}
       <div className="mb-12 text-center">
         <p className="font-[family-name:var(--font-instrument-serif)] text-[24px] lg:text-[40px] md:text-[32px] sm:text-[20px] font-normal leading-relaxed">
@@ -23,7 +22,6 @@ export function MainSection() {
           Engineered for Human Optimization.
         </p>
       </div>
-
       {/* Search Bar */}
       <div className="mb-12 max-w-2xl lg:max-w-none lg:mx-0 mx-auto">
         <div className="relative">
@@ -39,7 +37,6 @@ export function MainSection() {
           </button>
         </div>
       </div>
-
       {/* Quick Action Buttons */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16 max-w-3xl lg:max-w-none lg:mx-0 mx-auto tracking-wider">
         <button className="flex items-center space-x-3 px-6 py-3 bg-white/10 border-2 border-[#085983] rounded-full hover:bg-white/20 transition-colors backdrop-blur-sm">

@@ -18,7 +18,7 @@ export default function Home() {
       <Navbar />
       <div>
         <Hero />
-        {/* <EarlyAdoptersSection /> */}
+        <EarlyAdoptersSection />
         <HowItWorks />
         <PricingSection redirectTo="/waitlist" />
         <FAQ />
