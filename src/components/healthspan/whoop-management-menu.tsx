@@ -240,7 +240,7 @@ export function WhoopManagementMenu({
                   longevity and performance.
                 </p>
                 <div className="text-xs text-[#085983]/80 mt-3">
-                  <strong>What you'll get:</strong>
+                  <strong>What you&apos;ll get:</strong>
                   <div className="grid grid-cols-2 gap-1 mt-1">
                     <div>• Recovery tracking</div>
                     <div>• Sleep analysis</div>

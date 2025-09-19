@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import type { VisibilityType } from "@/components/ai/visibility-selector";
 
 // Chat queries
 export async function saveChat({
@@ -11,7 +10,7 @@ export async function saveChat({
   id: string;
   title: string;
   userId: string;
-  visibility?: VisibilityType;
+  visibility?: string;
 }) {
   return prisma.chat.create({
     data: {
@@ -78,7 +77,7 @@ export async function updateChatVisibility({
   visibility,
 }: {
   chatId: string;
-  visibility: VisibilityType;
+  visibility: string;
 }) {
   return prisma.chat.update({
     where: { id: chatId },

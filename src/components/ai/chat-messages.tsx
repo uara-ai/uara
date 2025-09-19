@@ -190,8 +190,8 @@ export function ChatMessages({
               </h2>
               <p className="text-[#085983]/70 font-[family-name:var(--font-geist-sans)] text-sm sm:text-base leading-relaxed">
                 Ask me anything about your health data, recovery patterns, or
-                longevity optimization. I'll provide personalized insights based
-                on your WHOOP metrics.
+                longevity optimization. I&apos;ll provide personalized insights
+                based on your WHOOP metrics.
               </p>
             </div>
 
