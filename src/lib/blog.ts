@@ -115,3 +115,6 @@ export async function getAllTags() {
   });
   return Array.from(tags).sort();
 }
+
+// Alias for sitemap compatibility
+export const getAllBlogPosts = getBlogPosts;
