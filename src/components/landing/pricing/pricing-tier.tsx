@@ -112,6 +112,7 @@ export function PricingTier({ tierInfo, className }: PricingTierProps) {
                     }}
                     onClick={handleClaimNow}
                     disabled={isLoading || !tierInfo}
+                    data-fast-goal="initiate_checkout"
                   >
                     {isLoading
                       ? "PROCESSING..."

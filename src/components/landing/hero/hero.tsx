@@ -16,6 +16,7 @@ export function Hero({ className }: HeroProps) {
         "relative min-h-screen w-full overflow-hidden flex items-center justify-center",
         className
       )}
+      data-fast-scroll="scroll_to_hero"
     >
       {/* Background Video */}
       <video

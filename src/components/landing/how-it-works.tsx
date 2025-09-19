@@ -50,6 +50,7 @@ export function HowItWorks({ className }: HowItWorksProps) {
         className
       )}
       id="features"
+      data-fast-scroll="scroll_to_features"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}

@@ -19,6 +19,7 @@ export function BottomCTA({ className }: BottomCTAProps) {
         "relative w-full py-16 lg:py-24 overflow-hidden",
         className
       )}
+      data-fast-scroll="scroll_to_cta"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* CTA Card Container */}
@@ -62,6 +63,7 @@ export function BottomCTA({ className }: BottomCTAProps) {
                       size="lg"
                       className="bg-gradient-to-r from-[#085983] to-[#0a6b99] hover:from-[#074a6b] hover:to-[#085983] text-white font-[family-name:var(--font-instrument-serif)] text-xl sm:text-2xl font-semibold py-6 px-12 sm:px-16 rounded-full shadow-lg  hover:shadow-xl  tracking-wider border-2 border-[#085983]/50"
                       asChild
+                      data-fast-goal="cta_button_click"
                     >
                       <Link href="/login">Become a founding member</Link>
                     </Button>

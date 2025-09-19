@@ -36,7 +36,10 @@ export function PricingCard({ tierInfo, className }: PricingCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div className={cn("relative max-w-6xl mx-auto w-full", className)}>
+    <div
+      className={cn("relative max-w-6xl mx-auto w-full", className)}
+      data-fast-scroll="scroll_to_pricing"
+    >
       {/* Background Image Container */}
       <div
         className="relative overflow-hidden rounded-2xl lg:rounded-3xl shadow-2xl"

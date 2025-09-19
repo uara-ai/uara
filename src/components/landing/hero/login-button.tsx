@@ -28,6 +28,7 @@ export function LoginButton({
         className={cn(
           `${bgColor} ${hoverBgColor} border-2 ${borderColor} ${textColor} ${hoverTextColor} ${className} font-[family-name:var(--font-instrument-serif)] text-base tracking-wider font-normal px-4 py-2 h-auto backdrop-blur-sm rounded-full transition-all duration-200`
         )}
+        data-fast-goal="login_button_nav_click"
       >
         Login
         <LogIn className="ml-2 w-4 h-4" />

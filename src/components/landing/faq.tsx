@@ -64,6 +64,7 @@ export function FAQ({ className }: FAQProps) {
     <section
       className={cn("relative w-full py-16 lg:py-24", className)}
       id="faq"
+      data-fast-scroll="scroll_to_faq"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}

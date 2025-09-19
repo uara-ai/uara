@@ -30,7 +30,10 @@ export default async function SuccessPage() {
     console.error("Error fetching user tier:", error);
   }
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-blue-50/30">
+    <div
+      className="min-h-screen bg-gradient-to-b from-white to-blue-50/30"
+      data-fast-goal="success_page_view"
+    >
       <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16">
         <CelebrationConfetti />
 
