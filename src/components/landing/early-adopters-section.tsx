@@ -114,8 +114,8 @@ export function EarlyAdoptersSection({ className }: EarlyAdoptersSectionProps) {
               Your health data is scattered
             </h2>
             <p className="font-[family-name:var(--font-geist-sans)] text-base text-[#085983]/80 leading-relaxed px-4">
-              Wearables. Labs. Apps. All disconnected. You're drowning in data
-              but starving for insights.
+              Wearables. Labs. Apps. All disconnected. You&apos;re drowning in
+              data but starving for insights.
             </p>
           </div>
 
@@ -129,9 +129,9 @@ export function EarlyAdoptersSection({ className }: EarlyAdoptersSectionProps) {
           </div>
 
           <p className="font-[family-name:var(--font-geist-sans)] text-base sm:text-lg lg:text-xl text-[#085983]/80 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0">
-            Wearables. Labs. Apps. All disconnected. You're drowning in data but
-            starving for insights. Early adopters are already ahead of the
-            curve.
+            Wearables. Labs. Apps. All disconnected. You&apos;re drowning in
+            data but starving for insights. Early adopters are already ahead of
+            the curve.
           </p>
         </div>
 
@@ -300,8 +300,8 @@ export function EarlyAdoptersSection({ className }: EarlyAdoptersSectionProps) {
                         Join the movement
                       </h3>
                       <p className="font-[family-name:var(--font-geist-sans)] text-base text-white/80 leading-relaxed">
-                        Don't let another month pass juggling health apps. Get
-                        the clarity you deserve.
+                        Don&apos;t let another month pass juggling health apps.
+                        Get the clarity you deserve.
                       </p>
                     </div>
                     <SubscribeInput />
