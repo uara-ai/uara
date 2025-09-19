@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
 import { STRIPE } from "@/lib/constants";
 import { calculateCurrentTier, getTierById } from "@/lib/tier-calculator";
+import { cookies } from "next/headers";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -90,10 +91,15 @@ export async function POST(req: NextRequest) {
 
     // Add subscription-specific config only for subscription mode
     if (selectedTier.mode === "subscription") {
+      const cookieStore = await cookies();
       sessionConfig.subscription_data = {
         metadata: {
           userId: user.id,
           tierId: selectedTier.id,
+          datafast_visitor_id:
+            (await cookieStore).get("datafast_visitor_id")?.value || null,
+          datafast_session_id:
+            (await cookieStore).get("datafast_session_id")?.value || null,
         },
       };
     }
