@@ -78,7 +78,7 @@ export function SubscribeInput() {
 
       <div className="text-center space-y-3">
         <p className="font-[family-name:var(--font-geist-sans)] text-sm text-white/80 tracking-wide">
-          We'll send you an email when we're live with early access.
+          We&apos;ll send you an email when we&apos;re live with early access.
         </p>
         <p className="font-[family-name:var(--font-geist-sans)] text-sm text-white/70 font-medium">
           If you want to support, you can choose one of the pricing plans 💙
