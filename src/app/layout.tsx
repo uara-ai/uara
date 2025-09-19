@@ -131,6 +131,12 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className="light" style={{ colorScheme: "light" }}>
+      <script
+        defer
+        data-website-id="68cd65a4f831ab2b5e0c6db4"
+        data-domain="uara.ai"
+        src="https://datafa.st/js/script.js"
+      ></script>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${beVietnamPro.variable} ${baumans.variable} ${inter.variable} ${instrumentSerif.variable} antialiased`}
       >

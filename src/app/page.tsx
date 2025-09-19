@@ -4,6 +4,7 @@ import { Hero } from "@/components/landing/hero/hero";
 import { Navbar } from "@/components/landing/hero/navbar";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { PricingSection } from "@/components/landing/pricing/pricing-section";
+import { EarlyAdoptersSection } from "@/components/landing/early-adopters-section";
 // import { Problem } from "@/components/landing/problem";
 // import { HowItWorks } from "@/components/landing/how-it-works";
 // import { Features } from "@/components/landing/features";
@@ -17,6 +18,7 @@ export default function Home() {
       <Navbar />
       <div>
         <Hero />
+        {/* <EarlyAdoptersSection /> */}
         <HowItWorks />
         <PricingSection redirectTo="/waitlist" />
         <FAQ />
