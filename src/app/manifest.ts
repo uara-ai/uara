@@ -115,7 +115,7 @@ export default function manifest(): MetadataRoute.Manifest {
         url: "/healthspan/whoop",
         icons: [
           {
-            src: "/whoop.svg",
+            src: "/brands/whoop.svg",
             sizes: "any",
             type: "image/svg+xml",
           },

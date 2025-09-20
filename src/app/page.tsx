@@ -11,6 +11,7 @@ import { EarlyAdoptersSection } from "@/components/landing/early-adopters-sectio
 // import { PricingCard } from "@/components/landing/pricing-card";
 import { FAQ } from "@/components/landing/faq";
 import { BottomCTA } from "@/components/landing/bottom-cta";
+import { Wearables } from "@/components/landing/wearables";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       <Navbar />
       <div>
         <Hero />
+        <Wearables />
         <EarlyAdoptersSection />
         <HowItWorks />
         <PricingSection redirectTo="/waitlist" />

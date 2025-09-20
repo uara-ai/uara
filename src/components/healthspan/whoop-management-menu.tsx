@@ -232,7 +232,12 @@ export function WhoopManagementMenu({
               </div>
               <div className="bg-gradient-to-r from-[#085983]/5 to-[#085983]/10 border border-[#085983]/20 rounded-lg p-4">
                 <p className="text-sm text-[#085983] font-medium flex items-center gap-2">
-                  <Image src="/whoop.svg" alt="WHOOP" width={20} height={20} />
+                  <Image
+                    src="/brands/whoop.svg"
+                    alt="WHOOP"
+                    width={20}
+                    height={20}
+                  />
                   Connect Your WHOOP
                 </p>
                 <p className="text-sm text-[#085983] mt-2">
@@ -268,7 +273,12 @@ export function WhoopManagementMenu({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-[#085983]/10">
-                <Image src="/whoop.svg" alt="WHOOP" width={20} height={20} />
+                <Image
+                  src="/brands/whoop.svg"
+                  alt="WHOOP"
+                  width={20}
+                  height={20}
+                />
               </div>
               <div>
                 <CardTitle className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983]">
