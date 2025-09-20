@@ -196,7 +196,7 @@ export function EarlyAdoptersSection({ className }: EarlyAdoptersSectionProps) {
                   <div className="space-y-6">
                     <div className="space-y-3">
                       <h4 className="font-[family-name:var(--font-geist-sans)] text-xl lg:text-2xl font-semibold text-white">
-                        Secure lifetime access now
+                        Secure your keys now
                       </h4>
                       <div className="flex items-center justify-center lg:justify-start gap-3">
                         <span className="font-[family-name:var(--font-geist-sans)] text-lg text-white/90">
