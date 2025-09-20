@@ -170,7 +170,7 @@ export function WhoopCards({
                   <div className="p-2 rounded-lg bg-[#085983]/10">
                     <IconHeart className="h-4 w-4 text-[#085983]" />
                   </div>
-                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983] text-[#085983]/80">
+                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983]/80">
                     Recovery Score
                   </CardDescription>
                 </div>
@@ -267,7 +267,7 @@ export function WhoopCards({
                     <IconHeart className="h-3 w-3 text-[#085983]/60" />
                     <span className="text-[#085983]/60 text-xs">RHR</span>
                   </div>
-                  <div className="font-medium text-[#085983] text-[#085983]">
+                  <div className="font-medium text-[#085983] ">
                     {whoopStats.latestRecovery?.restingHeartRate
                       ? `${whoopStats.latestRecovery.restingHeartRate} bpm`
                       : "N/A"}
@@ -278,7 +278,7 @@ export function WhoopCards({
                     <IconBolt className="h-3 w-3 text-[#085983]/60" />
                     <span className="text-[#085983]/60 text-xs">HRV</span>
                   </div>
-                  <div className="font-medium text-[#085983] text-[#085983]">
+                  <div className="font-medium text-[#085983]">
                     {whoopStats.latestRecovery?.hrvRmssd
                       ? `${Math.round(whoopStats.latestRecovery.hrvRmssd)}ms`
                       : "N/A"}
@@ -308,7 +308,7 @@ export function WhoopCards({
                   <div className="p-2 rounded-lg bg-[#085983]/10">
                     <IconMoon className="h-4 w-4 text-[#085983]" />
                   </div>
-                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983] text-[#085983]/80">
+                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983]/80">
                     Sleep Performance
                   </CardDescription>
                 </div>
@@ -403,7 +403,7 @@ export function WhoopCards({
                       Efficiency
                     </span>
                   </div>
-                  <div className="font-medium text-[#085983] text-[#085983]">
+                  <div className="font-medium text-[#085983]">
                     {whoopStats.latestSleep?.sleepEfficiencyPercentage
                       ? `${Math.round(
                           whoopStats.latestSleep.sleepEfficiencyPercentage
@@ -416,7 +416,7 @@ export function WhoopCards({
                     <IconZzz className="h-3 w-3 text-[#085983]/60" />
                     <span className="text-[#085983]/60 text-xs">Time</span>
                   </div>
-                  <div className="font-medium text-[#085983] text-[#085983]">
+                  <div className="font-medium text-[#085983]">
                     {whoopStats.latestSleep?.totalInBedTime
                       ? formatTime(whoopStats.latestSleep.totalInBedTime)
                       : "N/A"}
@@ -446,7 +446,7 @@ export function WhoopCards({
                   <div className="p-2 rounded-lg bg-[#085983]/10">
                     <IconActivity className="h-4 w-4 text-[#085983]" />
                   </div>
-                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983] text-[#085983]/80">
+                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983]/80">
                     Weekly Strain
                   </CardDescription>
                 </div>
@@ -535,7 +535,7 @@ export function WhoopCards({
                     <IconBolt className="h-3 w-3 text-[#085983]/60" />
                     <span className="text-[#085983]/60 text-xs">Peak</span>
                   </div>
-                  <div className="font-medium text-[#085983] text-[#085983]">
+                  <div className="font-medium text-[#085983]">
                     {whoopStats.weeklyStrain?.maxStrain
                       ? whoopStats.weeklyStrain.maxStrain.toFixed(1)
                       : "N/A"}
@@ -578,7 +578,7 @@ export function WhoopCards({
                   <div className="p-2 rounded-lg bg-[#085983]/10">
                     <IconBolt className="h-4 w-4 text-[#085983]" />
                   </div>
-                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983] text-[#085983]/80">
+                  <CardDescription className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983]/80">
                     Recent Workout
                   </CardDescription>
                 </div>
@@ -671,7 +671,7 @@ export function WhoopCards({
                     <IconHeart className="h-3 w-3 text-[#085983]/60" />
                     <span className="text-[#085983]/60 text-xs">Avg HR</span>
                   </div>
-                  <div className="font-medium text-[#085983] text-[#085983]">
+                  <div className="font-medium text-[#085983]">
                     {whoopStats.latestWorkout?.averageHeartRate
                       ? `${whoopStats.latestWorkout.averageHeartRate} bpm`
                       : "N/A"}
@@ -682,7 +682,7 @@ export function WhoopCards({
                     <IconBolt className="h-3 w-3 text-[#085983]/60" />
                     <span className="text-[#085983]/60 text-xs">Max HR</span>
                   </div>
-                  <div className="font-medium text-[#085983] text-[#085983]">
+                  <div className="font-medium text-[#085983]">
                     {whoopStats.latestWorkout?.maxHeartRate
                       ? `${whoopStats.latestWorkout.maxHeartRate} bpm`
                       : "N/A"}
@@ -693,7 +693,7 @@ export function WhoopCards({
                     <IconTarget className="h-3 w-3 text-[#085983]/60" />
                     <span className="text-[#085983]/60 text-xs">Distance</span>
                   </div>
-                  <div className="font-medium text-[#085983] text-[#085983]">
+                  <div className="font-medium text-[#085983]">
                     {whoopStats.latestWorkout?.distanceMeters
                       ? whoopStats.latestWorkout.distanceMeters >= 1000
                         ? `${(
@@ -710,7 +710,7 @@ export function WhoopCards({
                     <IconActivity className="h-3 w-3 text-[#085983]/60" />
                     <span className="text-[#085983]/60 text-xs">Energy</span>
                   </div>
-                  <div className="font-medium text-[#085983] text-[#085983]">
+                  <div className="font-medium text-[#085983]">
                     {whoopStats.latestWorkout?.kilojoule
                       ? `${Math.round(whoopStats.latestWorkout.kilojoule)} kJ`
                       : "N/A"}

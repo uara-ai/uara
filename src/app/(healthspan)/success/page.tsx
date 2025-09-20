@@ -46,7 +46,7 @@ export default async function SuccessPage() {
             </span>
           </div>*/}
 
-          <h1 className="text-4xl md:text-6xl font-[family-name:var(--font-instrument-serif)] font-light tracking-tight text-[#085983]">
+          <h1 className="text-4xl md:text-6xl font-[family-name:var(--font-geist-sans)] font-light tracking-tight text-[#085983]">
             Welcome to Your Longevity Journey
           </h1>
 
@@ -109,7 +109,7 @@ export default async function SuccessPage() {
 
         {/* Call to Action */}
         <div className="text-center space-y-6">
-          {/*<Link href={userTier ? "/chat" : "/"} className="inline-block">
+          <Link href={"/healthspan"} className="inline-block">
             <Button
               size="lg"
               className="bg-gradient-to-b from-[#085983] via-[#0a6b99] to-[#085983] hover:from-[#074a6b] hover:via-[#085983] hover:to-[#074a6b] text-white font-[family-name:var(--font-instrument-serif)] text-xl font-bold py-6 px-12 rounded-full shadow-2xl transition-all duration-300 hover:shadow-3xl hover:scale-105 tracking-widest border-2 border-[#085983]/50"
@@ -119,9 +119,9 @@ export default async function SuccessPage() {
               }}
             >
               <Brain className="size-6 mr-3" />
-              {userTier ? "START CHATTING WITH UARA" : "START LIVING LONGER"}
+              START LIVING LONGER
             </Button>
-          </Link>*/}
+          </Link>
 
           <p className="text-sm text-[#085983]/60 max-w-2xl mx-auto">
             Your lifetime access is now active. You&apos;ll receive an email
@@ -159,7 +159,7 @@ function Feature({
       <div className="flex justify-center mb-4">
         <div className="bg-[#085983]/10 rounded-full p-3">{icon}</div>
       </div>
-      <h3 className="font-[family-name:var(--font-instrument-serif)] text-lg font-semibold text-[#085983] mb-3 tracking-wider">
+      <h3 className="font-[family-name:var(--font-geist-sans)] text-lg font-semibold text-[#085983] mb-3 tracking-wider">
         {title}
       </h3>
       <p className="text-sm text-[#085983]/70 leading-relaxed">{description}</p>

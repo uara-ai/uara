@@ -10,7 +10,10 @@ export const tiers = [
   {
     id: "tier_1",
     name: "Tier 1",
-    priceId: "price_1S7b9gH7JERdDkEOHoyIrF3p",
+    priceId:
+      process.env.NODE_ENV === "production"
+        ? "price_1S7b9gH7JERdDkEOHoyIrF3p"
+        : "price_1S6CWaH7JERdDkEOj0vsRPcR",
     maxUsers: 10, // First 10 users get tier 1 pricing
     price: 4900, // $49 in cents
     displayPrice: "$49",

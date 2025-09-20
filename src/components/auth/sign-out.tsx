@@ -11,7 +11,7 @@ export function SignOut() {
       onClick={() => signOut()}
       variant="ghost"
       size="sm"
-      className="w-full justify-start"
+      className="w-full justify-start text-[#085983]"
     >
       Sign out
     </Button>

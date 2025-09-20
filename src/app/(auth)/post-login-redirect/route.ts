@@ -30,7 +30,7 @@ export async function GET() {
   }
 
   // Always redirect to waitlist after login - simple and efficient
-  return redirect("/waitlist");
+  return redirect("/healthspan");
 }
 
 // Cursor rules applied correctly.
