@@ -34,7 +34,7 @@ export function SecondarySection() {
 
         if (countResult.success && avatarsResult.success) {
           setSubscriberData({
-            count: (countResult.data as any)?.count || "380+",
+            count: (countResult.data as any)?.count || "380",
             avatars:
               (avatarsResult.data as any)?.avatars || subscriberData.avatars,
           });
@@ -49,14 +49,10 @@ export function SecondarySection() {
     fetchSubscriberData();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const displayCount = isLoading ? "300+" : `${subscriberData.count}+`;
+  const displayCount = isLoading ? "300+" : `${subscriberData.count}`;
   return (
-    <div className="relative z-20 text-white w-full lg:w-1/2 px-6 lg:px-8 lg:text-left text-center mt-20 flex items-end justify-center lg:justify-end">
+    <div className="text-white w-full lg:w-1/2 px-6 lg:px-8 text-center mt-20 flex justify-center">
       <div className="flex flex-col items-center text-center space-y-6 mb-16">
-        <p className="font-[family-name:var(--font-instrument-serif)] text-[32px] font-normal">
-          {displayCount} people
-        </p>
-
         {/* Avatar Circles */}
         <div className="flex flex-col items-center space-y-2">
           <AvatarCircles
@@ -66,20 +62,8 @@ export function SecondarySection() {
         </div>
 
         <p className="font-[family-name:var(--font-instrument-serif)] text-[32px] font-normal">
-          in waitlist
+          {displayCount} people in waitlist
         </p>
-
-        {/* Stats */}
-        <div className="space-y-3 text-center max-w-sm tracking-wider font-mono">
-          <p className="font-[family-name:var(--font-geist-sans)] text-[16px] font-normal text-white/80">
-            5+ hours saved per month on manual data analysis and research for
-            actionable insights.
-          </p>
-          <p className="font-[family-name:var(--font-geist-sans)] text-[16px] font-normal text-white/80">
-            78% improvement in self-reported energy levels after just 4 weeks on
-            the platform.
-          </p>
-        </div>
       </div>
     </div>
   );

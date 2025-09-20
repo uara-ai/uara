@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { Navbar } from "./navbar";
 import { MainSection } from "./main-section";
-import { SecondarySection } from "./secondary-section";
+import { HeroCTA } from "./hero-cta";
 
 interface HeroProps {
   className?: string;
@@ -39,21 +39,12 @@ export function Hero({ className }: HeroProps) {
       {/* Content Layout Container */}
       <div className="relative z-20 w-full max-w-8xl mx-auto px-2 lg:px-12 flex flex-col min-h-screen">
         {/* Main Hero Content */}
-        <div className="flex-1 flex flex-col lg:flex-row items-center justify-center">
+        <div className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-20">
           {/* Main Content (Left Section) */}
           <MainSection />
 
           {/* Secondary Section (Right Section) */}
-          <SecondarySection />
-        </div>
-
-        {/* Bottom Text */}
-        <div className="w-full text-center text-white pb-8 px-4 lg:px-6">
-          <p className="bottom-text font-[family-name:var(--font-geist-sans)] text-base sm:text-lg md:text-xl lg:text-[20px] font-normal text-white/90 leading-relaxed max-w-6xl mx-auto">
-            Your health data is fragmented. Your potential is not. uara.ai is
-            the operating system that unifies your wearables, labs, and logs,
-            translating raw data into an actionable longevity protocol.
-          </p>
+          <HeroCTA />
         </div>
       </div>
 
