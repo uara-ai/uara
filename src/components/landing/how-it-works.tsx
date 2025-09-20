@@ -21,7 +21,7 @@ const workflowSteps = [
     title: "Personalized Insights",
     subtitle: "Science-backed recommendations, explained simply.",
     description:
-      "We analyze your heart rate, HRV, biomarkers, and recovery trends, then translate them into clear guidance: what matters, why it matters, and what to do next.",
+      "We analyze your heart rate, HRV, biomarkers, and recovery trends, then translate them into clear guidance: what matters, why it matters, and what to do next. Trained on 100+ peer-reviewed studies and our in house team of physicians and longevity experts.",
     img: "/how-it-works/2.jpg",
   },
   {
