@@ -163,16 +163,46 @@ function WorkflowStep({
 
       {/* Image */}
       <div className={cn("relative", isReversed ? "lg:col-start-1" : "")}>
-        <div className="relative overflow-hidden rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-lg sm:shadow-2xl">
+        <div className="relative overflow-hidden rounded-xl sm:rounded-2xl lg:rounded-3xl shadow-lg sm:shadow-2xl group cursor-pointer">
           <Image
             src={step.img}
             width={1000}
             height={1000}
             alt={`${step.title} visualization`}
-            className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover"
+            className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover transition-all duration-300 group-hover:blur-sm group-hover:scale-105"
           />
           {/* Overlay for better contrast */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#085983]/20 to-transparent"></div>
+
+          {/* Hover Message Overlay */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/40 backdrop-blur-sm">
+            <div className="text-center p-6 max-w-xs">
+              <div className="bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-2xl border border-white/20">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#085983] to-[#1f88bd] rounded-full flex items-center justify-center">
+                    <Image
+                      src="/fedef.jpg"
+                      alt="Federico"
+                      width={48}
+                      height={48}
+                      className="rounded-full"
+                    />
+                  </div>
+                </div>
+                <h4 className="font-[family-name:var(--font-instrument-serif)] text-lg font-bold text-[#085983] mb-2">
+                  Message from Federico
+                </h4>
+                <p className="font-[family-name:var(--font-geist-sans)] text-sm text-[#085983]/80 leading-relaxed">
+                  Demo video is coming!
+                  <br />
+                  <span className="text-xs text-[#085983]/60 mt-1 block">
+                    I&apos;ll give you an in-depth walkthrough of all the
+                    features.
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Decorative elements - hidden on mobile */}
