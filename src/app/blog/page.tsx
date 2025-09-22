@@ -108,7 +108,7 @@ export default async function BlogPage() {
       />
 
       {/* Navigation */}
-      <Navbar />
+      <Navbar scrolled={true} />
 
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
         <div className="relative mx-auto pt-20 sm:pt-24 lg:pt-28 max-w-7xl px-4 sm:px-6 lg:px-8 pb-16">
@@ -185,7 +185,7 @@ function BlogPostCard({ post }: { post: any }) {
 
           {/* Content */}
           <div className="space-y-3">
-            <h2 className="font-[family-name:var(--font-instrument-serif)] text-lg sm:text-xl font-normal text-[#085983] group-hover:text-[#085983]/80 transition-colors duration-200 leading-tight">
+            <h2 className="font-[family-name:var(--font-geist-sans)] text-lg sm:text-xl font-normal text-[#085983] group-hover:text-[#085983]/80 transition-colors duration-200 leading-tight">
               {post.metadata.title}
             </h2>
 

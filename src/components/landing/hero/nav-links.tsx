@@ -18,18 +18,23 @@ import {
 
 interface NavLinksProps {
   isScrolled?: boolean;
+  forceScrolled?: boolean;
 }
 
-export function NavLinks({ isScrolled = false }: NavLinksProps) {
+export function NavLinks({ isScrolled = false, forceScrolled }: NavLinksProps) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // Use forceScrolled if provided, otherwise use isScrolled
+  const scrolledState =
+    forceScrolled !== undefined ? forceScrolled : isScrolled;
+
   // Define text color based on scroll state
-  const textColor = isScrolled ? "text-[#085983]" : "text-white/90";
-  const hoverTextColor = isScrolled
+  const textColor = scrolledState ? "text-[#085983]" : "text-white/90";
+  const hoverTextColor = scrolledState
     ? "hover:text-[#085983]/80"
     : "hover:text-white";
-  const activeTextColor = isScrolled ? "text-[#085983]" : "text-white";
+  const activeTextColor = scrolledState ? "text-[#085983]" : "text-white";
 
   return (
     <>

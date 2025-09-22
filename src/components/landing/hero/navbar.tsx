@@ -5,7 +5,13 @@ import { LoginButton } from "./login-button";
 import { Logo } from "../../logo";
 import { NavLinks } from "./nav-links";
 
-export function Navbar() {
+export function Navbar({
+  className,
+  scrolled,
+}: {
+  className?: string;
+  scrolled?: boolean;
+}) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -20,10 +26,13 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Use scrolled prop if provided, otherwise use isScrolled state
+  const finalScrolledState = scrolled !== undefined ? scrolled : isScrolled;
+
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-30 p-2 lg:p-4 transition-all duration-300 ${
-        isScrolled
+      className={`fixed top-0 left-0 right-0 z-30 p-2 lg:p-4 transition-all duration-300 ${className} ${
+        finalScrolledState
           ? "backdrop-blur-md border-b border-[#085983]/50"
           : "bg-transparent"
       }`}
@@ -34,11 +43,11 @@ export function Navbar() {
           <Logo hidden />
         </div>
 
-        <NavLinks isScrolled={isScrolled} />
+        <NavLinks isScrolled={isScrolled} forceScrolled={scrolled} />
 
         {/* Login Button - Hidden on mobile (included in mobile menu) */}
         <div className="hidden md:block">
-          <LoginButton isScrolled={isScrolled} />
+          <LoginButton isScrolled={finalScrolledState} />
         </div>
       </div>
     </nav>

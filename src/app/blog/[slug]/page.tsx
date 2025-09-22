@@ -147,7 +147,7 @@ export default async function Blog({
         />
 
         {/* Navigation */}
-        <Navbar />
+        <Navbar scrolled={true} />
 
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
           <div className="relative mx-auto pt-20 sm:pt-24 lg:pt-28 max-w-6xl px-4 sm:px-6 lg:px-8 pb-16">
