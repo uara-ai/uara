@@ -40,10 +40,13 @@ export function Footer() {
 
             {/* Content */}
             <div className="footer-padding relative z-10 p-8 sm:p-12 lg:p-16">
-              <div className="footer-grid grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start min-h-[250px]">
+              <div className="footer-grid grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-start min-h-[250px]">
                 {/* Left Side - Navigation Links */}
                 <div className="space-y-6 text-white">
                   <div className="space-y-4">
+                    <h3 className="font-[family-name:var(--font-geist-sans)] text-md font-medium text-white/60 mb-4">
+                      Menu
+                    </h3>
                     <Link
                       href="#how-it-works"
                       className="footer-links block font-[family-name:var(--font-geist-sans)] text-lg sm:text-xl font-normal hover:text-white/80 transition-colors"
@@ -65,9 +68,27 @@ export function Footer() {
                   </div>
                 </div>
 
+                {/* Center - Free Tools */}
+                <div className="space-y-6 text-white lg:text-center">
+                  <div className="space-y-4">
+                    <h3 className="font-[family-name:var(--font-geist-sans)] text-md font-medium text-white/60 mb-4">
+                      Free Tools
+                    </h3>
+                    <Link
+                      href="/bmi-calculator"
+                      className="footer-links block font-[family-name:var(--font-geist-sans)] text-lg sm:text-xl font-normal hover:text-white/80 transition-colors"
+                    >
+                      BMI Calculator
+                    </Link>
+                  </div>
+                </div>
+
                 {/* Right Side - Legal Links and Social */}
                 <div className="space-y-6 text-white lg:text-right">
                   <div className="space-y-4">
+                    <h3 className="font-[family-name:var(--font-geist-sans)] text-md font-medium text-white/60 mb-4">
+                      Legal
+                    </h3>
                     <Link
                       href="/privacy"
                       className="footer-links block font-[family-name:var(--font-geist-sans)] text-lg sm:text-xl font-normal hover:text-white/80 transition-colors"
@@ -163,6 +184,12 @@ export function Footer() {
           }
           .footer-social {
             justify-content: center !important;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .footer-grid {
+            grid-template-columns: 1fr 1fr 1fr;
           }
         }
 
