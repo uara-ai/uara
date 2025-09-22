@@ -352,9 +352,9 @@ export default function BMICalculatorPage() {
                 </h3>
                 <p className="font-[family-name:var(--font-geist-sans)] text-[#085983]/70 leading-relaxed">
                   BMI (Body Mass Index) is a measure that uses your height and
-                  weight to determine if you're in a healthy weight range. It's
-                  calculated by dividing your weight in kilograms by your height
-                  in meters squared (kg/m²).
+                  weight to determine if you&apos;re in a healthy weight range.
+                  It&apos;s calculated by dividing your weight in kilograms by
+                  your height in meters squared (kg/m²).
                 </p>
               </div>
 
@@ -364,10 +364,10 @@ export default function BMICalculatorPage() {
                 </h3>
                 <p className="font-[family-name:var(--font-geist-sans)] text-[#085983]/70 leading-relaxed">
                   BMI is a useful screening tool, but it has limitations. It
-                  doesn't distinguish between muscle and fat mass, so athletes
-                  or very muscular individuals may have a high BMI without
-                  excess body fat. Always consult healthcare professionals for
-                  comprehensive health assessment.
+                  doesn&apos;t distinguish between muscle and fat mass, so
+                  athletes or very muscular individuals may have a high BMI
+                  without excess body fat. Always consult healthcare
+                  professionals for comprehensive health assessment.
                 </p>
               </div>
 
