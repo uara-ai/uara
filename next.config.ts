@@ -17,6 +17,33 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return {
+      // Handle subdomain routing for ui.uara.ai
+      beforeFiles: [
+        {
+          source: "/(.*)",
+          destination: "/ui/$1",
+          has: [
+            {
+              type: "host",
+              value: "ui.uara.ai",
+            },
+          ],
+        },
+        {
+          source: "/",
+          destination: "/ui",
+          has: [
+            {
+              type: "host",
+              value: "ui.uara.ai",
+            },
+          ],
+        },
+      ],
+    };
+  },
 };
 
 export default nextConfig;
