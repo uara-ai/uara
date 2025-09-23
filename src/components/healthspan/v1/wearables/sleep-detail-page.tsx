@@ -216,76 +216,84 @@ export function SleepDetailPage({
 
       {/* Key Metrics Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <div className="text-center justify-center items-center">
+        <div className="flex items-center gap-2 align-middle">
           <IconZzz className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
-          <div className="font-medium text-gray-900 mb-1">
+          <div className="text-sm text-[#085983] tracking-wider">
+            Sleep Cycles
+          </div>
+          <div className="font-semibold text-[#085983]">
             {sleep.score.stage_summary.sleep_cycle_count}
           </div>
-          <div className="text-sm text-gray-600">Sleep Cycles</div>
         </div>
 
-        <div className="text-center">
-          <IconActivity className="h-6 w-6 mx-auto mb-2 text-gray-700" />
-          <div className="font-medium text-gray-900 mb-1">
+        <div className="flex items-center gap-2 align-middle">
+          <IconActivity className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
+          <div className="text-sm text-[#085983] tracking-wider">
+            Disturbances
+          </div>
+          <div className="font-semibold text-[#085983]">
             {sleep.score.stage_summary.disturbance_count}
           </div>
-          <div className="text-sm text-gray-600">Disturbances</div>
         </div>
 
-        <div className="text-center">
-          <IconHeart className="h-6 w-6 mx-auto mb-2 text-gray-700" />
-          <div className="font-medium text-gray-900 mb-1">
+        <div className="flex items-center gap-2 align-middle">
+          <IconHeart className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
+          <div className="text-sm text-[#085983] tracking-wider">
+            Respiratory Rate
+          </div>
+          <div className="font-semibold text-[#085983]">
             {sleep.score.respiratory_rate.toFixed(1)}
           </div>
-          <div className="text-sm text-gray-600">Respiratory Rate</div>
         </div>
 
-        <div className="text-center">
-          <IconBed className="h-6 w-6 mx-auto mb-2 text-gray-700" />
-          <div className="font-medium text-gray-900 mb-1">
+        <div className="flex items-center gap-2 align-middle">
+          <IconBed className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
+          <div className="text-sm text-[#085983] tracking-wider">
+            Awake Time
+          </div>
+          <div className="font-semibold text-[#085983]">
             {formatDuration(sleep.score.stage_summary.total_awake_time_milli)}
           </div>
-          <div className="text-sm text-gray-600">Awake Time</div>
         </div>
       </div>
 
       {/* Sleep Need Analysis */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-6">
-          <IconTarget className="h-5 w-5 text-gray-900" />
-          <h2 className="text-lg font-medium text-gray-900">
+          <IconTarget className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
+          <h2 className="text-lg font-medium text-[#085983]">
             Sleep Need Analysis
           </h2>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-gray-50 rounded-lg p-4 text-center">
-            <div className="font-medium text-gray-900 mb-1">
+          <div className="bg-[#085983]/10 rounded-lg p-4 text-center">
+            <div className="font-medium text-[#085983] mb-1">
               {formatDuration(sleep.score.sleep_needed.baseline_milli)}
             </div>
-            <div className="text-sm text-gray-600">Baseline Need</div>
+            <div className="text-sm text-[#085983]/60">Baseline Need</div>
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-4 text-center">
-            <div className="font-medium text-gray-900 mb-1">
+          <div className="bg-[#085983]/10 rounded-lg p-4 text-center">
+            <div className="font-medium text-[#085983] mb-1">
               {formatDuration(
                 sleep.score.sleep_needed.need_from_sleep_debt_milli
               )}
             </div>
-            <div className="text-sm text-gray-600">Sleep Debt</div>
+            <div className="text-sm text-[#085983]/60">Sleep Debt</div>
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-4 text-center">
-            <div className="font-medium text-gray-900 mb-1">
+          <div className="bg-[#085983]/10 rounded-lg p-4 text-center">
+            <div className="font-medium text-[#085983] mb-1">
               {formatDuration(
                 sleep.score.sleep_needed.need_from_recent_strain_milli
               )}
             </div>
-            <div className="text-sm text-gray-600">From Strain</div>
+            <div className="text-sm text-[#085983]/60">From Strain</div>
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-4 text-center">
-            <div className="font-medium text-gray-900 mb-1">
+          <div className="bg-[#085983]/10 rounded-lg p-4 text-center">
+            <div className="font-medium text-[#085983] mb-1">
               {sleep.score.sleep_needed.need_from_recent_nap_milli >= 0
                 ? formatDuration(
                     sleep.score.sleep_needed.need_from_recent_nap_milli
@@ -296,7 +304,7 @@ export function SleepDetailPage({
                     )
                   )}`}
             </div>
-            <div className="text-sm text-gray-600">From Naps</div>
+            <div className="text-sm text-[#085983]/60">From Naps</div>
           </div>
         </div>
       </div>
