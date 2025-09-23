@@ -11,6 +11,10 @@ import {
   IconPlus,
   IconExternalLink,
   IconSettings,
+  IconChartBar,
+  IconActivity,
+  IconMoon,
+  IconHeart,
 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,25 +36,44 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
+interface WhoopUser {
+  firstName?: string;
+  lastName?: string;
+  lastSyncAt?: Date | null;
+  email?: string;
+  whoopUserId?: number;
+  connectedAt?: Date | null;
+}
+
 interface WhoopManagementMenuProps {
-  whoopUser?: {
-    firstName?: string;
-    lastName?: string;
-    lastSyncAt?: Date | null;
-  } | null;
+  whoopUser?: WhoopUser | null;
   isConnected?: boolean;
   className?: string;
+  onDataUpdate?: () => void; // Callback for when data is updated
 }
 
 export function WhoopManagementMenu({
   whoopUser,
   isConnected = !!whoopUser,
   className,
+  onDataUpdate,
 }: WhoopManagementMenuProps) {
   const [isDisconnectDialogOpen, setIsDisconnectDialogOpen] = useState(false);
   const [isExportDialogOpen, setIsExportDialogOpen] = useState(false);
+  const [isDataExplorerDialogOpen, setIsDataExplorerDialogOpen] =
+    useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [preserveData, setPreserveData] = useState(true);
+  const [syncStatus, setSyncStatus] = useState<{
+    inProgress: boolean;
+    lastResult?: {
+      recovery: number;
+      cycles: number;
+      sleep: number;
+      workouts: number;
+      errors: string[];
+    };
+  }>({ inProgress: false });
 
   const handleConnect = async () => {
     setIsLoading(true);
@@ -63,10 +86,26 @@ export function WhoopManagementMenu({
     }
   };
 
-  const handleSync = async () => {
+  const handleSync = async (options?: {
+    timeline?: string;
+    dataType?: string;
+  }) => {
     setIsLoading(true);
+    setSyncStatus({ inProgress: true });
+
     try {
-      const response = await fetch("/api/wearables/whoop/sync", {
+      // Build sync URL with parameters
+      const params = new URLSearchParams();
+      if (options?.timeline)
+        params.append("days", getTimelineDays(options.timeline).toString());
+      if (options?.dataType && options.dataType !== "all")
+        params.append("type", options.dataType);
+
+      const url = `/api/wearables/whoop/sync${
+        params.toString() ? `?${params.toString()}` : ""
+      }`;
+
+      const response = await fetch(url, {
         method: "POST",
       });
 
@@ -74,14 +113,36 @@ export function WhoopManagementMenu({
         throw new Error("Failed to sync data");
       }
 
-      // Refresh the page to show updated data
-      window.location.reload();
+      const result = await response.json();
+      setSyncStatus({
+        inProgress: false,
+        lastResult: result.synced,
+      });
+
+      // Call the callback to refresh parent component data
+      onDataUpdate?.();
+
+      // Show success feedback
+      console.log("Sync completed successfully:", result);
     } catch (error) {
       console.error("Sync error:", error);
-      // You could add toast notification here
+      setSyncStatus({ inProgress: false });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Helper function to convert timeline to days
+  const getTimelineDays = (timeline: string): number => {
+    const timelineMap: Record<string, number> = {
+      "1d": 1,
+      "3d": 3,
+      "1w": 7,
+      "2w": 14,
+      "1m": 30,
+      "2m": 60,
+    };
+    return timelineMap[timeline] || 7;
   };
 
   const handleRefreshCache = async () => {
@@ -95,8 +156,9 @@ export function WhoopManagementMenu({
         throw new Error("Failed to refresh cache");
       }
 
-      // Refresh the page to show updated data
-      window.location.reload();
+      // Call the callback to refresh parent component data
+      onDataUpdate?.();
+      console.log("Cache refreshed successfully");
     } catch (error) {
       console.error("Cache refresh error:", error);
     } finally {
@@ -128,37 +190,89 @@ export function WhoopManagementMenu({
     }
   };
 
-  const handleExport = async (format: "json" | "csv") => {
+  const handleExport = async (options: {
+    format: "json" | "csv";
+    timeline?: string;
+    dataType?: string;
+  }) => {
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `/api/wearables/whoop/export?format=${format}`,
-        {
-          method: "GET",
-        }
-      );
+      // Build export URL with enhanced parameters
+      const params = new URLSearchParams();
+      params.append("format", options.format);
+      if (options.timeline) params.append("timeline", options.timeline);
+      if (options.dataType && options.dataType !== "all") {
+        // Use individual data type endpoints for better performance
+        const endpoint = `/api/wearables/whoop/${
+          options.dataType
+        }?${params.toString()}`;
+        const response = await fetch(endpoint);
 
-      if (!response.ok) {
-        throw new Error("Failed to export data");
+        if (!response.ok) {
+          throw new Error("Failed to export data");
+        }
+
+        const blob = await response.blob();
+        downloadFile(blob, options.format, options.dataType, options.timeline);
+      } else {
+        // Use timeline endpoint for all data types
+        const timelineParam = options.timeline || "1m";
+        const endpoint = `/api/wearables/whoop/timeline/${timelineParam}?format=${options.format}`;
+        const response = await fetch(endpoint);
+
+        if (!response.ok) {
+          throw new Error("Failed to export data");
+        }
+
+        const blob = await response.blob();
+        downloadFile(blob, options.format, "timeline", timelineParam);
       }
 
-      // Download the file
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `whoop-data-${
-        new Date().toISOString().split("T")[0]
-      }.${format}`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
+      console.log("Export completed successfully");
     } catch (error) {
       console.error("Export error:", error);
     } finally {
       setIsLoading(false);
       setIsExportDialogOpen(false);
+    }
+  };
+
+  const downloadFile = (
+    blob: Blob,
+    format: string,
+    type: string,
+    timeline?: string
+  ) => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `whoop-${type}${timeline ? `-${timeline}` : ""}-${
+      new Date().toISOString().split("T")[0]
+    }.${format}`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  };
+
+  // New function to handle data exploration
+  const handleDataExploration = async (dataType: string, timeline: string) => {
+    try {
+      const response = await fetch(
+        `/api/wearables/whoop/${dataType}?timeline=${timeline}&limit=10`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      const data = await response.json();
+      console.log(`${dataType} data preview:`, data);
+      // You could show this in a modal or navigate to a dedicated page
+      alert(
+        `Found ${data.metadata.counts.total} ${dataType} records for ${timeline}`
+      );
+    } catch (error) {
+      console.error("Data exploration error:", error);
     }
   };
 
@@ -261,6 +375,16 @@ export function WhoopManagementMenu({
                     • {whoopUser.firstName} {whoopUser.lastName}
                   </span>
                 )}
+                {syncStatus.lastResult && (
+                  <span className="text-green-600">
+                    •{" "}
+                    {syncStatus.lastResult.recovery +
+                      syncStatus.lastResult.cycles +
+                      syncStatus.lastResult.sleep +
+                      syncStatus.lastResult.workouts}{" "}
+                    records
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -273,18 +397,18 @@ export function WhoopManagementMenu({
               Connected
             </Badge>
             <Button
-              onClick={handleSync}
+              onClick={() => handleSync()}
               size="sm"
               variant="outline"
-              disabled={isLoading}
+              disabled={isLoading || syncStatus.inProgress}
               className="text-[#085983] border-[#085983]/20 hover:bg-[#085983]/5"
             >
-              {isLoading ? (
+              {isLoading || syncStatus.inProgress ? (
                 <IconRefresh className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 <IconRefresh className="mr-2 h-4 w-4" />
               )}
-              Sync
+              {syncStatus.inProgress ? "Syncing..." : "Sync"}
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -297,7 +421,54 @@ export function WhoopManagementMenu({
                   <IconSettings className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-56">
+                {/* Quick Data Access */}
+                <DropdownMenuItem
+                  onClick={() => handleDataExploration("sleep", "1w")}
+                >
+                  <IconMoon className="mr-2 h-4 w-4" />
+                  View Sleep Data
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleDataExploration("recovery", "1w")}
+                >
+                  <IconHeart className="mr-2 h-4 w-4" />
+                  View Recovery Data
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleDataExploration("workouts", "1w")}
+                >
+                  <IconActivity className="mr-2 h-4 w-4" />
+                  View Workouts
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setIsDataExplorerDialogOpen(true)}
+                >
+                  <IconChartBar className="mr-2 h-4 w-4" />
+                  Data Explorer
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                {/* Sync Options */}
+                <DropdownMenuItem
+                  onClick={() => handleSync({ timeline: "1d" })}
+                  disabled={isLoading || syncStatus.inProgress}
+                >
+                  <IconRefresh className="mr-2 h-4 w-4" />
+                  Sync Last Day
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleSync({ timeline: "1w" })}
+                  disabled={isLoading || syncStatus.inProgress}
+                >
+                  <IconRefresh className="mr-2 h-4 w-4" />
+                  Sync Last Week
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                {/* Cache & Export */}
                 <DropdownMenuItem
                   onClick={handleRefreshCache}
                   disabled={isLoading}
@@ -305,12 +476,14 @@ export function WhoopManagementMenu({
                   <IconDatabase className="mr-2 h-4 w-4" />
                   Refresh Cache
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => setIsExportDialogOpen(true)}>
                   <IconDownload className="mr-2 h-4 w-4" />
                   Export Data
                 </DropdownMenuItem>
+
                 <DropdownMenuSeparator />
+
+                {/* Disconnect */}
                 <DropdownMenuItem
                   onClick={() => setIsDisconnectDialogOpen(true)}
                   className="text-red-600 focus:text-red-600"
@@ -416,48 +589,162 @@ export function WhoopManagementMenu({
         </DialogContent>
       </Dialog>
 
-      {/* Export Data Dialog */}
+      {/* Enhanced Export Data Dialog */}
       <Dialog open={isExportDialogOpen} onOpenChange={setIsExportDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <IconDownload className="h-5 w-5 text-[#085983]" />
               Export WHOOP Data
             </DialogTitle>
             <DialogDescription className="text-left">
-              Download your WHOOP data for backup or analysis purposes.
+              Download your WHOOP data with customizable options for analysis.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <p className="text-sm text-blue-700 font-medium">
-                📋 Export Options
-              </p>
-              <p className="text-sm text-blue-600 mt-1">
-                Choose your preferred format for the data export.
-              </p>
+          <div className="space-y-6">
+            {/* Timeline Selection */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">
+                Time Period
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {["1w", "2w", "1m"].map((timeline) => (
+                  <Button
+                    key={timeline}
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      handleExport({
+                        format: "json",
+                        timeline,
+                        dataType: "all",
+                      })
+                    }
+                    disabled={isLoading}
+                    className="text-xs"
+                  >
+                    {timeline === "1w"
+                      ? "Last Week"
+                      : timeline === "2w"
+                      ? "2 Weeks"
+                      : "1 Month"}
+                  </Button>
+                ))}
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <Button
-                variant="outline"
-                onClick={() => handleExport("json")}
-                disabled={isLoading}
-                className="h-16 flex-col gap-1"
-              >
-                <span className="font-medium">JSON</span>
-                <span className="text-xs text-gray-500">Complete data</span>
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => handleExport("csv")}
-                disabled={isLoading}
-                className="h-16 flex-col gap-1"
-              >
-                <span className="font-medium">CSV</span>
-                <span className="text-xs text-gray-500">Simplified format</span>
-              </Button>
+            {/* Data Type Selection */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">
+                Data Type
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { key: "sleep", label: "Sleep", icon: IconMoon },
+                  { key: "recovery", label: "Recovery", icon: IconHeart },
+                  { key: "cycles", label: "Cycles", icon: IconRefresh },
+                  { key: "workouts", label: "Workouts", icon: IconActivity },
+                ].map(({ key, label, icon: Icon }) => (
+                  <Button
+                    key={key}
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      handleExport({
+                        format: "json",
+                        timeline: "1w",
+                        dataType: key,
+                      })
+                    }
+                    disabled={isLoading}
+                    className="flex items-center gap-2 text-xs h-12"
+                  >
+                    <Icon className="h-4 w-4" />
+                    {label}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Format Selection */}
+            <div>
+              <label className="text-sm font-medium mb-2 block">
+                Export Format
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    handleExport({
+                      format: "json",
+                      timeline: "1w",
+                      dataType: "all",
+                    })
+                  }
+                  disabled={isLoading}
+                  className="h-16 flex-col gap-1"
+                >
+                  <span className="font-medium">JSON</span>
+                  <span className="text-xs text-gray-500">Complete data</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    handleExport({
+                      format: "csv",
+                      timeline: "1w",
+                      dataType: "all",
+                    })
+                  }
+                  disabled={isLoading}
+                  className="h-16 flex-col gap-1"
+                >
+                  <span className="font-medium">CSV</span>
+                  <span className="text-xs text-gray-500">
+                    Simplified format
+                  </span>
+                </Button>
+              </div>
+            </div>
+
+            {/* Quick Export Options */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p className="text-sm text-blue-700 font-medium mb-2">
+                Quick Export
+              </p>
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    handleExport({
+                      format: "csv",
+                      timeline: "1m",
+                      dataType: "all",
+                    })
+                  }
+                  disabled={isLoading}
+                  className="w-full text-xs"
+                >
+                  📊 Complete 1-Month CSV Report
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    handleExport({
+                      format: "json",
+                      timeline: "2m",
+                      dataType: "all",
+                    })
+                  }
+                  disabled={isLoading}
+                  className="w-full text-xs"
+                >
+                  💾 Full 2-Month Data Backup (JSON)
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -468,6 +755,221 @@ export function WhoopManagementMenu({
               disabled={isLoading}
             >
               Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Data Explorer Dialog */}
+      <Dialog
+        open={isDataExplorerDialogOpen}
+        onOpenChange={setIsDataExplorerDialogOpen}
+      >
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <IconChartBar className="h-5 w-5 text-[#085983]" />
+              WHOOP Data Explorer
+            </DialogTitle>
+            <DialogDescription className="text-left">
+              Quick access to your WHOOP data with timeline filtering and
+              insights.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            {/* Quick Stats */}
+            {syncStatus.lastResult && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <p className="text-sm text-green-700 font-medium mb-2">
+                  Last Sync Results
+                </p>
+                <div className="grid grid-cols-4 gap-4 text-xs">
+                  <div className="text-center">
+                    <div className="font-medium text-green-800">
+                      {syncStatus.lastResult.recovery}
+                    </div>
+                    <div className="text-green-600">Recovery</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-medium text-green-800">
+                      {syncStatus.lastResult.cycles}
+                    </div>
+                    <div className="text-green-600">Cycles</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-medium text-green-800">
+                      {syncStatus.lastResult.sleep}
+                    </div>
+                    <div className="text-green-600">Sleep</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-medium text-green-800">
+                      {syncStatus.lastResult.workouts}
+                    </div>
+                    <div className="text-green-600">Workouts</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Data Exploration Options */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* Timeline Options */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">
+                  Explore by Timeline
+                </label>
+                <div className="space-y-2">
+                  {[
+                    { key: "1d", label: "Last Day", desc: "Recent activity" },
+                    { key: "1w", label: "Last Week", desc: "Weekly trends" },
+                    {
+                      key: "1m",
+                      label: "Last Month",
+                      desc: "Monthly patterns",
+                    },
+                  ].map(({ key, label, desc }) => (
+                    <Button
+                      key={key}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDataExploration("sleep", key)}
+                      className="w-full justify-start text-left h-auto p-3"
+                    >
+                      <div>
+                        <div className="font-medium text-xs">{label}</div>
+                        <div className="text-xs text-gray-500">{desc}</div>
+                      </div>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Data Type Options */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">
+                  Explore by Data Type
+                </label>
+                <div className="space-y-2">
+                  {[
+                    {
+                      key: "sleep",
+                      label: "Sleep Analysis",
+                      icon: IconMoon,
+                      desc: "Sleep stages & quality",
+                    },
+                    {
+                      key: "recovery",
+                      label: "Recovery Trends",
+                      icon: IconHeart,
+                      desc: "HRV & recovery scores",
+                    },
+                    {
+                      key: "workouts",
+                      label: "Workout Performance",
+                      icon: IconActivity,
+                      desc: "Training load & zones",
+                    },
+                  ].map(({ key, label, icon: Icon, desc }) => (
+                    <Button
+                      key={key}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDataExploration(key, "1w")}
+                      className="w-full justify-start text-left h-auto p-3"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Icon className="h-4 w-4 text-[#085983]" />
+                        <div>
+                          <div className="font-medium text-xs">{label}</div>
+                          <div className="text-xs text-gray-500">{desc}</div>
+                        </div>
+                      </div>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Advanced Features */}
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+              <p className="text-sm font-medium mb-3">Advanced Data Features</p>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    handleSync({ timeline: "1m", dataType: "all" })
+                  }
+                  disabled={isLoading || syncStatus.inProgress}
+                  className="text-xs"
+                >
+                  🔄 Sync Last Month
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    handleExport({
+                      format: "csv",
+                      timeline: "2w",
+                      dataType: "all",
+                    })
+                  }
+                  disabled={isLoading}
+                  className="text-xs"
+                >
+                  📊 Export 2-Week CSV
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDataExploration("recovery", "1m")}
+                  className="text-xs"
+                >
+                  📈 Monthly Recovery
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDataExploration("workouts", "2w")}
+                  className="text-xs"
+                >
+                  🏃‍♂️ Training Analysis
+                </Button>
+              </div>
+            </div>
+
+            {/* Connection Info */}
+            {whoopUser && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <p className="text-sm text-blue-700 font-medium">
+                  Connection Details
+                </p>
+                <div className="mt-1 text-xs text-blue-600 space-y-1">
+                  <div>
+                    User: {whoopUser.firstName} {whoopUser.lastName}
+                  </div>
+                  {whoopUser.email && <div>Email: {whoopUser.email}</div>}
+                  <div>Last Sync: {getLastSyncText()}</div>
+                  {whoopUser.connectedAt && (
+                    <div>
+                      Connected:{" "}
+                      {new Date(whoopUser.connectedAt).toLocaleDateString()}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsDataExplorerDialogOpen(false)}
+            >
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>

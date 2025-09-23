@@ -34,22 +34,22 @@ export function WearablesPage({
       {isConnected &&
         (latestSleep || latestRecovery || latestCycle || latestWorkout) && (
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-2">
-            {latestSleep && (
+            {latestSleep && latestSleep.score && (
               <SleepCard
                 sleepPerformancePercentage={
                   latestSleep.score.sleep_performance_percentage
                 }
               />
             )}
-            {latestRecovery && (
+            {latestRecovery && latestRecovery.score && (
               <RecoveryCard
                 recoveryScore={latestRecovery.score.recovery_score}
               />
             )}
-            {latestCycle && (
+            {latestCycle && latestCycle.score && (
               <CycleCard strainScore={latestCycle.score.strain} />
             )}
-            {latestWorkout && (
+            {latestWorkout && latestWorkout.score && (
               <WorkoutCard strainScore={latestWorkout.score.strain} />
             )}
           </div>
