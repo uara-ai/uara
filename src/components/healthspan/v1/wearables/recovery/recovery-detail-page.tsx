@@ -52,35 +52,43 @@ export function RecoveryDetailPage({
   };
 
   const getRecoveryColor = (score: number) => {
+    if (score >= 90) return "text-green-700";
     if (score >= 67) return "text-green-600";
     if (score >= 34) return "text-yellow-600";
+    if (score >= 20) return "text-orange-600";
     return "text-red-600";
   };
 
   const getRecoveryBgColor = (score: number) => {
+    if (score >= 90) return "bg-green-200";
     if (score >= 67) return "bg-green-100";
     if (score >= 34) return "bg-yellow-100";
+    if (score >= 20) return "bg-orange-100";
     return "bg-red-100";
   };
 
   const getRecoveryStatus = (score: number) => {
+    if (score >= 90) return "Peak Recovery";
     if (score >= 67) return "Good Recovery";
     if (score >= 34) return "Moderate Recovery";
+    if (score >= 20) return "Low Recovery";
     return "Poor Recovery";
   };
 
   const getHrvStatus = (hrv: number) => {
-    if (hrv >= 40) return "Excellent";
-    if (hrv >= 25) return "Good";
-    if (hrv >= 15) return "Fair";
+    if (hrv >= 80) return "Excellent";
+    if (hrv >= 60) return "Good";
+    if (hrv >= 40) return "Okay";
+    if (hrv >= 20) return "Needs Attention";
     return "Poor";
   };
 
   const getRhrStatus = (rhr: number) => {
-    if (rhr <= 60) return "Excellent";
-    if (rhr <= 70) return "Good";
-    if (rhr <= 80) return "Fair";
-    return "Needs Attention";
+    if (rhr < 50) return "Excellent";
+    if (rhr <= 59) return "Good";
+    if (rhr <= 69) return "Okay";
+    if (rhr <= 79) return "Needs Attention";
+    return "Poor";
   };
 
   return (
