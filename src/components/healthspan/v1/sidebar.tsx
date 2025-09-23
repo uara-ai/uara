@@ -5,14 +5,9 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/logo";
 import {
-  IconHome,
-  IconChartBar,
-  IconTarget,
-  IconCalendar,
   IconSettings,
-  IconUser,
   IconActivity,
-  IconBolt,
+  IconHealthRecognition,
 } from "@tabler/icons-react";
 
 // Routes configuration array - simplified for desktop sidebar
@@ -20,7 +15,7 @@ const routes = [
   {
     label: "Healthspan",
     href: "/healthspan",
-    icon: IconHome,
+    icon: IconHealthRecognition,
   },
   {
     label: "Wearables",
@@ -40,7 +35,7 @@ export function Sidebar() {
   return (
     <div className="flex h-full flex-col bg-background">
       {/* Logo Section - just like Revolut */}
-      <div className="flex justify-center bg-slate-100 rounded-2xl my-4 mx-10">
+      <div className="flex justify-center my-4 mx-10">
         <Logo hidden className="justify-center" />
       </div>
 
@@ -57,7 +52,7 @@ export function Sidebar() {
                 href={route.href}
                 className={cn(
                   "flex flex-col items-center gap-2 px-3 py-4 text-sm font-medium transition-colors group",
-                  isActive ? "text-foreground" : "text-muted-foreground"
+                  isActive ? "text-[#085983]" : "text-muted-foreground"
                 )}
               >
                 {/* Icon with conditional background - centered like Revolut */}
@@ -69,11 +64,13 @@ export function Sidebar() {
                       : "hover:bg-accent/50"
                   )}
                 >
-                  <Icon className="h-6 w-6 flex-shrink-0" />
+                  <Icon className="size-6 flex-shrink-0" />
                 </div>
 
                 {/* Text label - centered below icon like Revolut */}
-                <span className="text-[10px] font-medium">{route.label}</span>
+                <span className="text-[10px] font-medium font-[family-name:var(--font-geist-sans)] tracking-wider">
+                  {route.label}
+                </span>
               </Link>
             );
           })}
