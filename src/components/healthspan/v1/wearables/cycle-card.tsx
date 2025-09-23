@@ -11,24 +11,24 @@ import {
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { getSleepColor, getChartBackground } from "./chart-colors";
+import { getStrainColor, getChartBackground } from "./chart-colors";
 
-interface SleepCardProps {
-  sleepPerformancePercentage: number;
+interface CycleCardProps {
+  strainScore: number;
 }
 
-export function SleepCard({ sleepPerformancePercentage }: SleepCardProps) {
+export function CycleCard({ strainScore }: CycleCardProps) {
   const chartData = [
     {
-      sleep: sleepPerformancePercentage,
-      fill: getSleepColor(sleepPerformancePercentage),
+      cycle: strainScore,
+      fill: getStrainColor(strainScore),
     },
   ];
 
   const chartConfig = {
-    sleep: {
-      label: "Sleep",
-      color: getSleepColor(sleepPerformancePercentage),
+    cycle: {
+      label: "Cycle",
+      color: getStrainColor(strainScore),
     },
   } satisfies ChartConfig;
 
@@ -55,12 +55,12 @@ export function SleepCard({ sleepPerformancePercentage }: SleepCardProps) {
             polarRadius={[46, 34]}
           />
           <RadialBar
-            dataKey="sleep"
+            dataKey="cycle"
             background={{
               fill: getChartBackground(),
             }}
             cornerRadius={10}
-            fill={getSleepColor(sleepPerformancePercentage)}
+            fill={getStrainColor(strainScore)}
           />
           <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
             <Label
@@ -78,7 +78,7 @@ export function SleepCard({ sleepPerformancePercentage }: SleepCardProps) {
                         y={viewBox.cy}
                         className="text-2xl font-bold"
                       >
-                        {sleepPerformancePercentage}%
+                        {strainScore.toFixed(1)}
                       </tspan>
                     </text>
                   );
@@ -89,10 +89,10 @@ export function SleepCard({ sleepPerformancePercentage }: SleepCardProps) {
         </RadialBarChart>
       </ChartContainer>
       <Link
-        href="/healthspan/wearables/sleep"
+        href="/healthspan/wearables/strain"
         className="text-sm font-medium font-[family-name:var(--font-geist-sans)] tracking-wider flex items-center gap-1 text-[#085983]"
       >
-        Sleep
+        Strain
         <ChevronRight className="h-4 w-4" />
       </Link>
     </div>

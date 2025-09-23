@@ -1,8 +1,10 @@
 // Export all wearables components and types
 export { SleepCard } from "./sleep-card";
 export { RecoveryCard } from "./recovery-card";
-export { StrengthCard } from "./strength-card";
+export { CycleCard } from "./cycle-card";
+export { WorkoutCard } from "./workout-card";
 export { WearablesPage } from "./wearables-page";
+export { SleepDetailPage } from "./sleep-detail-page";
 
 // Export color utilities
 export {
@@ -16,13 +18,10 @@ export {
 } from "./chart-colors";
 
 export type {
-  BaseWearableData,
-  SleepData,
-  RecoveryData,
-  WorkoutData,
-  StrengthData,
-  Exercise,
-  Set,
+  WhoopCycle,
+  WhoopSleep,
+  WhoopRecovery,
+  WhoopWorkout,
   WearablesData,
   WearablesPageProps,
 } from "./types";

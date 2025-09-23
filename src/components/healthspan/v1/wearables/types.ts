@@ -1,96 +1,114 @@
-// Standardized interfaces for wearables data
-export interface BaseWearableData {
-  id: string;
-  date: Date;
-  source: "whoop" | "oura" | "garmin" | "apple" | "fitbit";
-  quality: "excellent" | "good" | "fair" | "poor";
-}
-
-export interface SleepData extends BaseWearableData {
-  totalSleepTime: number; // in minutes
-  deepSleepTime: number; // in minutes
-  remSleepTime: number; // in minutes
-  lightSleepTime: number; // in minutes
-  awakeTime: number; // in minutes
-  sleepEfficiency: number; // percentage (0-100)
-  sleepScore: number; // normalized score (0-100)
-  restingHeartRate: number; // bpm
-  respiratoryRate: number; // breaths per minute
-  bedTime: Date;
-  wakeTime: Date;
-  disturbances: number;
-}
-
-export interface RecoveryData extends BaseWearableData {
-  recoveryScore: number; // normalized score (0-100)
-  restingHeartRate: number; // bpm
-  heartRateVariability: number; // RMSSD in ms
-  skinTemperature: number; // deviation from baseline in °C
-  respiratoryRate: number; // breaths per minute
-  bloodOxygen?: number; // SpO2 percentage
-  sleepPerformance: number; // percentage (0-100)
-  strain: number; // cumulative strain score
-  isCalibrating?: boolean;
-}
-
-export interface WorkoutData extends BaseWearableData {
-  activityType: string; // e.g., "Running", "Cycling", "Strength Training"
-  sportId?: number;
-  duration: number; // in minutes
-  strain: number; // strain score
-  averageHeartRate: number; // bpm
-  maxHeartRate: number; // bpm
-  calories: number; // kcal
-  distance?: number; // in meters
-  altitudeGain?: number; // in meters
-  averagePace?: number; // in seconds per km
-  zones: {
-    zone1: number; // minutes in each HR zone
-    zone2: number;
-    zone3: number;
-    zone4: number;
-    zone5: number;
+// WHOOP API v2 data interfaces
+export interface WhoopCycle {
+  id: number;
+  user_id: number;
+  created_at: string;
+  updated_at: string;
+  start: string;
+  end: string;
+  timezone_offset: string;
+  score_state: "SCORED" | "PENDING_SCORE" | "UNSCORABLE";
+  score: {
+    strain: number;
+    kilojoule: number;
+    average_heart_rate: number;
+    max_heart_rate: number;
   };
-  startTime: Date;
-  endTime: Date;
 }
 
-export interface StrengthData extends BaseWearableData {
-  exercises: Exercise[];
-  totalVolume: number; // total weight lifted in kg
-  totalSets: number;
-  totalReps: number;
-  duration: number; // in minutes
-  strain: number; // strain score
-  averageHeartRate: number; // bpm
-  maxHeartRate: number; // bpm
-  calories: number; // kcal
-  restTime: number; // average rest time between sets in seconds
-  muscleGroups: string[]; // e.g., ["chest", "triceps", "shoulders"]
+export interface WhoopSleep {
+  id: string;
+  cycle_id: number;
+  v1_id: number;
+  user_id: number;
+  created_at: string;
+  updated_at: string;
+  start: string;
+  end: string;
+  timezone_offset: string;
+  nap: boolean;
+  score_state: "SCORED" | "PENDING_SCORE" | "UNSCORABLE";
+  score: {
+    stage_summary: {
+      total_in_bed_time_milli: number;
+      total_awake_time_milli: number;
+      total_no_data_time_milli: number;
+      total_light_sleep_time_milli: number;
+      total_slow_wave_sleep_time_milli: number;
+      total_rem_sleep_time_milli: number;
+      sleep_cycle_count: number;
+      disturbance_count: number;
+    };
+    sleep_needed: {
+      baseline_milli: number;
+      need_from_sleep_debt_milli: number;
+      need_from_recent_strain_milli: number;
+      need_from_recent_nap_milli: number;
+    };
+    respiratory_rate: number;
+    sleep_performance_percentage: number;
+    sleep_consistency_percentage: number;
+    sleep_efficiency_percentage: number;
+  };
 }
 
-export interface Exercise {
-  name: string;
-  sets: Set[];
-  muscleGroup: string;
-  equipmentType: "barbell" | "dumbbell" | "machine" | "bodyweight" | "cable";
+export interface WhoopRecovery {
+  cycle_id: number;
+  sleep_id: string;
+  user_id: number;
+  created_at: string;
+  updated_at: string;
+  score_state: "SCORED" | "PENDING_SCORE" | "UNSCORABLE";
+  score: {
+    user_calibrating: boolean;
+    recovery_score: number;
+    resting_heart_rate: number;
+    hrv_rmssd_milli: number;
+    spo2_percentage: number;
+    skin_temp_celsius: number;
+  };
 }
 
-export interface Set {
-  weight: number; // in kg
-  reps: number;
-  duration?: number; // for time-based exercises, in seconds
-  restTime?: number; // rest after this set, in seconds
+export interface WhoopWorkout {
+  id: string;
+  v1_id: number;
+  user_id: number;
+  created_at: string;
+  updated_at: string;
+  start: string;
+  end: string;
+  timezone_offset: string;
+  sport_name: string;
+  score_state: "SCORED" | "PENDING_SCORE" | "UNSCORABLE";
+  score: {
+    strain: number;
+    average_heart_rate: number;
+    max_heart_rate: number;
+    kilojoule: number;
+    percent_recorded: number;
+    distance_meter: number;
+    altitude_gain_meter: number;
+    altitude_change_meter: number;
+    zone_durations: {
+      zone_zero_milli: number;
+      zone_one_milli: number;
+      zone_two_milli: number;
+      zone_three_milli: number;
+      zone_four_milli: number;
+      zone_five_milli: number;
+    };
+  };
+  sport_id: number;
 }
 
 // Props for card components
 
 // Combined props for wearables overview
 export interface WearablesData {
-  sleep?: SleepData[];
-  recovery?: RecoveryData[];
-  workouts?: WorkoutData[];
-  strength?: StrengthData[];
+  cycles?: WhoopCycle[];
+  sleep?: WhoopSleep[];
+  recovery?: WhoopRecovery[];
+  workouts?: WhoopWorkout[];
 }
 
 export interface WearablesPageProps {
