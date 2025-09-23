@@ -61,6 +61,7 @@ export interface StrengthData extends BaseWearableData {
   totalSets: number;
   totalReps: number;
   duration: number; // in minutes
+  strain: number; // strain score
   averageHeartRate: number; // bpm
   maxHeartRate: number; // bpm
   calories: number; // kcal
@@ -83,29 +84,6 @@ export interface Set {
 }
 
 // Props for card components
-export interface SleepCardProps {
-  data: SleepData;
-  showDetails?: boolean;
-  className?: string;
-}
-
-export interface RecoveryCardProps {
-  data: RecoveryData;
-  showDetails?: boolean;
-  className?: string;
-}
-
-export interface WorkoutCardProps {
-  data: WorkoutData;
-  showDetails?: boolean;
-  className?: string;
-}
-
-export interface StrengthCardProps {
-  data: StrengthData;
-  showDetails?: boolean;
-  className?: string;
-}
 
 // Combined props for wearables overview
 export interface WearablesData {

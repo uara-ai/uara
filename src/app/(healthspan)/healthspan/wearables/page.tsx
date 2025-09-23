@@ -99,6 +99,7 @@ const mockWearablesData: WearablesData = {
       totalSets: 6,
       totalReps: 42,
       duration: 75,
+      strain: 16.8, // strain score for strength training
       averageHeartRate: 135,
       maxHeartRate: 165,
       calories: 320,

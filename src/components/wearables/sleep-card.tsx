@@ -11,29 +11,24 @@ import {
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { getSleepColor, getChartBackground } from "./chart-colors";
 
 interface SleepCardProps {
   sleepScore: number;
 }
 
 export function SleepCard({ sleepScore }: SleepCardProps) {
-  const getChartColor = (score: number) => {
-    if (score >= 70) return "#0ea5e9"; // Blue like Whoop
-    if (score >= 40) return "#f59e0b"; // Amber
-    return "#ef4444"; // Red
-  };
-
   const chartData = [
     {
       sleep: sleepScore,
-      fill: getChartColor(sleepScore),
+      fill: getSleepColor(sleepScore),
     },
   ];
 
   const chartConfig = {
     sleep: {
       label: "Sleep",
-      color: getChartColor(sleepScore),
+      color: getSleepColor(sleepScore),
     },
   } satisfies ChartConfig;
 
@@ -62,10 +57,10 @@ export function SleepCard({ sleepScore }: SleepCardProps) {
           <RadialBar
             dataKey="sleep"
             background={{
-              fill: "#3741510",
+              fill: getChartBackground(),
             }}
             cornerRadius={10}
-            fill={getChartColor(sleepScore)}
+            fill={getSleepColor(sleepScore)}
           />
           <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
             <Label
@@ -95,7 +90,7 @@ export function SleepCard({ sleepScore }: SleepCardProps) {
       </ChartContainer>
       <Link
         href="/healthspan/wearables/sleep"
-        className="text-sm font-medium font-[family-name:var(--font-geist-sans)] tracking-wider flex items-center gap-1"
+        className="text-sm font-medium font-[family-name:var(--font-geist-sans)] tracking-wider flex items-center gap-1 text-[#085983]"
       >
         Sleep
         <ChevronRight className="h-4 w-4" />

@@ -1,9 +1,19 @@
 // Export all wearables components and types
 export { SleepCard } from "./sleep-card";
 export { RecoveryCard } from "./recovery-card";
-export { WorkoutCard } from "./workout-card";
 export { StrengthCard } from "./strength-card";
 export { WearablesPage } from "./wearables-page";
+
+// Export color utilities
+export {
+  getSleepColor,
+  getRecoveryColor,
+  getStrainColor,
+  getMetricColor,
+  getMetricColorRanges,
+  getChartBackground,
+  CHART_COLORS,
+} from "./chart-colors";
 
 export type {
   BaseWearableData,
@@ -13,12 +23,10 @@ export type {
   StrengthData,
   Exercise,
   Set,
-  SleepCardProps,
-  RecoveryCardProps,
-  WorkoutCardProps,
-  StrengthCardProps,
   WearablesData,
   WearablesPageProps,
 } from "./types";
+
+export type { ColorRange } from "./chart-colors";
 
 // Cursor rules applied correctly.
