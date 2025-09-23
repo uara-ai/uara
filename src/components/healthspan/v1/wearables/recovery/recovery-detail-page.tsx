@@ -14,6 +14,9 @@ import {
   IconLungs,
   IconArrowLeft,
   IconGauge,
+  IconBed,
+  IconStereoGlasses,
+  IconApple,
 } from "@tabler/icons-react";
 import Link from "next/link";
 
@@ -137,36 +140,36 @@ export function RecoveryDetailPage({
       </div>
 
       {/* Core Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-        <div className="bg-[#085983]/10 rounded-lg p-6 text-center">
-          <IconHeart className="size-8 text-[#085983] mx-auto mb-3" />
-          <div className="text-2xl font-bold text-[#085983] mb-1">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <div className="flex items-center gap-2 align-middle">
+          <IconHeart className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
+          <div className="text-sm text-[#085983] tracking-wider">BPM</div>
+          <div className="font-semibold text-[#085983]">
             {recovery.score.resting_heart_rate}
           </div>
-          <div className="text-sm text-[#085983]/60 mb-1">BPM</div>
-          <div className="text-xs font-medium text-[#085983]/80">
+          <div className="text-xs font-medium text-[#085983]/80 border px-2 py-1 rounded-full border-[#085983]/20">
             {getRhrStatus(recovery.score.resting_heart_rate)}
           </div>
         </div>
 
-        <div className="bg-[#085983]/10 rounded-lg p-6 text-center">
-          <IconBrain className="size-8 text-[#085983] mx-auto mb-3" />
-          <div className="text-2xl font-bold text-[#085983] mb-1">
+        <div className="flex items-center gap-2 align-middle">
+          <IconBrain className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
+          <div className="text-sm text-[#085983] tracking-wider">HRV (ms)</div>
+          <div className="font-semibold text-[#085983]">
             {recovery.score.hrv_rmssd_milli.toFixed(1)}
           </div>
-          <div className="text-sm text-[#085983]/60 mb-1">HRV (ms)</div>
-          <div className="text-xs font-medium text-[#085983]/80">
+          <div className="text-xs font-medium text-[#085983]/80 border px-2 py-1 rounded-full border-[#085983]/20">
             {getHrvStatus(recovery.score.hrv_rmssd_milli)}
           </div>
         </div>
 
-        <div className="bg-[#085983]/10 rounded-lg p-6 text-center col-span-2 md:col-span-1">
-          <IconLungs className="size-8 text-[#085983] mx-auto mb-3" />
-          <div className="text-2xl font-bold text-[#085983] mb-1">
+        <div className="flex items-center gap-2 align-middle">
+          <IconLungs className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
+          <div className="text-sm text-[#085983] tracking-wider">SpO2</div>
+          <div className="font-semibold text-[#085983]">
             {recovery.score.spo2_percentage.toFixed(1)}%
           </div>
-          <div className="text-sm text-[#085983]/60 mb-1">SpO2</div>
-          <div className="text-xs font-medium text-[#085983]/80">
+          <div className="text-xs font-medium text-[#085983]/80 border px-2 py-1 rounded-full border-[#085983]/20">
             {recovery.score.spo2_percentage >= 95 ? "Normal" : "Low"}
           </div>
         </div>
@@ -175,7 +178,6 @@ export function RecoveryDetailPage({
       {/* Recovery Insights */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-6">
-          <IconTarget className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
           <h2 className="text-lg font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
             Recovery Insights
           </h2>
@@ -191,7 +193,8 @@ export function RecoveryDetailPage({
               </h3>
             </div>
             <p className="text-sm text-[#085983]/70">
-              Your HRV of {recovery.score.hrv_rmssd_milli.toFixed(1)}ms
+              Your HRV of{" "}
+              <strong>{recovery.score.hrv_rmssd_milli.toFixed(1)}ms</strong>{" "}
               indicates{" "}
               {recovery.score.hrv_rmssd_milli >= 40
                 ? "excellent autonomic nervous system recovery. Your body is well-rested and ready for training."
@@ -210,8 +213,8 @@ export function RecoveryDetailPage({
               <h3 className="font-medium text-[#085983]">Resting Heart Rate</h3>
             </div>
             <p className="text-sm text-[#085983]/70">
-              Your resting heart rate of {recovery.score.resting_heart_rate} BPM
-              is{" "}
+              Your resting heart rate of{" "}
+              <strong>{recovery.score.resting_heart_rate} BPM</strong> is{" "}
               {recovery.score.resting_heart_rate <= 60
                 ? "excellent, indicating strong cardiovascular fitness and good recovery."
                 : recovery.score.resting_heart_rate <= 70
@@ -244,18 +247,20 @@ export function RecoveryDetailPage({
       {/* Physiological Details */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-6">
-          <IconThermometer className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
           <h2 className="text-lg font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
             Physiological Details
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-[#085983]/10 rounded-lg p-4">
+          <div className="border border-[#085983]/20 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-[#085983]">
-                Skin Temperature
-              </span>
+              <div className="flex items-center gap-2">
+                <IconThermometer className="size-5 text-[#085983]" />
+                <span className="text-sm font-medium text-[#085983]">
+                  Skin Temperature
+                </span>
+              </div>
               <span className="text-lg font-bold text-[#085983]">
                 {recovery.score.skin_temp_celsius.toFixed(1)}°C
               </span>
@@ -265,11 +270,14 @@ export function RecoveryDetailPage({
             </div>
           </div>
 
-          <div className="bg-[#085983]/10 rounded-lg p-4">
+          <div className="border border-[#085983]/20 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-[#085983]">
-                Blood Oxygen
-              </span>
+              <div className="flex items-center gap-2">
+                <IconLungs className="size-5 text-[#085983]" />
+                <span className="text-sm font-medium text-[#085983]">
+                  Blood Oxygen
+                </span>
+              </div>
               <span className="text-lg font-bold text-[#085983]">
                 {recovery.score.spo2_percentage.toFixed(1)}%
               </span>
@@ -284,33 +292,39 @@ export function RecoveryDetailPage({
       {/* Recovery Trends Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-6">
-          <IconTrendingUp className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
           <h2 className="text-lg font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
             Recovery Tips
           </h2>
         </div>
 
         <div className="grid gap-3">
-          <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
-            <h3 className="font-medium text-blue-800 mb-1">Sleep Quality</h3>
-            <p className="text-sm text-blue-700">
+          <div className="bg-blue-50 border-l-4 border-sky-200 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <IconBed className="size-5 text-[#085983]" />
+              <h3 className="font-medium text-[#085983]">Sleep Quality</h3>
+            </div>
+            <p className="text-sm text-[#085983]/80">
               Aim for 7-9 hours of quality sleep to optimize recovery.
             </p>
           </div>
 
-          <div className="bg-green-50 border-l-4 border-green-400 p-4">
-            <h3 className="font-medium text-green-800 mb-1">
-              Stress Management
-            </h3>
-            <p className="text-sm text-green-700">
+          <div className="bg-blue-50 border-l-4 border-blue-200 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <IconStereoGlasses className="size-5 text-[#085983]" />
+              <h3 className="font-medium text-[#085983]">Stress Management</h3>
+            </div>
+            <p className="text-sm text-[#085983]/80">
               Practice meditation, deep breathing, or light stretching to
               improve HRV.
             </p>
           </div>
 
-          <div className="bg-purple-50 border-l-4 border-purple-400 p-4">
-            <h3 className="font-medium text-purple-800 mb-1">Nutrition</h3>
-            <p className="text-sm text-purple-700">
+          <div className="bg-indigo-50 border-l-4 border-indigo-200 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <IconApple className="size-5 text-[#085983]" />
+              <h3 className="font-medium text-[#085983]">Nutrition</h3>
+            </div>
+            <p className="text-sm text-[#085983]/80">
               Stay hydrated and consume anti-inflammatory foods to support
               recovery.
             </p>
