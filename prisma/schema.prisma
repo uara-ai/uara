@@ -397,6 +397,7 @@ model WhoopWorkout {
   // WHOOP identifiers
   workoutId String
   sportId   Int?
+  sportName String?
 
   // Workout timing
   start          DateTime

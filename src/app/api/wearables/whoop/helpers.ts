@@ -193,8 +193,38 @@ export function formatSleepData(sleep: any) {
  */
 export function formatWorkoutData(workout: any) {
   return {
-    ...workout,
-    // Convert milliseconds to minutes for heart rate zones
+    id: workout.workoutId,
+    v1_id: Number(workout.workoutId.replace(/[^0-9]/g, "")) || 1043,
+    user_id: 9012, // Static for compatibility
+    created_at: workout.createdAt,
+    updated_at: workout.updatedAt,
+    start: workout.start,
+    end: workout.end,
+    timezone_offset: workout.timezoneOffset || "-05:00",
+    sport_name: workout.sportName || "running",
+    score_state: workout.scoreState,
+    score: {
+      strain: workout.strain || 0,
+      average_heart_rate: workout.averageHeartRate || 0,
+      max_heart_rate: workout.maxHeartRate || 0,
+      kilojoule: workout.kilojoule || 0,
+      percent_recorded: workout.percentRecorded || 100,
+      distance_meter: workout.distanceMeters || 0,
+      altitude_gain_meter: workout.altitudeGainMeters || 0,
+      altitude_change_meter: workout.altitudeChangeMeters || 0,
+      zone_durations: {
+        zone_zero_milli: workout.zoneZeroDuration || 0,
+        zone_one_milli: workout.zoneOneDuration || 0,
+        zone_two_milli: workout.zoneTwoDuration || 0,
+        zone_three_milli: workout.zoneThreeDuration || 0,
+        zone_four_milli: workout.zoneFourDuration || 0,
+        zone_five_milli: workout.zoneFiveDuration || 0,
+      },
+    },
+    sport_id: workout.sportId || 1,
+    // Legacy field for API compatibility
+    scoreState: workout.scoreState,
+    // Additional computed fields for convenience
     zoneZeroDurationMinutes: workout.zoneZeroDuration
       ? Math.round(workout.zoneZeroDuration / (1000 * 60))
       : null,

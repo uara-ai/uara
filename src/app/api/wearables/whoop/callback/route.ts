@@ -355,6 +355,7 @@ async function initiateDataSync(
             whoopUserId: userId,
             workoutId: workout.id,
             sportId: workout.sport_id ?? null,
+            sportName: workout.sport_name ?? null,
             start: new Date(workout.start),
             end: new Date(workout.end),
             timezoneOffset: workout.timezone_offset,
@@ -368,17 +369,17 @@ async function initiateDataSync(
             altitudeGainMeters: workout.score?.altitude_gain_meter ?? null,
             altitudeChangeMeters: workout.score?.altitude_change_meter ?? null,
             zoneZeroDuration:
-              workout.score?.zone_duration?.zone_zero_milli ?? null,
+              workout.score?.zone_durations?.zone_zero_milli ?? null,
             zoneOneDuration:
-              workout.score?.zone_duration?.zone_one_milli ?? null,
+              workout.score?.zone_durations?.zone_one_milli ?? null,
             zoneTwoDuration:
-              workout.score?.zone_duration?.zone_two_milli ?? null,
+              workout.score?.zone_durations?.zone_two_milli ?? null,
             zoneThreeDuration:
-              workout.score?.zone_duration?.zone_three_milli ?? null,
+              workout.score?.zone_durations?.zone_three_milli ?? null,
             zoneFourDuration:
-              workout.score?.zone_duration?.zone_four_milli ?? null,
+              workout.score?.zone_durations?.zone_four_milli ?? null,
             zoneFiveDuration:
-              workout.score?.zone_duration?.zone_five_milli ?? null,
+              workout.score?.zone_durations?.zone_five_milli ?? null,
             createdAt: new Date(workout.created_at),
             updatedAt: new Date(workout.updated_at),
           };

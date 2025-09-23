@@ -93,6 +93,7 @@ export interface WhoopWorkout {
   end: string;
   timezone_offset: string;
   sport_id?: number;
+  sport_name?: string;
   score_state: "SCORED" | "PENDING_SCORE" | "UNSCORABLE";
   score: {
     strain: number;
@@ -103,7 +104,7 @@ export interface WhoopWorkout {
     distance_meter: number | null;
     altitude_gain_meter: number | null;
     altitude_change_meter: number | null;
-    zone_duration: {
+    zone_durations: {
       zone_zero_milli: number;
       zone_one_milli: number;
       zone_two_milli: number;

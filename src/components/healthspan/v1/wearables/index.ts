@@ -7,6 +7,7 @@ export { WearablesPage } from "./wearables-page";
 export { SleepDetailPage } from "./sleep/sleep-detail-page";
 export { RecoveryDetailPage } from "./recovery/recovery-detail-page";
 export { CycleDetailPage } from "./cycles/cycle-detail-page";
+export { WorkoutDetailPage } from "./workout/workout-detail-page";
 export { WhoopManagementMenu } from "./whoop-management-menu";
 
 // Export color utilities

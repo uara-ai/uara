@@ -23,6 +23,12 @@ export {
   getCycleStatsServer,
 } from "./get-cycle-data";
 
+export {
+  getWorkoutDataAction,
+  getWorkoutDataServer,
+  getWorkoutStatsServer,
+} from "./get-workout-data";
+
 // Export WHOOP data deletion actions
 export {
   deleteWhoopDataAction,

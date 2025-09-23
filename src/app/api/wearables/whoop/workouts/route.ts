@@ -163,6 +163,7 @@ export async function GET(request: NextRequest) {
         id: true,
         workoutId: true,
         sportId: true,
+        sportName: true,
         start: true,
         end: true,
         timezoneOffset: true,
