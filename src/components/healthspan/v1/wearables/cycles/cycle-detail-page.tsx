@@ -179,7 +179,6 @@ export function CycleDetailPage({
       {/* Daily Timeline */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-6">
-          <IconClock className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
           <h2 className="text-lg font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
             Cycle Timeline
           </h2>
@@ -200,54 +199,62 @@ export function CycleDetailPage({
       </div>
 
       {/* Core Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <div className="bg-[#085983]/10 rounded-lg p-6 text-center">
-          <IconHeart className="size-8 text-[#085983] mx-auto mb-3" />
-          <div className="text-2xl font-bold text-[#085983] mb-1">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div className="flex items-center gap-2 align-middle">
+          <IconHeart className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
+          <div className="text-sm text-[#085983] tracking-wider">Avg HR</div>
+          <div className="font-semibold text-[#085983]">
             {cycle.score.average_heart_rate}
           </div>
-          <div className="text-sm text-[#085983]/60 mb-1">Avg HR</div>
-          <div className={cn("text-xs font-medium", heartRateZone.color)}>
+          <div
+            className={cn(
+              "text-xs font-medium border px-2 py-1 rounded-full border-[#085983]/20",
+              heartRateZone.color
+            )}
+          >
             {heartRateZone.zone}
           </div>
         </div>
 
-        <div className="bg-[#085983]/10 rounded-lg p-6 text-center">
-          <IconBoltFilled className="size-8 text-[#085983] mx-auto mb-3" />
-          <div className="text-2xl font-bold text-[#085983] mb-1">
+        <div className="flex items-center gap-2 align-middle">
+          <IconBoltFilled className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
+          <div className="text-sm text-[#085983] tracking-wider">Max HR</div>
+          <div className="font-semibold text-[#085983]">
             {cycle.score.max_heart_rate}
           </div>
-          <div className="text-sm text-[#085983]/60 mb-1">Max HR</div>
-          <div className="text-xs font-medium text-[#085983]/80">
-            Peak Intensity
+          <div className="text-xs font-medium text-[#085983]/80 border px-2 py-1 rounded-full border-[#085983]/20">
+            Peak
           </div>
         </div>
 
-        <div className="bg-[#085983]/10 rounded-lg p-6 text-center">
-          <IconFlame className="size-8 text-[#085983] mx-auto mb-3" />
-          <div className="text-2xl font-bold text-[#085983] mb-1">
+        <div className="flex items-center gap-2 align-middle">
+          <IconFlame className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
+          <div className="text-sm text-[#085983] tracking-wider">
+            Energy (kJ)
+          </div>
+          <div className="font-semibold text-[#085983]">
             {Math.round(cycle.score.kilojoule)}
           </div>
-          <div className="text-sm text-[#085983]/60 mb-1">Kilojoules</div>
-          <div className="text-xs font-medium text-[#085983]/80">
-            Energy Burned
+          <div className="text-xs font-medium text-[#085983]/80 border px-2 py-1 rounded-full border-[#085983]/20">
+            Total
           </div>
         </div>
 
-        <div className="bg-[#085983]/10 rounded-lg p-6 text-center">
-          <IconBarbell className="size-8 text-[#085983] mx-auto mb-3" />
-          <div className="text-2xl font-bold text-[#085983] mb-1">
+        <div className="flex items-center gap-2 align-middle">
+          <IconBarbell className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
+          <div className="text-sm text-[#085983] tracking-wider">Calories</div>
+          <div className="font-semibold text-[#085983]">
             {Math.round(cycle.score.kilojoule / 4.184)}
           </div>
-          <div className="text-sm text-[#085983]/60 mb-1">Calories</div>
-          <div className="text-xs font-medium text-[#085983]/80">Estimated</div>
+          <div className="text-xs font-medium text-[#085983]/80 border px-2 py-1 rounded-full border-[#085983]/20">
+            Est.
+          </div>
         </div>
       </div>
 
       {/* Heart Rate Analysis */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-6">
-          <IconActivity className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
           <h2 className="text-lg font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
             Heart Rate Analysis
           </h2>
@@ -296,14 +303,13 @@ export function CycleDetailPage({
       {/* Energy Expenditure */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-6">
-          <IconBolt className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
           <h2 className="text-lg font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
             Energy Expenditure
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-[#085983]/10 rounded-lg p-4">
+          <div className="border border-[#085983]/20 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-[#085983]">
                 Total Energy
@@ -317,7 +323,7 @@ export function CycleDetailPage({
             </div>
           </div>
 
-          <div className="bg-[#085983]/10 rounded-lg p-4">
+          <div className="border border-[#085983]/20 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-[#085983]">
                 Energy Rate
@@ -342,7 +348,6 @@ export function CycleDetailPage({
       {/* Strain Insights */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-6">
-          <IconTarget className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
           <h2 className="text-lg font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
             Strain Insights
           </h2>
@@ -393,11 +398,11 @@ export function CycleDetailPage({
             </div>
           )}
 
-          <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
-            <h3 className="font-medium text-blue-800 mb-1">
+          <div className="bg-blue-50 border-l-4 border-blue-200 p-4">
+            <h3 className="font-medium text-[#085983] mb-1">
               Training Recommendation
             </h3>
-            <p className="text-sm text-blue-700">
+            <p className="text-sm text-[#085983]/80">
               {cycle.score.strain >= 16
                 ? "Focus on recovery activities like stretching, meditation, or light walking."
                 : cycle.score.strain >= 10
