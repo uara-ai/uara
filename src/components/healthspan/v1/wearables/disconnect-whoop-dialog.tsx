@@ -209,7 +209,7 @@ export function DisconnectWhoopDialog({
                     • All {totalRecords.toLocaleString()} records will be
                     permanently deleted
                   </li>
-                  <li>• You'll need to re-sync if you reconnect later</li>
+                  <li>• You&apos;ll need to re-sync if you reconnect later</li>
                 </>
               )}
             </ul>
