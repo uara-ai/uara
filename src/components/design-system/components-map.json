@@ -1,0 +1,18 @@
+{
+  "categories": [
+    {
+      "id": "charts",
+      "name": "Charts",
+      "description": "Data visualization and chart components",
+      "components": [
+        {
+          "id": "contribution-chart",
+          "name": "Contribution Chart",
+          "description": "GitHub-style activity contribution chart with streak tracking",
+          "link": "/ui/contribution-chart",
+          "img": null
+        }
+      ]
+    }
+  ]
+}
