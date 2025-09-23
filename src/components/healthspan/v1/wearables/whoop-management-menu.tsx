@@ -299,8 +299,8 @@ export function WhoopManagementMenu({
   if (!isConnected) {
     return (
       <>
-        <div className={cn("w-full p-8", className)}>
-          <div className="flex items-center justify-between">
+        <div className={cn("w-full p-4 sm:p-6 md:p-8", className)}>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-[#085983]/10">
                 <Image
@@ -319,10 +319,10 @@ export function WhoopManagementMenu({
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2 w-full sm:w-auto">
               <Badge
                 variant="outline"
-                className="text-xs text-gray-500 border-gray-300"
+                className="text-xs text-gray-500 border-gray-300 justify-center sm:justify-start"
               >
                 <IconExternalLink className="mr-1 h-3 w-3" />
                 Not Connected
@@ -331,7 +331,7 @@ export function WhoopManagementMenu({
                 onClick={handleConnect}
                 size="sm"
                 disabled={isLoading}
-                className="bg-[#085983] hover:bg-[#085983]/90 text-white"
+                className="bg-[#085983] hover:bg-[#085983]/90 text-white w-full sm:w-auto h-10 sm:h-8"
               >
                 {isLoading ? (
                   <IconRefresh className="mr-2 h-4 w-4 animate-spin" />
@@ -349,10 +349,10 @@ export function WhoopManagementMenu({
 
   return (
     <>
-      <div className={cn("w-full p-8", className)}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-[#085983]/10">
+      <div className={cn("w-full px-4 sm:px-6 md:px-8", className)}>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="p-2 rounded-lg bg-[#085983]/10 flex-shrink-0">
               <Image
                 src="/brands/whoop.svg"
                 alt="WHOOP"
@@ -360,20 +360,21 @@ export function WhoopManagementMenu({
                 height={24}
               />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <h3 className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983]">
                 WHOOP Connected
               </h3>
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <span>Last sync: {getLastSyncText()}</span>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs text-gray-500">
+                <span className="truncate">Last sync: {getLastSyncText()}</span>
                 {whoopUser?.firstName && (
-                  <span>
-                    • {whoopUser.firstName} {whoopUser.lastName}
+                  <span className="truncate">
+                    <span className="hidden sm:inline">•</span>{" "}
+                    {whoopUser.firstName} {whoopUser.lastName}
                   </span>
                 )}
                 {syncStatus.lastResult && (
-                  <span className="text-green-600">
-                    •{" "}
+                  <span className="text-green-600 truncate">
+                    <span className="hidden sm:inline">•</span>{" "}
                     {syncStatus.lastResult.recovery +
                       syncStatus.lastResult.cycles +
                       syncStatus.lastResult.sleep +
@@ -384,7 +385,7 @@ export function WhoopManagementMenu({
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 justify-center">
             <Badge
               variant="outline"
               className="text-xs text-[#085983] border-[#085983]/20"
@@ -397,7 +398,7 @@ export function WhoopManagementMenu({
               size="sm"
               variant="ghost"
               disabled={isLoading || syncStatus.inProgress}
-              className="text-[#085983]"
+              className="text-[#085983] h-10 sm:h-8"
             >
               {isLoading || syncStatus.inProgress ? (
                 <IconRefresh className="mr-2 h-4 w-4 animate-spin" />
@@ -412,12 +413,16 @@ export function WhoopManagementMenu({
                   variant="ghost"
                   size="sm"
                   disabled={isLoading}
-                  className="text-[#085983]"
+                  className="text-[#085983] h-10 sm:h-8"
                 >
                   <IconSettings className="h-4 w-4" />
+                  <span className="ml-2 sm:hidden">Settings</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 mr-2">
+              <DropdownMenuContent
+                align="end"
+                className="w-56 mr-2 sm:mr-2 mx-4 sm:mx-0"
+              >
                 {/* Sync Options */}
                 <DropdownMenuItem
                   onClick={() => handleSync({ timeline: "1d" })}
@@ -583,7 +588,7 @@ export function WhoopManagementMenu({
               <label className="text-sm font-medium mb-2 block">
                 Time Period
               </label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {["1w", "2w", "1m"].map((timeline) => (
                   <Button
                     key={timeline}
@@ -597,7 +602,7 @@ export function WhoopManagementMenu({
                       })
                     }
                     disabled={isLoading}
-                    className="text-xs"
+                    className="text-xs h-10 sm:h-8"
                   >
                     {timeline === "1w"
                       ? "Last Week"
@@ -614,7 +619,7 @@ export function WhoopManagementMenu({
               <label className="text-sm font-medium mb-2 block">
                 Data Type
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {[
                   { key: "sleep", label: "Sleep", icon: IconMoon },
                   { key: "recovery", label: "Recovery", icon: IconHeart },
@@ -633,7 +638,7 @@ export function WhoopManagementMenu({
                       })
                     }
                     disabled={isLoading}
-                    className="flex items-center gap-2 text-xs h-12"
+                    className="flex items-center gap-2 text-xs h-12 sm:h-12"
                   >
                     <Icon className="h-4 w-4" />
                     {label}
@@ -647,7 +652,7 @@ export function WhoopManagementMenu({
               <label className="text-sm font-medium mb-2 block">
                 Export Format
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Button
                   variant="outline"
                   onClick={() =>
@@ -700,7 +705,7 @@ export function WhoopManagementMenu({
                     })
                   }
                   disabled={isLoading}
-                  className="w-full text-xs"
+                  className="w-full text-xs h-10 sm:h-8"
                 >
                   📊 Complete 1-Month CSV Report
                 </Button>
@@ -715,7 +720,7 @@ export function WhoopManagementMenu({
                     })
                   }
                   disabled={isLoading}
-                  className="w-full text-xs"
+                  className="w-full text-xs h-10 sm:h-8"
                 >
                   💾 Full 2-Month Data Backup (JSON)
                 </Button>
@@ -789,7 +794,7 @@ export function WhoopManagementMenu({
             )}
 
             {/* Data Exploration Options */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Timeline Options */}
               <div>
                 <label className="text-sm font-medium mb-2 block">
@@ -810,7 +815,7 @@ export function WhoopManagementMenu({
                       variant="outline"
                       size="sm"
                       onClick={() => handleDataExploration("sleep", key)}
-                      className="w-full justify-start text-left h-auto p-3"
+                      className="w-full justify-start text-left h-auto p-3 min-h-[3rem]"
                     >
                       <div>
                         <div className="font-medium text-xs">{label}</div>
@@ -852,7 +857,7 @@ export function WhoopManagementMenu({
                       variant="outline"
                       size="sm"
                       onClick={() => handleDataExploration(key, "1w")}
-                      className="w-full justify-start text-left h-auto p-3"
+                      className="w-full justify-start text-left h-auto p-3 min-h-[3rem]"
                     >
                       <div className="flex items-center gap-2">
                         <Icon className="h-4 w-4 text-[#085983]" />
@@ -870,7 +875,7 @@ export function WhoopManagementMenu({
             {/* Advanced Features */}
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
               <p className="text-sm font-medium mb-3">Advanced Data Features</p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <Button
                   variant="outline"
                   size="sm"
@@ -878,7 +883,7 @@ export function WhoopManagementMenu({
                     handleSync({ timeline: "1m", dataType: "all" })
                   }
                   disabled={isLoading || syncStatus.inProgress}
-                  className="text-xs"
+                  className="text-xs h-10 sm:h-8"
                 >
                   🔄 Sync Last Month
                 </Button>
@@ -893,7 +898,7 @@ export function WhoopManagementMenu({
                     })
                   }
                   disabled={isLoading}
-                  className="text-xs"
+                  className="text-xs h-10 sm:h-8"
                 >
                   📊 Export 2-Week CSV
                 </Button>
@@ -901,7 +906,7 @@ export function WhoopManagementMenu({
                   variant="outline"
                   size="sm"
                   onClick={() => handleDataExploration("recovery", "1m")}
-                  className="text-xs"
+                  className="text-xs h-10 sm:h-8"
                 >
                   📈 Monthly Recovery
                 </Button>
@@ -909,7 +914,7 @@ export function WhoopManagementMenu({
                   variant="outline"
                   size="sm"
                   onClick={() => handleDataExploration("workouts", "2w")}
-                  className="text-xs"
+                  className="text-xs h-10 sm:h-8"
                 >
                   🏃‍♂️ Training Analysis
                 </Button>

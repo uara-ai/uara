@@ -11,6 +11,18 @@ export {
   getSleepStatsServer,
 } from "./get-sleep-data";
 
+export {
+  getRecoveryDataAction,
+  getRecoveryDataServer,
+  getRecoveryStatsServer,
+} from "./get-recovery-data";
+
+export {
+  getCycleDataAction,
+  getCycleDataServer,
+  getCycleStatsServer,
+} from "./get-cycle-data";
+
 // Export WHOOP data deletion actions
 export {
   deleteWhoopDataAction,
