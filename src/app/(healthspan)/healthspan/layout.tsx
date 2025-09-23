@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
-import { AppSidebar } from "@/components/healthspan/app-sidebar";
-import { SiteHeader } from "@/components/healthspan/site-header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { redirect } from "next/navigation";
-import { RateLimitProvider } from "@/hooks/use-rate-limit-context";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { SubscriptionWrapper } from "@/components/healthspan/subscription-wrapper";
+import { AppLayout } from "@/components/healthspan/v1/app-layout";
 
 export const metadata: Metadata = {
   title: "Healthspan Dashboard | Uara.ai",
@@ -25,34 +20,7 @@ export default async function HealthspanLayout({
     redirect("/login");
   }
 
-  return (
-    <SubscriptionWrapper>
-      <TooltipProvider>
-        <SidebarProvider
-          style={
-            {
-              "--sidebar-width": "calc(var(--spacing) * 72)",
-              "--header-height": "calc(var(--spacing) * 12)",
-            } as React.CSSProperties
-          }
-        >
-          <AppSidebar variant="inset" />
-          <SidebarInset>
-            <RateLimitProvider>
-              <SiteHeader />
-              <div className="flex flex-1 flex-col">
-                <div className="@container/main flex flex-1 flex-col gap-2">
-                  <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                    {children}
-                  </div>
-                </div>
-              </div>
-            </RateLimitProvider>
-          </SidebarInset>
-        </SidebarProvider>
-      </TooltipProvider>
-    </SubscriptionWrapper>
-  );
+  return <AppLayout user={user.user}>{children}</AppLayout>;
 }
 
 // Cursor rules applied correctly.
