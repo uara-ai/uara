@@ -109,7 +109,8 @@ export function CodeCard({
           <div className="p-4 text-center">
             <IconCode className="size-8 text-[#085983]/40 mx-auto mb-2" />
             <p className="text-sm text-[#085983]/60 mb-3">
-              Click "Expand" to view the full component source code
+              Click <strong>Expand</strong> to view the full component source
+              code
             </p>
             <button
               onClick={() => setExpanded(true)}
