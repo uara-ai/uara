@@ -31,8 +31,7 @@ export function UIShowcase() {
   return (
     <div className="w-full mx-auto space-y-8 px-6 font-[family-name:var(--font-geist-sans)]">
       {/* Header */}
-      <div className="flex items-center gap-3 pb-6">
-        <IconPackage className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
+      <div className="flex items-center gap-3 pb-6 pt-6">
         <div>
           <h1 className="text-2xl font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
             UI Components
