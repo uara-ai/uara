@@ -18,6 +18,7 @@ import {
 import { TierBadge } from "@/components/healthspan/tiers";
 import { cn } from "@/lib/utils";
 import { ContributionChart } from "./contribution-chart";
+import { TwitterUsername } from "./twitter-username";
 
 interface UserProfileCardProps {
   user: User | null;
@@ -158,117 +159,81 @@ export function UserProfileCard({ user, className }: UserProfileCardProps) {
         className
       )}
     >
-      {/* Header */}
-      <div className="flex items-center justify-between pb-6">
-        <div className="flex items-center gap-3">
-          <div>
-            <h1 className="text-2xl font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
-              Profile Overview
-            </h1>
-            <p className="text-[#085983]/60 text-sm mt-1">
-              {formatDate(
-                typeof user.createdAt === "string"
-                  ? user.createdAt
-                  : new Date().toISOString()
-              )}
-            </p>
-          </div>
-        </div>
-
-        {/* Dropdown in header */}
-        <div className="flex-shrink-0">
-          <UserProfileDropdown data={profileData} />
-        </div>
-      </div>
-
-      {/* Main Profile Section */}
-      <div className="flex justify-center">
-        <div className="text-center">
-          <div className="relative mb-6">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#085983] to-blue-600 p-1 mx-auto">
+      {/* Minimal Profile Section - Horizontal Layout */}
+      <div className="w-full">
+        <div className="flex items-center gap-4 sm:gap-6">
+          {/* Profile Avatar */}
+          <div className="relative flex-shrink-0">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-[#085983] to-blue-600 p-0.5">
               <div className="w-full h-full rounded-full overflow-hidden bg-white">
                 <Image
                   src={profileData.avatar}
                   alt={profileData.name}
-                  width={88}
-                  height={88}
+                  width={80}
+                  height={80}
                   className="w-full h-full object-cover rounded-full"
                 />
               </div>
             </div>
-            {/* Online status indicator */}
-            <div className="absolute bottom-1 right-1/2 translate-x-8 w-6 h-6 bg-green-500 border-3 border-white rounded-full"></div>
           </div>
 
-          <h2 className="text-3xl font-bold text-[#085983] mb-2">
-            {profileData.name}
-          </h2>
+          {/* Profile Info */}
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#085983] mb-1 truncate">
+              {profileData.name}
+            </h2>
 
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <IconMail className="size-4 text-[#085983]/60" />
-            <span className="text-[#085983]/80 text-sm">
-              {profileData.email}
-            </span>
-          </div>
-
-          {userTier?.tierNumber && (
-            <div
-              className={cn(
-                "inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full mb-4",
-                getTierBgColor(userTier.tierNumber),
-                getTierColor(userTier.tierNumber)
-              )}
-            >
-              <IconShield className="size-4" />
-              {getSubscriptionType(userTier.tierNumber)} Member
+            {/* Twitter Username */}
+            <div className="mb-2">
+              <TwitterUsername />
             </div>
-          )}
-        </div>
-      </div>
+          </div>
 
-      {/* Profile Insights */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 mb-6">
-          <h2 className="text-lg font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
-            Health Overview
-          </h2>
-        </div>
-
-        <div className="grid gap-4">
-          {/* Health Status */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <IconTrendingUp className="size-5 text-[#085983]" />
-              <h3 className="font-medium text-[#085983]">
-                Overall Health Status
-              </h3>
+          {/* Stats Section - Hidden on mobile, shown on larger screens */}
+          <div className="hidden md:flex items-center gap-6 text-center">
+            <div>
+              <div className="text-lg font-bold text-[#085983]">213</div>
+              <div className="text-xs text-[#085983]/60">Posts</div>
             </div>
-            <p className="text-sm text-[#085983]/70">
-              Your health metrics show <strong>excellent progress</strong>.
-              You're maintaining consistent sleep patterns and your recovery
-              indicators are in the optimal range. Keep up the great work!
-            </p>
+            <div>
+              <div className="text-lg font-bold text-[#085983]">232.47K</div>
+              <div className="text-xs text-[#085983]/60">Impressions</div>
+            </div>
+            <div>
+              <div className="text-lg font-bold text-[#085983]">3.15K</div>
+              <div className="text-xs text-[#085983]/60">Profile Clicks</div>
+            </div>
+            <div>
+              <div className="text-lg font-bold text-[#085983]">1.46K</div>
+              <div className="text-xs text-[#085983]/60 flex items-center gap-1">
+                Followers
+                <span className="text-green-500 text-xs">↑72.2%</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Tips Section */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 mb-6">
-          <h2 className="text-lg font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
-            Personalized Tips
-          </h2>
-        </div>
-
-        <div className="bg-blue-50 border-l-4 border-blue-200 p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <IconUser className="size-5 text-[#085983]" />
-            <h3 className="font-medium text-[#085983]">Keep It Up!</h3>
+        {/* Mobile Stats - Only shown on mobile */}
+        <div className="md:hidden mt-4 grid grid-cols-2 gap-4 text-center">
+          <div>
+            <div className="text-base font-bold text-[#085983]">213</div>
+            <div className="text-xs text-[#085983]/60">Posts</div>
           </div>
-          <p className="text-sm text-[#085983]/80">
-            🎯 You're on track for your longevity goals this week. Continue
-            monitoring your sleep and recovery patterns for optimal health.
-          </p>
+          <div>
+            <div className="text-base font-bold text-[#085983]">232.47K</div>
+            <div className="text-xs text-[#085983]/60">Impressions</div>
+          </div>
+          <div>
+            <div className="text-base font-bold text-[#085983]">3.15K</div>
+            <div className="text-xs text-[#085983]/60">Profile Clicks</div>
+          </div>
+          <div>
+            <div className="text-base font-bold text-[#085983]">1.46K</div>
+            <div className="text-xs text-[#085983]/60 flex items-center justify-center gap-1">
+              Followers
+              <span className="text-green-500 text-xs">↑72.2%</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

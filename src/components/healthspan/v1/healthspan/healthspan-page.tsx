@@ -33,22 +33,17 @@ export function HealthspanPage({
         className
       )}
     >
-      {/* First Row: Profile Card + Activity Metrics */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* User Profile Card - Takes up half width on large screens */}
-        <div className="w-full max-w-2xl">
-          <UserProfileCard user={user} />
-        </div>
+      {/* First Row: Minimal Profile Card - Full Width */}
+      <UserProfileCard user={user} />
 
-        {/* Whoop Activity Card */}
-        <div className="w-full">
-          <WhoopActivityCard
-            sleepPerformance={whoopData.sleepPerformance}
-            recoveryScore={whoopData.recoveryScore}
-            strainScore={whoopData.strainScore}
-            title="Today's Metrics"
-          />
-        </div>
+      {/* Whoop Activity Card */}
+      <div className="w-full">
+        <WhoopActivityCard
+          sleepPerformance={whoopData.sleepPerformance}
+          recoveryScore={whoopData.recoveryScore}
+          strainScore={whoopData.strainScore}
+          title="Today's Metrics"
+        />
       </div>
 
       {/* Second Row: Contribution Chart taking up half page width */}
