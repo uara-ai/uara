@@ -32,7 +32,7 @@ export function WearablesPage({ data, className }: WearablesPageProps) {
 
   return (
     <div className={cn("w-full space-y-6", className)}>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-2">
         {latestSleep && <SleepCard sleepScore={latestSleep.sleepScore} />}
         {latestRecovery && (
           <RecoveryCard recoveryScore={latestRecovery.recoveryScore} />

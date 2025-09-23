@@ -1,6 +1,6 @@
 import React from "react";
-import { WearablesPage } from "@/components/wearables/wearables-page";
-import { WearablesData } from "@/components/wearables/types";
+import { WearablesPage } from "@/components/healthspan/v1/wearables/wearables-page";
+import { WearablesData } from "@/components/healthspan/v1/wearables/types";
 
 // Mock data for demonstration - replace with actual data fetching
 const mockWearablesData: WearablesData = {
@@ -110,18 +110,7 @@ const mockWearablesData: WearablesData = {
 };
 
 export default function WearablesPageRoute() {
-  const dateRange = {
-    start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
-    end: new Date(),
-  };
-
-  return (
-    <div className="flex-1 overflow-auto">
-      <div className="p-6">
-        <WearablesPage data={mockWearablesData} dateRange={dateRange} />
-      </div>
-    </div>
-  );
+  return <WearablesPage data={mockWearablesData} />;
 }
 
 // Cursor rules applied correctly.
