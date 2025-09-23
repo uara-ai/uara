@@ -53,7 +53,19 @@ model User {
   // WHOOP integration
   whoopUser WhoopUser?
 
+  Socials Socials[]
+
   @@map("users")
+}
+
+model Socials {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform String
+  username String
+
+  @@map("socials")
 }
 
 // Gender enum for standardized values
@@ -299,6 +311,8 @@ model WhoopRecovery {
 
   @@unique([whoopUserId, cycleId])
   @@index([whoopUserId, createdAt])
+  @@index([scoreState]) // Add index for score state filtering
+  @@index([whoopUserId, recoveryScore]) // Add index for recovery score queries
   @@map("whoop_recovery")
 }
 
@@ -331,6 +345,8 @@ model WhoopCycle {
 
   @@unique([whoopUserId, cycleId])
   @@index([whoopUserId, start])
+  @@index([scoreState]) // Add index for score state filtering
+  @@index([whoopUserId, strain]) // Add index for strain queries
   @@map("whoop_cycles")
 }
 
@@ -355,6 +371,7 @@ model WhoopSleep {
   // Sleep stage durations (in milliseconds)
   totalInBedTime         Int?
   totalAwakeTime         Int?
+  totalNoDataTime        Int? // Missing field
   totalLightSleepTime    Int?
   totalSlowWaveSleepTime Int?
   totalRemSleepTime      Int?
@@ -367,11 +384,19 @@ model WhoopSleep {
   sleepConsistencyPercentage Float?
   sleepEfficiencyPercentage  Float?
 
+  // Sleep need metrics (missing fields)
+  sleepNeedBaseline   Int?
+  sleepNeedFromDebt   Int?
+  sleepNeedFromStrain Int?
+  sleepNeedFromNap    Int?
+
   createdAt DateTime
   updatedAt DateTime
 
   @@unique([whoopUserId, sleepId])
   @@index([whoopUserId, start])
+  @@index([whoopUserId, nap]) // Add index for nap filtering
+  @@index([scoreState]) // Add index for score state filtering
   @@map("whoop_sleep")
 }
 
@@ -384,6 +409,7 @@ model WhoopWorkout {
   // WHOOP identifiers
   workoutId String
   sportId   Int?
+  sportName String?
 
   // Workout timing
   start          DateTime
@@ -403,10 +429,20 @@ model WhoopWorkout {
   altitudeGainMeters   Float?
   altitudeChangeMeters Float?
 
+  // Heart rate zone durations (missing fields from API)
+  zoneZeroDuration  Int? // zone_zero_milli
+  zoneOneDuration   Int? // zone_one_milli
+  zoneTwoDuration   Int? // zone_two_milli
+  zoneThreeDuration Int? // zone_three_milli
+  zoneFourDuration  Int? // zone_four_milli
+  zoneFiveDuration  Int? // zone_five_milli
+
   createdAt DateTime
   updatedAt DateTime
 
   @@unique([whoopUserId, workoutId])
   @@index([whoopUserId, start])
+  @@index([whoopUserId, sportId]) // Add index for sport filtering
+  @@index([scoreState]) // Add index for score state filtering
   @@map("whoop_workouts")
 }

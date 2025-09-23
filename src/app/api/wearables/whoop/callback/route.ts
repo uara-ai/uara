@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       console.error("WHOOP OAuth error:", error, errorDescription);
 
       const redirectUrl = new URL(
-        "/healthspan",
+        "/healthspan/wearables",
         process.env.NEXT_PUBLIC_APP_URL!
       );
       redirectUrl.searchParams.set("whoop_error", error);
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     if (!code || !state) {
       console.error("Missing code or state parameter");
       const redirectUrl = new URL(
-        "/healthspan",
+        "/healthspan/wearables",
         process.env.NEXT_PUBLIC_APP_URL!
       );
       redirectUrl.searchParams.set("whoop_error", "invalid_request");
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
     if (!stateData) {
       console.error("Invalid state parameter");
       const redirectUrl = new URL(
-        "/healthspan",
+        "/healthspan/wearables",
         process.env.NEXT_PUBLIC_APP_URL!
       );
       redirectUrl.searchParams.set("whoop_error", "invalid_state");
@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
     if (new Date(stateData.expiresAt) < new Date()) {
       console.error("State parameter expired");
       const redirectUrl = new URL(
-        "/healthspan",
+        "/healthspan/wearables",
         process.env.NEXT_PUBLIC_APP_URL!
       );
       redirectUrl.searchParams.set("whoop_error", "state_expired");
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
       console.error("Token exchange failed:", error);
       const redirectUrl = new URL(
-        "/healthspan",
+        "/healthspan/wearables",
         process.env.NEXT_PUBLIC_APP_URL!
       );
       redirectUrl.searchParams.set("whoop_error", "token_exchange_failed");
@@ -121,7 +121,7 @@ export async function GET(request: NextRequest) {
         JSON.stringify(tokenResponse, null, 2)
       );
       const redirectUrl = new URL(
-        "/healthspan",
+        "/healthspan/wearables",
         process.env.NEXT_PUBLIC_APP_URL!
       );
       redirectUrl.searchParams.set("whoop_error", "profile_fetch_failed");
@@ -160,7 +160,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
       console.error("Failed to store WHOOP user data:", error);
       const redirectUrl = new URL(
-        "/healthspan",
+        "/healthspan/wearables",
         process.env.NEXT_PUBLIC_APP_URL!
       );
       redirectUrl.searchParams.set("whoop_error", "storage_failed");
@@ -176,9 +176,9 @@ export async function GET(request: NextRequest) {
       // Don't fail the callback for sync errors, just log them
     }
 
-    // Redirect to success page
+    // Redirect to wearables page as requested
     const redirectUrl = new URL(
-      "/healthspan",
+      "/healthspan/wearables",
       process.env.NEXT_PUBLIC_APP_URL!
     );
     redirectUrl.searchParams.set("whoop_connected", "true");
@@ -187,7 +187,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("WHOOP callback error:", error);
     const redirectUrl = new URL(
-      "/healthspan",
+      "/healthspan/wearables",
       process.env.NEXT_PUBLIC_APP_URL!
     );
     redirectUrl.searchParams.set("whoop_error", "internal_error");
@@ -296,6 +296,8 @@ async function initiateDataSync(
             sleep.score?.stage_summary.total_in_bed_time_milli ?? null,
           totalAwakeTime:
             sleep.score?.stage_summary.total_awake_time_milli ?? null,
+          totalNoDataTime:
+            sleep.score?.stage_summary.total_no_data_time_milli ?? null,
           totalLightSleepTime:
             sleep.score?.stage_summary.total_light_sleep_time_milli ?? null,
           totalSlowWaveSleepTime:
@@ -312,6 +314,13 @@ async function initiateDataSync(
             sleep.score?.sleep_consistency_percentage ?? null,
           sleepEfficiencyPercentage:
             sleep.score?.sleep_efficiency_percentage ?? null,
+          sleepNeedBaseline: sleep.score?.sleep_needed.baseline_milli ?? null,
+          sleepNeedFromDebt:
+            sleep.score?.sleep_needed.need_from_sleep_debt_milli ?? null,
+          sleepNeedFromStrain:
+            sleep.score?.sleep_needed.need_from_recent_strain_milli ?? null,
+          sleepNeedFromNap:
+            sleep.score?.sleep_needed.need_from_recent_nap_milli ?? null,
           createdAt: new Date(sleep.created_at),
           updatedAt: new Date(sleep.updated_at),
         }));
@@ -346,6 +355,7 @@ async function initiateDataSync(
             whoopUserId: userId,
             workoutId: workout.id,
             sportId: workout.sport_id ?? null,
+            sportName: workout.sport_name ?? null,
             start: new Date(workout.start),
             end: new Date(workout.end),
             timezoneOffset: workout.timezone_offset,
@@ -358,6 +368,18 @@ async function initiateDataSync(
             distanceMeters: workout.score?.distance_meter ?? null,
             altitudeGainMeters: workout.score?.altitude_gain_meter ?? null,
             altitudeChangeMeters: workout.score?.altitude_change_meter ?? null,
+            zoneZeroDuration:
+              workout.score?.zone_durations?.zone_zero_milli ?? null,
+            zoneOneDuration:
+              workout.score?.zone_durations?.zone_one_milli ?? null,
+            zoneTwoDuration:
+              workout.score?.zone_durations?.zone_two_milli ?? null,
+            zoneThreeDuration:
+              workout.score?.zone_durations?.zone_three_milli ?? null,
+            zoneFourDuration:
+              workout.score?.zone_durations?.zone_four_milli ?? null,
+            zoneFiveDuration:
+              workout.score?.zone_durations?.zone_five_milli ?? null,
             createdAt: new Date(workout.created_at),
             updatedAt: new Date(workout.updated_at),
           };
