@@ -53,7 +53,19 @@ model User {
   // WHOOP integration
   whoopUser WhoopUser?
 
+  Socials Socials[]
+
   @@map("users")
+}
+
+model Socials {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform String
+  username String
+
+  @@map("socials")
 }
 
 // Gender enum for standardized values
