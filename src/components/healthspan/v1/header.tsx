@@ -78,7 +78,7 @@ export function Header({ user, title }: HeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-1">
+    <header className="px-4 sm:px-0 sticky top-0 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-1">
       <div className="flex h-16 items-center justify-between">
         {/* Left side - Page title */}
         <div className="flex items-center">

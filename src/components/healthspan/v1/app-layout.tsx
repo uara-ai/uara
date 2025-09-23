@@ -32,7 +32,7 @@ export function AppLayout({ children, className, user }: AppLayoutProps) {
               <Header user={user} />
 
               {/* Main content */}
-              <main className={cn("flex-1", className)}>
+              <main className={cn("flex-1 p-4 sm:p-0", className)}>
                 {/* Content container with responsive padding - add bottom padding for mobile nav */}
                 <div className="py-6 pb-20 md:pb-6 bg-slate-100 rounded-2xl mb-8">
                   {children}
