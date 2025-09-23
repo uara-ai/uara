@@ -14,7 +14,9 @@ import {
   IconTrendingUp,
   IconBed,
   IconBolt,
+  IconArrowLeft,
 } from "@tabler/icons-react";
+import Link from "next/link";
 
 interface SleepDetailPageProps {
   sleepData: WhoopSleep[];
@@ -77,15 +79,23 @@ export function SleepDetailPage({
       )}
     >
       {/* Header */}
-      <div className="flex items-center gap-3 pb-6">
-        <IconMoon className="size-9 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
-        <div>
-          <h1 className="text-2xl font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
-            Sleep Analysis
-          </h1>
-          <p className="text-[#085983]/60 text-sm mt-1">
-            {formatDate(sleep.start)}
-          </p>
+      <div className="flex items-center justify-between pb-6">
+        <div className="flex items-center gap-3">
+          {/* Back Button */}
+          <Link
+            href="/healthspan/wearables"
+            className="flex items-center gap-2 px-3 py-3 text-sm font-medium text-[#085983] bg-[#085983]/10 hover:bg-[#085983]/20 rounded-lg transition-colors"
+          >
+            <IconArrowLeft className="size-4" />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
+              Sleep Analysis
+            </h1>
+            <p className="text-[#085983]/60 text-sm mt-1">
+              {formatDate(sleep.start)}
+            </p>
+          </div>
         </div>
       </div>
 
