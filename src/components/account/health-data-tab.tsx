@@ -27,8 +27,7 @@ import {
   IconExternalLink,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
-import { WhoopManagementMenu } from "@/components/healthspan/whoop-management-menu";
-import Image from "next/image";
+import { WhoopManagementMenu } from "@/components/healthspan/v1/wearables/whoop-management-menu";
 
 export function HealthDataTab() {
   const [settings, setSettings] = useState({

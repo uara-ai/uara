@@ -1,9 +1,7 @@
 import React, { Suspense } from "react";
 import { WhoopCards } from "@/components/healthspan/whoop-cards";
 import { WhoopTable } from "@/components/healthspan/whoop-table";
-import { WhoopManagementMenu } from "@/components/healthspan/whoop-management-menu";
-import { Separator } from "@/components/ui/separator";
-import { WhoopRefreshButton } from "@/components/healthspan/whoop-refresh-button";
+import { WhoopManagementMenu } from "@/components/healthspan/v1/wearables/whoop-management-menu";
 import {
   getWhoopSummaryServer,
   getWhoopDataServer,

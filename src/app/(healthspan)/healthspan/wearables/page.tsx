@@ -1,6 +1,10 @@
 import React from "react";
 import { WearablesPage } from "@/components/healthspan/v1/wearables/wearables-page";
 import { WearablesData } from "@/components/healthspan/v1/wearables/types";
+import {
+  getWhoopDataServer,
+  getWhoopUserServer,
+} from "@/actions/whoop-data-action";
 
 // Mock data for demonstration - replace with actual data fetching
 const mockWearablesData: WearablesData = {
@@ -112,8 +116,37 @@ const mockWearablesData: WearablesData = {
   ],
 };
 
-export default function WearablesPageRoute() {
-  return <WearablesPage data={mockWearablesData} />;
+export default async function WearablesPageRoute() {
+  // Fetch WHOOP user data to determine connection status
+  const whoopUser = await getWhoopUserServer();
+
+  // If connected, fetch actual data, otherwise use mock data for demonstration
+  let wearablesData: WearablesData = mockWearablesData;
+
+  if (whoopUser) {
+    try {
+      const realWhoopData = await getWhoopDataServer(7, 50); // Last 7 days, 50 records
+      if (realWhoopData) {
+        wearablesData = {
+          cycles: realWhoopData.cycles || [],
+          sleep: realWhoopData.sleep || [],
+          recovery: realWhoopData.recovery || [],
+          workouts: realWhoopData.workouts || [],
+        };
+      }
+    } catch (error) {
+      console.error("Failed to fetch WHOOP data:", error);
+      // Fall back to mock data
+    }
+  }
+
+  return (
+    <WearablesPage
+      data={wearablesData}
+      whoopUser={whoopUser}
+      isConnected={!!whoopUser}
+    />
+  );
 }
 
 // Cursor rules applied correctly.

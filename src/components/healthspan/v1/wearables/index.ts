@@ -5,6 +5,7 @@ export { CycleCard } from "./cards/cycle-card";
 export { WorkoutCard } from "./cards/workout-card";
 export { WearablesPage } from "./wearables-page";
 export { SleepDetailPage } from "./sleep/sleep-detail-page";
+export { WhoopManagementMenu } from "./whoop-management-menu";
 
 // Export color utilities
 export {

@@ -113,6 +113,12 @@ export interface WearablesData {
 
 export interface WearablesPageProps {
   data: WearablesData;
+  whoopUser?: {
+    firstName?: string;
+    lastName?: string;
+    lastSyncAt?: Date | null;
+  } | null;
+  isConnected?: boolean;
   dateRange?: {
     start: Date;
     end: Date;

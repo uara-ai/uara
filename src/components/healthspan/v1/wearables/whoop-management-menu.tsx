@@ -5,13 +5,12 @@ import {
   IconRefresh,
   IconUnlink,
   IconDownload,
-  IconSettings,
-  IconDots,
   IconAlertTriangle,
   IconShield,
   IconDatabase,
   IconPlus,
   IconExternalLink,
+  IconSettings,
 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,7 +29,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
@@ -186,24 +184,34 @@ export function WhoopManagementMenu({
   if (!isConnected) {
     return (
       <>
-        <Card
-          className={cn(
-            "relative overflow-hidden bg-white rounded-xl",
-            className
-          )}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div>
-                  <CardTitle className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-gray-700">
-                    WHOOP Integration
-                  </CardTitle>
-                  <div className="text-xs text-gray-500 mt-1">
-                    Connect your WHOOP account
-                  </div>
-                </div>
+        <div className={cn("w-full p-8", className)}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-[#085983]/10">
+                <Image
+                  src="/brands/whoop.svg"
+                  alt="WHOOP"
+                  width={24}
+                  height={24}
+                />
               </div>
+              <div>
+                <h3 className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-gray-900">
+                  Connect WHOOP
+                </h3>
+                <p className="text-xs text-gray-500">
+                  Track recovery, sleep, and strain data
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="outline"
+                className="text-xs text-gray-500 border-gray-300"
+              >
+                <IconExternalLink className="mr-1 h-3 w-3" />
+                Not Connected
+              </Badge>
               <Button
                 onClick={handleConnect}
                 size="sm"
@@ -218,93 +226,78 @@ export function WhoopManagementMenu({
                 {isLoading ? "Connecting..." : "Connect"}
               </Button>
             </div>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Badge
-                  variant="outline"
-                  className="text-xs text-[#085983] border-[#085983]/20"
-                >
-                  <IconExternalLink className="mr-1 h-3 w-3" />
-                  Not Connected
-                </Badge>
-              </div>
-              <div className="bg-gradient-to-r from-[#085983]/5 to-[#085983]/10 border border-[#085983]/20 rounded-lg p-4">
-                <p className="text-sm text-[#085983] font-medium flex items-center gap-2">
-                  <Image
-                    src="/brands/whoop.svg"
-                    alt="WHOOP"
-                    width={20}
-                    height={20}
-                  />
-                  Connect Your WHOOP
-                </p>
-                <p className="text-sm text-[#085983] mt-2">
-                  Track recovery, sleep, and strain data to optimize your
-                  longevity and performance.
-                </p>
-                <div className="text-xs text-[#085983]/80 mt-3">
-                  <strong>What you&apos;ll get:</strong>
-                  <div className="grid grid-cols-2 gap-1 mt-1">
-                    <div>• Recovery tracking</div>
-                    <div>• Sleep analysis</div>
-                    <div>• Strain insights</div>
-                    <div>• Workout analysis</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </>
     );
   }
 
   return (
     <>
-      <Card
+      <div
         className={cn(
-          "relative overflow-hidden bg-white rounded-xl",
+          "w-full bg-white border border-gray-200 rounded-lg p-4",
           className
         )}
       >
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-[#085983]/10">
-                <Image
-                  src="/brands/whoop.svg"
-                  alt="WHOOP"
-                  width={20}
-                  height={20}
-                />
-              </div>
-              <div>
-                <CardTitle className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983]">
-                  WHOOP Management
-                </CardTitle>
-                <div className="text-xs text-[#085983]/60 mt-1">
-                  Last sync: {getLastSyncText()}
-                </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-[#085983]/10">
+              <Image
+                src="/brands/whoop.svg"
+                alt="WHOOP"
+                width={24}
+                height={24}
+              />
+            </div>
+            <div>
+              <h3 className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-[#085983]">
+                WHOOP Connected
+              </h3>
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <span>Last sync: {getLastSyncText()}</span>
+                {whoopUser?.firstName && (
+                  <span>
+                    • {whoopUser.firstName} {whoopUser.lastName}
+                  </span>
+                )}
               </div>
             </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Badge
+              variant="outline"
+              className="text-xs text-[#085983] border-[#085983]/20"
+            >
+              <IconShield className="mr-1 h-3 w-3" />
+              Connected
+            </Badge>
+            <Button
+              onClick={handleSync}
+              size="sm"
+              variant="outline"
+              disabled={isLoading}
+              className="text-[#085983] border-[#085983]/20 hover:bg-[#085983]/5"
+            >
+              {isLoading ? (
+                <IconRefresh className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <IconRefresh className="mr-2 h-4 w-4" />
+              )}
+              Sync
+            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
-                  className="h-8 w-8 p-0"
                   disabled={isLoading}
+                  className="text-gray-600 border-gray-300 hover:bg-gray-50"
                 >
-                  <IconDots className="h-4 w-4" />
+                  <IconSettings className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem onClick={handleSync} disabled={isLoading}>
-                  <IconRefresh className="mr-2 h-4 w-4" />
-                  Sync Latest Data
-                </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleRefreshCache}
                   disabled={isLoading}
@@ -328,24 +321,8 @@ export function WhoopManagementMenu({
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="flex items-center gap-2">
-            <Badge
-              variant="outline"
-              className="text-xs text-[#085983] border-[#085983]/20"
-            >
-              <IconShield className="mr-1 h-3 w-3" />
-              Connected
-            </Badge>
-            {whoopUser?.firstName && (
-              <span className="text-xs text-[#085983]/60">
-                as {whoopUser.firstName} {whoopUser.lastName}
-              </span>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Disconnect Confirmation Dialog */}
       <Dialog

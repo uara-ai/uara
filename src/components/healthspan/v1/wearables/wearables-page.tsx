@@ -3,9 +3,15 @@
 import React from "react";
 import { SleepCard, RecoveryCard, CycleCard, WorkoutCard } from "./index";
 import { WearablesPageProps } from "./types";
+import { WhoopManagementMenu } from "./whoop-management-menu";
 import { cn } from "@/lib/utils";
 
-export function WearablesPage({ data, className }: WearablesPageProps) {
+export function WearablesPage({
+  data,
+  whoopUser,
+  isConnected,
+  className,
+}: WearablesPageProps) {
   const getLatestData = (dataArray: any[] | undefined) => {
     if (!dataArray || dataArray.length === 0) return null;
     return dataArray.sort(
@@ -21,22 +27,47 @@ export function WearablesPage({ data, className }: WearablesPageProps) {
 
   return (
     <div className={cn("w-full space-y-6", className)}>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-2">
-        {latestSleep && (
-          <SleepCard
-            sleepPerformancePercentage={
-              latestSleep.score.sleep_performance_percentage
-            }
-          />
+      {/* WHOOP Management Menu */}
+      <WhoopManagementMenu whoopUser={whoopUser} isConnected={isConnected} />
+
+      {/* Data Cards - only show if connected and has data */}
+      {isConnected &&
+        (latestSleep || latestRecovery || latestCycle || latestWorkout) && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-2">
+            {latestSleep && (
+              <SleepCard
+                sleepPerformancePercentage={
+                  latestSleep.score.sleep_performance_percentage
+                }
+              />
+            )}
+            {latestRecovery && (
+              <RecoveryCard
+                recoveryScore={latestRecovery.score.recovery_score}
+              />
+            )}
+            {latestCycle && (
+              <CycleCard strainScore={latestCycle.score.strain} />
+            )}
+            {latestWorkout && (
+              <WorkoutCard strainScore={latestWorkout.score.strain} />
+            )}
+          </div>
         )}
-        {latestRecovery && (
-          <RecoveryCard recoveryScore={latestRecovery.score.recovery_score} />
+
+      {/* Empty state when connected but no data */}
+      {isConnected &&
+        !latestSleep &&
+        !latestRecovery &&
+        !latestCycle &&
+        !latestWorkout && (
+          <div className="w-full bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+            <p className="text-gray-600 font-medium">No WHOOP data available</p>
+            <p className="text-sm text-gray-500 mt-1">
+              Try syncing your data or check your WHOOP device connectivity.
+            </p>
+          </div>
         )}
-        {latestCycle && <CycleCard strainScore={latestCycle.score.strain} />}
-        {latestWorkout && (
-          <WorkoutCard strainScore={latestWorkout.score.strain} />
-        )}
-      </div>
     </div>
   );
 }
