@@ -275,6 +275,17 @@ export async function POST(request: NextRequest) {
                     sleep.score?.sleep_consistency_percentage ?? null,
                   sleepEfficiencyPercentage:
                     sleep.score?.sleep_efficiency_percentage ?? null,
+                  sleepNeedBaseline:
+                    sleep.score?.sleep_needed.baseline_milli ?? null,
+                  sleepNeedFromDebt:
+                    sleep.score?.sleep_needed.need_from_sleep_debt_milli ??
+                    null,
+                  sleepNeedFromStrain:
+                    sleep.score?.sleep_needed.need_from_recent_strain_milli ??
+                    null,
+                  sleepNeedFromNap:
+                    sleep.score?.sleep_needed.need_from_recent_nap_milli ??
+                    null,
                   updatedAt: new Date(sleep.updated_at),
                 },
                 create: {
@@ -309,6 +320,17 @@ export async function POST(request: NextRequest) {
                     sleep.score?.sleep_consistency_percentage ?? null,
                   sleepEfficiencyPercentage:
                     sleep.score?.sleep_efficiency_percentage ?? null,
+                  sleepNeedBaseline:
+                    sleep.score?.sleep_needed.baseline_milli ?? null,
+                  sleepNeedFromDebt:
+                    sleep.score?.sleep_needed.need_from_sleep_debt_milli ??
+                    null,
+                  sleepNeedFromStrain:
+                    sleep.score?.sleep_needed.need_from_recent_strain_milli ??
+                    null,
+                  sleepNeedFromNap:
+                    sleep.score?.sleep_needed.need_from_recent_nap_milli ??
+                    null,
                   createdAt: new Date(sleep.created_at),
                   updatedAt: new Date(sleep.updated_at),
                 },
@@ -359,6 +381,18 @@ export async function POST(request: NextRequest) {
                     workout.score?.altitude_gain_meter ?? null,
                   altitudeChangeMeters:
                     workout.score?.altitude_change_meter ?? null,
+                  zoneZeroDuration:
+                    workout.score?.zone_duration?.zone_zero_milli ?? null,
+                  zoneOneDuration:
+                    workout.score?.zone_duration?.zone_one_milli ?? null,
+                  zoneTwoDuration:
+                    workout.score?.zone_duration?.zone_two_milli ?? null,
+                  zoneThreeDuration:
+                    workout.score?.zone_duration?.zone_three_milli ?? null,
+                  zoneFourDuration:
+                    workout.score?.zone_duration?.zone_four_milli ?? null,
+                  zoneFiveDuration:
+                    workout.score?.zone_duration?.zone_five_milli ?? null,
                   updatedAt: new Date(workout.updated_at),
                 },
                 create: {
@@ -379,6 +413,18 @@ export async function POST(request: NextRequest) {
                     workout.score?.altitude_gain_meter ?? null,
                   altitudeChangeMeters:
                     workout.score?.altitude_change_meter ?? null,
+                  zoneZeroDuration:
+                    workout.score?.zone_duration?.zone_zero_milli ?? null,
+                  zoneOneDuration:
+                    workout.score?.zone_duration?.zone_one_milli ?? null,
+                  zoneTwoDuration:
+                    workout.score?.zone_duration?.zone_two_milli ?? null,
+                  zoneThreeDuration:
+                    workout.score?.zone_duration?.zone_three_milli ?? null,
+                  zoneFourDuration:
+                    workout.score?.zone_duration?.zone_four_milli ?? null,
+                  zoneFiveDuration:
+                    workout.score?.zone_duration?.zone_five_milli ?? null,
                   createdAt: new Date(workout.created_at),
                   updatedAt: new Date(workout.updated_at),
                 },
