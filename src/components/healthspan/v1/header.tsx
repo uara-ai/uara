@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { IconApps } from "@tabler/icons-react";
+import { IconGridDots } from "@tabler/icons-react";
 import { User } from "@/lib/user.type";
 
 // Apps configuration array
@@ -82,7 +82,7 @@ export function Header({ user, title }: HeaderProps) {
       <div className="flex h-16 items-center justify-between">
         {/* Left side - Page title */}
         <div className="flex items-center">
-          <h1 className="text-xl font-semibold text-foreground">
+          <h1 className="text-xl font-semibold font-[family-name:var(--font-geist-sans)] text-[#085983] tracking-wider">
             {getPageTitle()}
           </h1>
         </div>
@@ -97,7 +97,7 @@ export function Header({ user, title }: HeaderProps) {
                 size="sm"
                 className="h-9 w-9 rounded-full hover:bg-accent"
               >
-                <IconApps className="h-5 w-5" />
+                <IconGridDots className="size-5" />
                 <span className="sr-only">Open apps menu</span>
               </Button>
             </DropdownMenuTrigger>
