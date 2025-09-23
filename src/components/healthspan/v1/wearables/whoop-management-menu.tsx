@@ -6,7 +6,6 @@ import {
   IconUnlink,
   IconDownload,
   IconAlertTriangle,
-  IconShield,
   IconDatabase,
   IconPlus,
   IconExternalLink,
@@ -15,6 +14,8 @@ import {
   IconActivity,
   IconMoon,
   IconHeart,
+  IconTrashX,
+  IconShieldCheckFilled,
 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -348,12 +349,7 @@ export function WhoopManagementMenu({
 
   return (
     <>
-      <div
-        className={cn(
-          "w-full bg-white border border-gray-200 rounded-lg p-4",
-          className
-        )}
-      >
+      <div className={cn("w-full p-8", className)}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-[#085983]/10">
@@ -393,15 +389,15 @@ export function WhoopManagementMenu({
               variant="outline"
               className="text-xs text-[#085983] border-[#085983]/20"
             >
-              <IconShield className="mr-1 h-3 w-3" />
+              <IconShieldCheckFilled className="mr-1 h-3 w-3 text-green-600" />
               Connected
             </Badge>
             <Button
               onClick={() => handleSync()}
               size="sm"
-              variant="outline"
+              variant="ghost"
               disabled={isLoading || syncStatus.inProgress}
-              className="text-[#085983] border-[#085983]/20 hover:bg-[#085983]/5"
+              className="text-[#085983]"
             >
               {isLoading || syncStatus.inProgress ? (
                 <IconRefresh className="mr-2 h-4 w-4 animate-spin" />
@@ -413,43 +409,15 @@ export function WhoopManagementMenu({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   disabled={isLoading}
-                  className="text-gray-600 border-gray-300 hover:bg-gray-50"
+                  className="text-[#085983]"
                 >
                   <IconSettings className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                {/* Quick Data Access */}
-                <DropdownMenuItem
-                  onClick={() => handleDataExploration("sleep", "1w")}
-                >
-                  <IconMoon className="mr-2 h-4 w-4" />
-                  View Sleep Data
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => handleDataExploration("recovery", "1w")}
-                >
-                  <IconHeart className="mr-2 h-4 w-4" />
-                  View Recovery Data
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => handleDataExploration("workouts", "1w")}
-                >
-                  <IconActivity className="mr-2 h-4 w-4" />
-                  View Workouts
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setIsDataExplorerDialogOpen(true)}
-                >
-                  <IconChartBar className="mr-2 h-4 w-4" />
-                  Data Explorer
-                </DropdownMenuItem>
-
-                <DropdownMenuSeparator />
-
+              <DropdownMenuContent align="end" className="w-56 mr-2">
                 {/* Sync Options */}
                 <DropdownMenuItem
                   onClick={() => handleSync({ timeline: "1d" })}
@@ -488,7 +456,14 @@ export function WhoopManagementMenu({
                   onClick={() => setIsDisconnectDialogOpen(true)}
                   className="text-red-600 focus:text-red-600"
                 >
-                  <IconUnlink className="mr-2 h-4 w-4" />
+                  <IconTrashX className="mr-2 h-4 w-4 text-red-600" />
+                  Delete data
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setIsDisconnectDialogOpen(true)}
+                  className="text-red-600 focus:text-red-600"
+                >
+                  <IconUnlink className="mr-2 h-4 w-4 text-red-600" />
                   Disconnect WHOOP
                 </DropdownMenuItem>
               </DropdownMenuContent>

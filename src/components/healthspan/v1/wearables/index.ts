@@ -29,4 +29,17 @@ export type {
 
 export type { ColorRange } from "./chart-colors";
 
+// Export WHOOP delete functionality components
+export { DeleteWhoopDataDialog } from "./delete-whoop-data-dialog";
+export { DisconnectWhoopDialog } from "./disconnect-whoop-dialog";
+
+// Export hook for delete functionality
+export { useWhoopDelete } from "@/hooks/use-whoop-delete";
+export type {
+  DeleteDataTypes,
+  DeleteOptions,
+  DisconnectOptions,
+  WhoopDataCounts,
+} from "@/hooks/use-whoop-delete";
+
 // Cursor rules applied correctly.
