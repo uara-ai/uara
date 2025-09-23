@@ -11,7 +11,7 @@ import {
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { getSleepColor, getChartBackground } from "./chart-colors";
+import { getSleepColor, getChartBackground } from "../chart-colors";
 
 interface SleepCardProps {
   sleepPerformancePercentage: number;

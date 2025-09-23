@@ -11,24 +11,24 @@ import {
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { getStrainColor, getChartBackground } from "./chart-colors";
+import { getRecoveryColor, getChartBackground } from "../chart-colors";
 
-interface WorkoutCardProps {
-  strainScore: number;
+interface RecoveryCardProps {
+  recoveryScore: number;
 }
 
-export function WorkoutCard({ strainScore }: WorkoutCardProps) {
+export function RecoveryCard({ recoveryScore }: RecoveryCardProps) {
   const chartData = [
     {
-      workout: strainScore,
-      fill: getStrainColor(strainScore),
+      recovery: recoveryScore,
+      fill: getRecoveryColor(recoveryScore),
     },
   ];
 
   const chartConfig = {
-    workout: {
-      label: "Workout",
-      color: getStrainColor(strainScore),
+    recovery: {
+      label: "Recovery",
+      color: getRecoveryColor(recoveryScore),
     },
   } satisfies ChartConfig;
 
@@ -55,12 +55,12 @@ export function WorkoutCard({ strainScore }: WorkoutCardProps) {
             polarRadius={[46, 34]}
           />
           <RadialBar
-            dataKey="workout"
+            dataKey="recovery"
             background={{
               fill: getChartBackground(),
             }}
             cornerRadius={10}
-            fill={getStrainColor(strainScore)}
+            fill={getRecoveryColor(recoveryScore)}
           />
           <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
             <Label
@@ -78,7 +78,7 @@ export function WorkoutCard({ strainScore }: WorkoutCardProps) {
                         y={viewBox.cy}
                         className="text-2xl font-bold"
                       >
-                        {strainScore.toFixed(1)}
+                        {recoveryScore}%
                       </tspan>
                     </text>
                   );
@@ -89,10 +89,10 @@ export function WorkoutCard({ strainScore }: WorkoutCardProps) {
         </RadialBarChart>
       </ChartContainer>
       <Link
-        href="/healthspan/wearables/workout"
+        href="/healthspan/wearables/recovery"
         className="text-sm font-medium font-[family-name:var(--font-geist-sans)] tracking-wider flex items-center gap-1 text-[#085983]"
       >
-        Workout
+        Recovery
         <ChevronRight className="h-4 w-4" />
       </Link>
     </div>

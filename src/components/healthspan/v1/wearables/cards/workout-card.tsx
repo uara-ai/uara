@@ -11,23 +11,23 @@ import {
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { getStrainColor, getChartBackground } from "./chart-colors";
+import { getStrainColor, getChartBackground } from "../chart-colors";
 
-interface CycleCardProps {
+interface WorkoutCardProps {
   strainScore: number;
 }
 
-export function CycleCard({ strainScore }: CycleCardProps) {
+export function WorkoutCard({ strainScore }: WorkoutCardProps) {
   const chartData = [
     {
-      cycle: strainScore,
+      workout: strainScore,
       fill: getStrainColor(strainScore),
     },
   ];
 
   const chartConfig = {
-    cycle: {
-      label: "Cycle",
+    workout: {
+      label: "Workout",
       color: getStrainColor(strainScore),
     },
   } satisfies ChartConfig;
@@ -55,7 +55,7 @@ export function CycleCard({ strainScore }: CycleCardProps) {
             polarRadius={[46, 34]}
           />
           <RadialBar
-            dataKey="cycle"
+            dataKey="workout"
             background={{
               fill: getChartBackground(),
             }}
@@ -89,10 +89,10 @@ export function CycleCard({ strainScore }: CycleCardProps) {
         </RadialBarChart>
       </ChartContainer>
       <Link
-        href="/healthspan/wearables/strain"
+        href="/healthspan/wearables/workout"
         className="text-sm font-medium font-[family-name:var(--font-geist-sans)] tracking-wider flex items-center gap-1 text-[#085983]"
       >
-        Strain
+        Workout
         <ChevronRight className="h-4 w-4" />
       </Link>
     </div>

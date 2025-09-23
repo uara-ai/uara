@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { WhoopSleep } from "./types";
+import { WhoopSleep } from "../types";
 import { cn } from "@/lib/utils";
 import {
   IconMoon,

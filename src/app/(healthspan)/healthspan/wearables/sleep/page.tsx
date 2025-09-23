@@ -1,5 +1,5 @@
 import React from "react";
-import { SleepDetailPage } from "@/components/healthspan/v1/wearables/sleep-detail-page";
+import { SleepDetailPage } from "@/components/healthspan/v1/wearables/sleep/sleep-detail-page";
 import { WhoopSleep } from "@/components/healthspan/v1/wearables/types";
 
 // Mock data for sleep details - replace with actual data fetching
