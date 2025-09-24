@@ -165,15 +165,13 @@ export default function Pricing() {
 
   const handleGetStarted = async () => {
     if (user) {
-      // User is logged in, redirect to Stripe checkout
-      if (tierInfo?.currentTier?.id) {
-        try {
-          await checkout(tierInfo.currentTier.id);
-        } catch (error) {
-          console.error("Checkout failed:", error);
-          // Optionally show an error message to the user
-        }
-      }
+      // User is logged in, redirect to Stripe payment link
+      window.open(
+        `https://book.stripe.com/14A6oHcwcbDh8gb8MobjW08?prefilled_email=${encodeURIComponent(
+          user.email
+        )}`,
+        "_blank"
+      );
     } else {
       // User is not logged in, redirect to login
       router.push("/login");
