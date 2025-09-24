@@ -9,7 +9,7 @@ import Link from "next/link";
 import { MarkdownParser } from "@/components/markdown-parser";
 import { ArrowLeft, BookOpen, Brain, Sparkles } from "lucide-react";
 import { Navbar } from "@/components/landing/hero/navbar";
-import { Footer } from "@/components/landing/footer";
+import { Footer } from "@/components/landing/new/footer";
 import Image from "next/image";
 
 export async function generateStaticParams() {

@@ -9,10 +9,9 @@ import { IconMenu3, IconX } from "@tabler/icons-react";
 import { LoginButton } from "../hero/login-button";
 
 const menuItems = [
-  { name: "Features", href: "#link" },
-  { name: "Solution", href: "#link" },
-  { name: "Pricing", href: "#link" },
-  { name: "About", href: "#link" },
+  { name: "Features", href: "#features" },
+  { name: "Pricing", href: "#pricing" },
+  { name: "FAQ", href: "#faq" },
 ];
 
 export const HeroHeader = () => {

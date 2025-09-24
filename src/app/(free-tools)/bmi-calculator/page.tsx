@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { BMICalculator } from "@/components/free-tools";
-import { Footer } from "@/components/landing/footer";
+import { Footer } from "@/components/landing/new/footer";
 import { Navbar } from "@/components/landing/hero/navbar";
 
 // SEO Metadata

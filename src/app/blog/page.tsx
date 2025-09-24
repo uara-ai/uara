@@ -7,7 +7,7 @@ import { formatDate } from "@/lib/utils";
 import { ArrowLeft, BookOpen, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { Navbar } from "@/components/landing/hero/navbar";
-import { Footer } from "@/components/landing/footer";
+import { Footer } from "@/components/landing/new/footer";
 
 export const metadata = {
   title: "Blog — Longevity, Healthspan & AI Insights | Uara.ai",

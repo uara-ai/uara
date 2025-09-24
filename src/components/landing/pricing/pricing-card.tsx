@@ -1,10 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { PricingTier } from "./pricing-tier";
-import Image from "next/image";
+import PricingCardFlip from "./pricing-card-flip";
 
 interface TierInfo {
   currentTier: {
@@ -33,83 +30,105 @@ interface PricingCardProps {
 }
 
 export function PricingCard({ tierInfo, className }: PricingCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
+  // Prepare data for the card flip component
+  const currentTierTitle = tierInfo
+    ? tierInfo.currentTier.name.toUpperCase()
+    : "Loading...";
+  const currentTierSubtitle = tierInfo
+    ? `Lifetime access for ${tierInfo.currentTier.displayPrice}`
+    : "Loading pricing information...";
+  const currentTierDescription = tierInfo
+    ? `Pay once, own Uara forever. ${
+        tierInfo.spotsRemaining === Infinity
+          ? "Unlimited"
+          : tierInfo.spotsRemaining
+      } spots remaining in the ${tierInfo.currentTier.name} tier.`
+    : "Get lifetime access to Uara's health optimization platform.";
+
+  const features = [
+    "Complete health dashboard",
+    "AI-powered insights",
+    "Wearable integrations",
+    "Lab result analysis",
+    "Longevity coaching",
+    "Progress tracking",
+  ];
 
   return (
     <div
-      className={cn("relative max-w-6xl mx-auto w-full", className)}
+      className={cn("relative max-w-4xl mx-auto w-full", className)}
       data-fast-scroll="scroll_to_pricing"
     >
-      {/* Background Image Container */}
-      <div
-        className="relative overflow-hidden rounded-2xl lg:rounded-3xl shadow-2xl"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <Image
-            src="/pricing.jpg"
-            width={1000}
-            height={1000}
-            alt="Scenic landscape background"
-            className={cn(
-              "w-full h-full object-cover transition-transform duration-700"
-            )}
-          />
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#085983]/10 via-[#085983]/30 to-[#085983]/60"></div>
-          {/* Additional overlay for better text contrast */}
-          <div className="absolute inset-0 bg-black/10"></div>
+      {/* Header with spots remaining */}
+      <div className="text-center mb-8 space-y-4">
+        <div className="flex flex-col sm:flex-row items-center gap-3 justify-center">
+          <span className="font-geist-sans text-lg sm:text-xl lg:text-2xl font-normal text-[#085983]">
+            Offer ends when the first
+          </span>
+          <div className="bg-[#085983]/10 backdrop-blur-sm rounded-full px-4 py-2 border border-[#085983]/20">
+            <span className="font-geist-sans text-lg sm:text-xl lg:text-2xl font-semibold text-[#085983] tracking-wider">
+              {tierInfo ? (
+                tierInfo.spotsRemaining === Infinity ? (
+                  "∞"
+                ) : (
+                  tierInfo.spotsRemaining
+                )
+              ) : (
+                <div className="animate-pulse bg-[#085983]/20 rounded w-8 h-6"></div>
+              )}
+            </span>
+          </div>
+          <span className="font-geist-sans text-lg sm:text-xl lg:text-2xl font-normal text-[#085983]">
+            spots are gone
+          </span>
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 p-8 sm:p-12 lg:p-16 text-center">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[400px] sm:min-h-[500px]">
-            {/* Left Side - Offer Details */}
-            <div className="text-white space-y-6 lg:space-y-8 text-center">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 justify-center">
-                  <span className="font-[family-name:var(--font-geist-sans)] text-xl sm:text-2xl lg:text-3xl font-normal">
-                    Offer end when the first
-                  </span>
-                  <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 border-2 border-[#085983]">
-                    <span className="font-[family-name:var(--font-instrument-serif)] text-lg sm:text-xl lg:text-2xl font-semibold text- tracking-wider">
-                      {tierInfo ? (
-                        tierInfo.spotsRemaining === Infinity ? (
-                          "∞"
-                        ) : (
-                          tierInfo.spotsRemaining
-                        )
-                      ) : (
-                        <div className="animate-pulse bg-white/30 rounded w-8 h-6"></div>
-                      )}
-                    </span>
-                  </div>
-                </div>
+        <div className="font-geist-sans text-base sm:text-lg text-[#085983]/80">
+          {tierInfo ? (
+            tierInfo.isLastTier ? (
+              "This is the final tier."
+            ) : (
+              `${tierInfo.nextTier?.name} pricing will then be ${tierInfo.nextTier?.displayPrice}`
+            )
+          ) : (
+            <div className="animate-pulse bg-[#085983]/10 rounded h-5 w-64 mx-auto"></div>
+          )}
+        </div>
+      </div>
 
-                <p className="font-[family-name:var(--font-geist-sans)] text-xl sm:text-2xl lg:text-3xl font-normal">
-                  spots are gone.
-                </p>
+      {/* Pricing Cards Grid */}
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-8">
+        {/* Current Tier Card */}
+        <div className="relative">
+          <PricingCardFlip
+            title={currentTierTitle}
+            subtitle={currentTierSubtitle}
+            description={currentTierDescription}
+            features={features}
+            tierId={tierInfo?.currentTier.id}
+            disabled={!tierInfo}
+          />
+        </div>
 
-                <div className="font-[family-name:var(--font-geist-sans)] text-lg sm:text-xl lg:text-2xl font-normal text-white/90">
-                  {tierInfo ? (
-                    tierInfo.isLastTier ? (
-                      "This is the final tier."
-                    ) : (
-                      `${tierInfo.nextTier?.name} pricing will then be ${tierInfo.nextTier?.displayPrice}.`
-                    )
-                  ) : (
-                    <div className="animate-pulse bg-white/20 rounded h-6 w-64 mx-auto"></div>
-                  )}
-                </div>
+        {/* Next Tier Card (if exists) */}
+        {tierInfo?.nextTier && (
+          <div className="relative opacity-60 scale-95 transform rotate-2">
+            <PricingCardFlip
+              title={tierInfo.nextTier.name.toUpperCase()}
+              subtitle={`Coming soon at ${tierInfo.nextTier.displayPrice}`}
+              description={`The next pricing tier will be available once the current ${tierInfo.currentTier.name} tier is filled.`}
+              features={[...features, "Priority support", "Beta features"]}
+              disabled={true}
+            />
+
+            {/* Coming Soon Overlay */}
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+              <div className="bg-[#085983]/90 text-white py-2 px-6 rounded-full text-center font-geist-sans text-sm font-semibold tracking-wider backdrop-blur-sm">
+                COMING SOON
               </div>
             </div>
-
-            {/* Right Side - Pricing Card */}
-            <PricingTier tierInfo={tierInfo} />
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

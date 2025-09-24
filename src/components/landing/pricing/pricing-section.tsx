@@ -50,64 +50,28 @@ export function PricingSection({ className, redirectTo }: PricingSectionProps) {
   }, []);
 
   return (
-    <section
+    <div
       className={cn(
-        "relative w-full py-16 lg:py-24 overflow-hidden",
+        "relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8",
         className
       )}
       id="pricing"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center mb-12 sm:mb-16 lg:mb-20">
-          {/* Mobile: Simple title without decorative lines */}
-          <div className="block sm:hidden mb-4">
-            <h2 className="font-[family-name:var(--font-instrument-serif)] text-3xl font-normal text-[#085983] leading-tight">
-              Lifetime deal pricing
-            </h2>
-          </div>
-
-          {/* Desktop: Decorative title with lines */}
-          <div className="hidden sm:flex items-center justify-center mb-6">
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#085983]/30"></div>
-            <h2 className="px-6 font-[family-name:var(--font-instrument-serif)] text-3xl sm:text-4xl lg:text-5xl font-normal text-[#085983]">
-              Lifetime deal pricing
-            </h2>
-            <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#085983]/30"></div>
-          </div>
-
-          <p className="font-[family-name:var(--font-geist-sans)] text-base sm:text-lg lg:text-xl text-[#085983]/80 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
-            Pay once. Own Uara forever
-          </p>
-        </div>
-
-        {/* Pricing Card Container */}
-        <div className="flex justify-center">
-          <PricingCard tierInfo={tierInfo} />
-        </div>
+      <div className="flex items-center justify-center px-4">
+        <div className="hidden sm:flex flex-1 h-px bg-gradient-to-r from-transparent to-[#085983]/30"></div>
+        <h2 className="px-2 sm:px-6 font-geist-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-normal text-[#085983] text-center">
+          Lifetime deal pricing
+        </h2>
+        <div className="hidden sm:flex flex-1 h-px bg-gradient-to-l from-transparent to-[#085983]/30"></div>
       </div>
+      <p className="text-center font-geist-sans text-sm sm:text-base md:text-lg lg:text-xl text-[#085983]/80 max-w-4xl mx-auto leading-relaxed px-4 mt-4 sm:mt-6">
+        Pay once. Own Uara forever. Get ahead of the curve with lifetime access.
+      </p>
 
-      {/* Mobile responsive adjustments */}
-      <style jsx>{`
-        @media (max-width: 640px) {
-          .pricing-title {
-            font-size: 28px !important;
-          }
-          .pricing-subtitle {
-            font-size: 16px !important;
-          }
-        }
-
-        @media (max-width: 430px) {
-          .pricing-title {
-            font-size: 24px !important;
-          }
-          .pricing-subtitle {
-            font-size: 14px !important;
-          }
-        }
-      `}</style>
-    </section>
+      <div className="mt-12 sm:mt-16 lg:mt-20">
+        <PricingCard tierInfo={tierInfo} />
+      </div>
+    </div>
   );
 }
 

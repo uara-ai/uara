@@ -4,18 +4,31 @@ import { Logo } from "@/components/logo";
 import Link from "next/link";
 import { Twitter, Instagram, MailIcon, Heart } from "lucide-react";
 import Image from "next/image";
+import DynamicText from "@/components/kokonutui/dynamic-text";
+import Discord from "@/components/kokonutui/discord";
+import {
+  IconBrandDiscord,
+  IconBrandGithub,
+  IconBrandX,
+  IconMail,
+} from "@tabler/icons-react";
 
 export function Footer() {
   return (
     <footer className="relative w-full py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Large UARA Text */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-8">
+        {/* Dynamic Text */}
+        <div className="text-center">
+          <div className="flex items-center justify-center">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[#085983]/30"></div>
-            <h2 className="footer-title px-6 font-[family-name:var(--font-instrument-serif)] text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-normal text-[#085983] tracking-wider">
-              UARA
-            </h2>
+            <div className="px-6 min-h-[120px] sm:min-h-[140px] md:min-h-[160px] lg:min-h-[180px] flex items-center justify-center">
+              <DynamicText
+                className="flex items-center justify-center"
+                textClassName="footer-title font-geist-sans text-xl sm:text-4xl font-normal text-[#085983] tracking-wider text-center"
+                duration={1500}
+                finalIndex={3}
+              />
+            </div>
             <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[#085983]/30"></div>
           </div>
         </div>
@@ -106,18 +119,34 @@ export function Footer() {
                   {/* Social Icons */}
                   <div className="footer-social flex justify-center lg:justify-end gap-4 mt-8">
                     <Link
+                      href="https://github.com/uara-ai/uara"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="footer-social-icon w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors border border-white/20"
+                    >
+                      <IconBrandGithub className="w-5 h-5 text-white" />
+                    </Link>
+                    <Link
+                      href="https://discord.gg/f7fSp6vQcK"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="footer-social-icon w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors border border-white/20"
+                    >
+                      <IconBrandDiscord className="w-5 h-5 text-white" />
+                    </Link>
+                    <Link
                       href="https://x.com/uaradotai"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="footer-social-icon w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors border border-white/20"
                     >
-                      <Twitter className="w-5 h-5 text-white" />
+                      <IconBrandX className="w-5 h-5 text-white" />
                     </Link>
                     <Link
                       href="mailto:hello@uara.ai"
                       className="footer-social-icon w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors border border-white/20"
                     >
-                      <MailIcon className="w-5 h-5 text-white" />
+                      <IconMail className="w-5 h-5 text-white" />
                     </Link>
                   </div>
                 </div>
@@ -146,7 +175,7 @@ export function Footer() {
                     </Link>
                   </p>
                   <p className="text-white/80 font-[family-name:var(--font-geist-sans)] text-sm flex items-center gap-2 justify-center">
-                    Designed by{" "}
+                    Images by{" "}
                     <Image
                       src="/revolte.png"
                       alt="Revolte"
@@ -195,7 +224,7 @@ export function Footer() {
 
         @media (max-width: 640px) {
           .footer-title {
-            font-size: 4rem !important;
+            font-size: 2.5rem !important;
             line-height: 1.1;
           }
           .footer-links {
@@ -211,7 +240,7 @@ export function Footer() {
 
         @media (max-width: 430px) {
           .footer-title {
-            font-size: 3rem !important;
+            font-size: 2rem !important;
           }
           .footer-links {
             font-size: 1rem !important;
