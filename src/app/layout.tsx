@@ -21,6 +21,7 @@ import {
   Instrument_Serif,
 } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -162,6 +163,7 @@ export default async function RootLayout({
           />
           <Toaster />
           <SpeedInsights />
+          <Analytics />
           {showTrackingConsent && <ConsentBanner />}
         </ThemeProvider>
       </body>
