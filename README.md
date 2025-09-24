@@ -1,7 +1,7 @@
 ![hero](public/footer.jpg)
 
 <p align="center">
-	<h1 align="center"><b>Uara.ai</b></h1>
+	<h1 align="center"><b>Uara</b></h1>
 <p align="center">
     Defend your health smarter
     <br />
@@ -79,6 +79,8 @@ We are working on the documentation to get started with Uara for local developme
 ## Contributing
 
 We welcome contributions! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+![Alt](https://repobeats.axiom.co/api/embed/d442e7448d43e5aeb38fef8ff7ef75e757ed0a46.svg "Repobeats analytics image")
 
 ## License
 
