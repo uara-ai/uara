@@ -1,10 +1,10 @@
 import React from "react";
-import { Mail, SendHorizonal } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { AnimatedGroup } from "@/components/motion-primitives/animated-group";
 
 import { LogoCloud } from "@/components/landing/hero/new/logo-cloud";
+import { SecondarySection } from "../secondary-section";
+import CTAButton from "./cta-button";
 
 const transitionVariants = {
   item: {
@@ -31,15 +31,23 @@ export default function HeroSection() {
     <>
       <main className="overflow-hidden [--color-primary-foreground:var(--color-white)] [--color-primary:var(--color-green-600)]">
         <section>
-          <div className="relative mx-auto max-w-6xl px-6 pb-20 pt-32 lg:pt-48">
-            <div className="relative z-10 mx-auto max-w-4xl text-center">
+          <div className="relative mx-auto max-w-6xl px-6 sm:px-0 pb-20 pt-32 lg:pt-48 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <div className="relative z-10 text-left">
               <TextEffect
                 preset="fade-in-blur"
                 speedSegment={0.3}
                 as="h1"
-                className="text-balance text-5xl font-medium md:text-6xl"
+                className="text-balance text-5xl font-medium md:text-6xl font-geist-sans text-[#085983]"
               >
-                Healthier daily routine
+                Your Health OS
+              </TextEffect>
+              <TextEffect
+                preset="fade-in-blur"
+                speedSegment={0.3}
+                as="h2"
+                className="text-balance text-xl font-medium md:text-4xl font-geist-sans text-[#085983]/80 mt-4"
+              >
+                Engineered for human optimization.
               </TextEffect>
               <TextEffect
                 per="line"
@@ -47,13 +55,27 @@ export default function HeroSection() {
                 speedSegment={0.3}
                 delay={0.5}
                 as="p"
-                className="mx-auto mt-6 max-w-2xl text-pretty text-lg"
+                className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground"
               >
-                Tailwindcss highly customizable components for building modern
-                websites and applications that look and feel the way you mean
-                it.
+                Your health data is fragmented. Your potential is not. Uara
+                unifies your wearables, labs, and logs, translating raw data
+                into an actionable tips to improve your health.
               </TextEffect>
+              <TextEffect
+                per="line"
+                preset="fade-in-blur"
+                speedSegment={0.3}
+                delay={0.5}
+                as="p"
+                className="mx-auto mt-6 max-w-2xl text-pretty text-md text-[#085983] font-medium"
+              >
+                Built by founders for founders.
+              </TextEffect>
+              <CTAButton />
 
+              <SecondarySection />
+            </div>
+            <div className="relative z-10 mx-auto max-w-4xl text-center">
               <AnimatedGroup
                 variants={{
                   container: {
@@ -68,32 +90,6 @@ export default function HeroSection() {
                 }}
                 className="mt-12"
               >
-                <form action="" className="mx-auto max-w-sm">
-                  <div className="bg-background has-[input:focus]:ring-muted relative grid grid-cols-[1fr_auto] items-center rounded-[calc(var(--radius)+0.5rem)] border pr-2 shadow shadow-zinc-950/5 has-[input:focus]:ring-2">
-                    <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4" />
-
-                    <input
-                      placeholder="Your mail address"
-                      className="h-12 w-full bg-transparent pl-12 focus:outline-none"
-                      type="email"
-                    />
-
-                    <div className="md:pr-1.5 lg:pr-0">
-                      <Button
-                        aria-label="submit"
-                        size="sm"
-                        className="rounded-(--radius)"
-                      >
-                        <span className="hidden md:block">Get Started</span>
-                        <SendHorizonal
-                          className="relative mx-auto size-5 md:hidden"
-                          strokeWidth={2}
-                        />
-                      </Button>
-                    </div>
-                  </div>
-                </form>
-
                 <div
                   aria-hidden
                   className="bg-radial from-primary/50 dark:from-primary/25 relative mx-auto mt-32 max-w-2xl to-transparent to-55% text-left"

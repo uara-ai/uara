@@ -51,19 +51,18 @@ export function SecondarySection() {
 
   const displayCount = isLoading ? "300+" : `${subscriberData.count}`;
   return (
-    <div className="text-white w-full lg:w-1/2 px-6 lg:px-8 text-center mt-20 flex justify-center">
-      <div className="flex flex-col items-center text-center space-y-6 mb-16">
+    <div className="text-white w-full mt-10 flex justify-center sm:justify-start">
+      <div className="flex flex-col items-center sm:items-start text-center sm:text-left space-y-6">
         {/* Avatar Circles */}
-        <div className="flex flex-col items-center space-y-2">
+        <div className="flex-col sm:flex-row flex items-center gap-2">
           <AvatarCircles
             numPeople={subscriberData.count}
             avatarUrls={subscriberData.avatars}
           />
+          <p className="font-geist-sans text-md font-normal text-[#085983]">
+            trusted by <strong>{displayCount}</strong> amazing founders
+          </p>
         </div>
-
-        <p className="font-[family-name:var(--font-instrument-serif)] text-[32px] font-normal">
-          {displayCount} people in waitlist
-        </p>
       </div>
     </div>
   );
