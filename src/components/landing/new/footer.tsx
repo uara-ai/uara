@@ -2,16 +2,10 @@
 
 import { Logo } from "@/components/logo";
 import Link from "next/link";
-import { Twitter, Instagram, MailIcon, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 import Image from "next/image";
 import DynamicText from "@/components/kokonutui/dynamic-text";
-import Discord from "@/components/kokonutui/discord";
-import {
-  IconBrandDiscord,
-  IconBrandGithub,
-  IconBrandX,
-  IconMail,
-} from "@tabler/icons-react";
+import { SocialLinks } from "@/components/design-system";
 
 export function Footer() {
   return (
@@ -117,37 +111,8 @@ export function Footer() {
                   </div>
 
                   {/* Social Icons */}
-                  <div className="footer-social flex justify-center lg:justify-end gap-4 mt-8">
-                    <Link
-                      href="https://github.com/uara-ai/uara"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="footer-social-icon w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors border border-white/20"
-                    >
-                      <IconBrandGithub className="w-5 h-5 text-white" />
-                    </Link>
-                    <Link
-                      href="https://discord.gg/f7fSp6vQcK"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="footer-social-icon w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors border border-white/20"
-                    >
-                      <IconBrandDiscord className="w-5 h-5 text-white" />
-                    </Link>
-                    <Link
-                      href="https://x.com/uaradotai"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="footer-social-icon w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors border border-white/20"
-                    >
-                      <IconBrandX className="w-5 h-5 text-white" />
-                    </Link>
-                    <Link
-                      href="mailto:hello@uara.ai"
-                      className="footer-social-icon w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors border border-white/20"
-                    >
-                      <IconMail className="w-5 h-5 text-white" />
-                    </Link>
+                  <div className="flex items-end justify-end lg:justify-end gap-4 mt-8 bg-white/90 backdrop-blur-sm rounded-full p-2 border border-white/20 max-w-40 ml-auto">
+                    <SocialLinks />
                   </div>
                 </div>
               </div>

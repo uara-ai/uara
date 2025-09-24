@@ -18,11 +18,7 @@ interface DocHeaderProps {
   showBreadcrumb?: boolean;
 }
 
-export function DocHeader({
-  title = "UI Components",
-  description = "Component library documentation",
-  showBreadcrumb = true,
-}: DocHeaderProps) {
+export function DocHeader({ showBreadcrumb = true }: DocHeaderProps) {
   return (
     <header className="flex h-auto min-h-16 shrink-0 items-center gap-2 border-b border-[#085983]/20 px-4 sm:px-6 py-3 font-[family-name:var(--font-geist-sans)]">
       <div className="flex items-center gap-3 flex-1">
