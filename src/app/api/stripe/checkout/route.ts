@@ -83,6 +83,9 @@ export async function POST(req: NextRequest) {
 
     // Validate price ID
     console.log("Validating price ID:", priceId);
+    console.log("Environment:", process.env.NODE_ENV);
+    console.log("Stripe key type:", process.env.STRIPE_SECRET_KEY?.slice(0, 8));
+
     if (!validatePriceId(priceId, selectedTier.id)) {
       console.error(
         "Price ID validation failed for tier:",
@@ -92,6 +95,24 @@ export async function POST(req: NextRequest) {
       return Response.json(
         {
           error: "Invalid pricing configuration. Please contact support.",
+        },
+        { status: 500 }
+      );
+    }
+
+    // Additional validation for live mode
+    const isLiveMode = process.env.STRIPE_SECRET_KEY?.startsWith("sk_live_");
+    console.log("Stripe live mode:", isLiveMode);
+
+    if (
+      isLiveMode &&
+      selectedTier.id === "tier_3" &&
+      priceId === "price_1S7bAdH7JERdDkEOj8JRBGB1"
+    ) {
+      console.error("CRITICAL: Using test price ID in live mode!");
+      return Response.json(
+        {
+          error: "Configuration error: Test price ID detected in live mode.",
         },
         { status: 500 }
       );
@@ -135,15 +156,10 @@ export async function POST(req: NextRequest) {
 
     // Add subscription-specific config only for subscription mode
     if (selectedTier.mode === "subscription") {
-      const cookieStore = await cookies();
       sessionConfig.subscription_data = {
         metadata: {
           userId: user.id,
           tierId: selectedTier.id,
-          datafast_visitor_id:
-            cookieStore.get("datafast_visitor_id")?.value || null,
-          datafast_session_id:
-            cookieStore.get("datafast_session_id")?.value || null,
         },
       };
     }
@@ -152,6 +168,27 @@ export async function POST(req: NextRequest) {
       "Creating Stripe checkout session with config:",
       JSON.stringify(sessionConfig, null, 2)
     );
+
+    // First, verify the price exists in Stripe
+    try {
+      console.log("Verifying price exists in Stripe:", priceId);
+      const price = await stripe.prices.retrieve(priceId);
+      console.log("Price verified successfully:", price.id, price.active);
+
+      if (!price.active) {
+        console.error("Price is inactive:", priceId);
+        return Response.json(
+          { error: "Selected pricing option is no longer available." },
+          { status: 400 }
+        );
+      }
+    } catch (priceError) {
+      console.error("Price verification failed:", priceError);
+      return Response.json(
+        { error: "Invalid pricing option. Please refresh and try again." },
+        { status: 400 }
+      );
+    }
 
     const session = await stripe.checkout.sessions.create(sessionConfig);
     console.log("Stripe session created successfully:", session.id);
