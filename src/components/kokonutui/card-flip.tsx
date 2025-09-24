@@ -19,6 +19,7 @@ export interface CardFlipProps {
   subtitle?: string;
   description?: string;
   features?: string[];
+  price?: string;
 }
 
 export default function CardFlip({
@@ -26,6 +27,7 @@ export default function CardFlip({
   subtitle = "Explore the fundamentals",
   description = "Dive deep into the world of modern UI/UX design.",
   features = ["UI/UX", "Modern Design", "Tailwind CSS", "Kokonut UI"],
+  price,
 }: CardFlipProps) {
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -83,10 +85,20 @@ export default function CardFlip({
 
           <div className="absolute bottom-0 left-0 right-0 p-5">
             <div className="flex items-center justify-between gap-3">
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 flex-1">
                 <h3 className="text-lg font-semibold text-[#085983] dark:text-white leading-snug tracking-tighter transition-all duration-500 ease-out-expo group-hover:translate-y-[-4px]">
                   {title}
                 </h3>
+                {price && (
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-3xl font-bold text-[#085983] dark:text-white transition-all duration-500 ease-out-expo group-hover:translate-y-[-4px]">
+                      {price}
+                    </span>
+                    <span className="text-sm text-[#085983]/70 dark:text-zinc-400 font-medium">
+                      lifetime
+                    </span>
+                  </div>
+                )}
                 <p className="text-sm text-[#085983]/70 dark:text-zinc-200 line-clamp-2 tracking-tight transition-all duration-500 ease-out-expo group-hover:translate-y-[-4px] delay-[50ms]">
                   {subtitle}
                 </p>

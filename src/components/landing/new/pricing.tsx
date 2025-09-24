@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import CardFlip from "@/components/kokonutui/card-flip";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@workos-inc/authkit-nextjs/components";
+import { useCheckout } from "@/hooks/use-checkout";
 
 interface TierInfo {
   currentTier: {
@@ -28,9 +30,14 @@ interface TierInfo {
 interface PricingCardFlipProps {
   tierInfo: TierInfo | null;
   onGetStarted: () => void;
+  isLoading?: boolean;
 }
 
-function PricingCardFlip({ tierInfo, onGetStarted }: PricingCardFlipProps) {
+function PricingCardFlip({
+  tierInfo,
+  onGetStarted,
+  isLoading,
+}: PricingCardFlipProps) {
   if (!tierInfo) {
     return (
       <div className="w-full">
@@ -47,7 +54,7 @@ function PricingCardFlip({ tierInfo, onGetStarted }: PricingCardFlipProps) {
   const { currentTier, spotsRemaining } = tierInfo;
 
   const title = currentTier.name;
-  const subtitle = `Lifetime access for ${currentTier.displayPrice}`;
+  const subtitle = `Lifetime access to all features and future updates`;
   const description = `Get lifetime access to all features and future updates.`;
 
   const features = [
@@ -61,13 +68,27 @@ function PricingCardFlip({ tierInfo, onGetStarted }: PricingCardFlipProps) {
   ];
 
   return (
-    <div onClick={onGetStarted} className="cursor-pointer w-full">
+    <div
+      onClick={isLoading ? undefined : onGetStarted}
+      className={`w-full ${
+        isLoading ? "opacity-75 cursor-not-allowed" : "cursor-pointer"
+      }`}
+    >
       <CardFlip
         title={title}
         subtitle={subtitle}
         description={description}
         features={features}
+        price={currentTier.displayPrice}
       />
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-black/80 rounded-2xl">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#085983] mx-auto mb-2"></div>
+            <p className="text-sm text-[#085983] font-medium">Processing...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -75,6 +96,12 @@ function PricingCardFlip({ tierInfo, onGetStarted }: PricingCardFlipProps) {
 export default function Pricing() {
   const [tierInfo, setTierInfo] = useState<TierInfo | null>(null);
   const router = useRouter();
+  const { user } = useAuth();
+  const {
+    checkout,
+    isLoading: checkoutLoading,
+    error: checkoutError,
+  } = useCheckout();
 
   useEffect(() => {
     async function fetchTierInfo() {
@@ -136,8 +163,21 @@ export default function Pricing() {
     fetchTierInfo();
   }, []);
 
-  const handleGetStarted = () => {
-    router.push("/login");
+  const handleGetStarted = async () => {
+    if (user) {
+      // User is logged in, redirect to Stripe checkout
+      if (tierInfo?.currentTier?.id) {
+        try {
+          await checkout(tierInfo.currentTier.id);
+        } catch (error) {
+          console.error("Checkout failed:", error);
+          // Optionally show an error message to the user
+        }
+      }
+    } else {
+      // User is not logged in, redirect to login
+      router.push("/login");
+    }
   };
 
   return (
@@ -198,10 +238,11 @@ export default function Pricing() {
       </div>
 
       <div className="mt-12 sm:mt-16 lg:mt-20 flex justify-center">
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-sm relative">
           <PricingCardFlip
             tierInfo={tierInfo}
             onGetStarted={handleGetStarted}
+            isLoading={checkoutLoading}
           />
         </div>
       </div>

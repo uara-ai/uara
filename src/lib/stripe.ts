@@ -31,7 +31,10 @@ export const tiers = [
   {
     id: "tier_3",
     name: "Lifetime Deal",
-    priceId: "price_1S7bAdH7JERdDkEOj8JRBGB1", // You'll need to create this in Stripe
+    priceId:
+      process.env.NODE_ENV === "development"
+        ? "price_1S6CWaH7JERdDkEOj0vsRPcR"
+        : "price_1S7bAdH7JERdDkEOj8JRBGB1", // Production price id
     maxUsers: 50, // Next 25 users get tier 3 pricing
     price: 9900, // $99 in cents
     displayPrice: "$99",
