@@ -19,11 +19,11 @@ export function Logo({
       <Image src="/logo.svg" alt="Uara AI" width={50} height={50} />
       <span
         className={cn(
-          "text-3xl font-medium text-[#085983] dark:text-gray-100 font-[family-name:var(--font-instrument-serif)]",
+          "text-xl font-medium text-[#085983] dark:text-gray-100 font-geist-sans tracking-wider",
           hidden && "hidden"
         )}
       >
-        Uara.ai
+        uara.ai
       </span>
     </Link>
   );

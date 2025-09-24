@@ -5,6 +5,7 @@ import { AnimatedGroup } from "@/components/motion-primitives/animated-group";
 import { LogoCloud } from "@/components/landing/new/logo-cloud";
 import { SecondarySection } from "./secondary-section";
 import CTAButton from "./cta-button";
+import { GithubStars } from "./github-stars";
 
 const transitionVariants = {
   item: {
@@ -74,6 +75,8 @@ export default function HeroSection() {
               <CTAButton />
 
               <SecondarySection />
+
+              <GithubStars />
             </div>
             <div className="relative z-10 mx-auto max-w-4xl text-center">
               <AnimatedGroup

@@ -25,9 +25,8 @@ export function LoginButton({
     <Button
       variant="outline"
       className={cn(
-        `${bgColor} ${hoverBgColor} border-2 ${borderColor} ${textColor} ${hoverTextColor} ${className} font-geist-sans text-sm tracking-wider font-normal px-4 py-2 h-auto backdrop-blur-sm rounded-full transition-all duration-200`
+        `${bgColor} ${hoverBgColor} border-2 ${borderColor} ${textColor} ${hoverTextColor} ${className} font-geist-sans text-sm tracking-wider font-semibold px-4 py-2 h-auto backdrop-blur-sm rounded-full transition-all duration-200`
       )}
-      data-fast-goal="login_button_nav_click"
       asChild
     >
       <Link href="/login" className="flex items-center">
