@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { IconMenu3, IconX } from "@tabler/icons-react";
-import { LoginButton } from "../hero/login-button";
+import { LoginButton } from "./login-button";
 
 const menuItems = [
   { name: "Features", href: "#features" },

@@ -82,7 +82,7 @@ export default function FAQ() {
 
           <div className="mt-8 text-center">
             <p className="font-geist-sans text-sm md:text-base text-[#085983]/70">
-              Can't find what you're looking for? Contact our{" "}
+              Can&apos;t find what you&apos;re looking for? Contact our{" "}
               <Link
                 href="#"
                 className="text-[#085983] font-medium hover:underline transition-all"

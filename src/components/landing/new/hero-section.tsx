@@ -3,7 +3,7 @@ import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { AnimatedGroup } from "@/components/motion-primitives/animated-group";
 
 import { LogoCloud } from "@/components/landing/new/logo-cloud";
-import { SecondarySection } from "../hero/secondary-section";
+import { SecondarySection } from "./secondary-section";
 import CTAButton from "./cta-button";
 
 const transitionVariants = {
@@ -142,7 +142,7 @@ const AppComponent = () => {
       </div>
       <div className="space-y-3">
         <div className="text-foreground border-b border-white/10 pb-3 text-sm font-medium">
-          This year, you're walking more on average than you did in 2023.
+          This year, you&apos;re walking more on average than you did in 2023.
         </div>
         <div className="space-y-3">
           <div className="space-y-1">

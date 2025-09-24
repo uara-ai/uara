@@ -76,8 +76,9 @@ export function BottomCTA({ className }: BottomCTAProps) {
                   </h3>
 
                   <p className="font-geist-sans text-lg sm:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-                    Don't miss your chance to be among the first 100 lifetime
-                    members. Once these spots are gone, they're gone forever.
+                    Don&apos;t miss your chance to be among the first 100
+                    lifetime members. Once these spots are gone, they&apos;re
+                    gone forever.
                   </p>
                 </div>
 
