@@ -1,7 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
-import { getTierById } from "@/lib/tier-calculator";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
