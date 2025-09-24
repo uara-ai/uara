@@ -4,8 +4,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { BMICalculator } from "@/components/free-tools";
 import { Footer } from "@/components/landing/new/footer";
-import { Navbar } from "@/components/landing/hero/navbar";
-
+import { HeroHeader } from "@/components/landing/new/header";
 // SEO Metadata
 export const metadata: Metadata = {
   title: "Free BMI Calculator - Calculate Your Body Mass Index | Uara.ai",
@@ -164,33 +163,14 @@ const healthTips = [
 export default function BMICalculatorPage() {
   return (
     <div>
+      <HeroHeader />
       <main>
         {/* Hero Section - Following hero.tsx patterns */}
-        <section className="relative w-full py-16 overflow-hidden">
+        <section className="relative w-full py-28 overflow-hidden">
           {/* Background with gradient overlay similar to hero.tsx */}
           <div className="absolute inset-0 bg-gradient-to-br from-[#085983]/5 via-white to-[#085983]/5"></div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Navigation breadcrumb */}
-            <nav className="mb-8" aria-label="Breadcrumb">
-              <ol className="flex items-center space-x-2 text-sm text-[#085983]/60">
-                <li>
-                  <Link
-                    href="/"
-                    className="hover:text-[#085983] transition-colors"
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li>/</li>
-                <li>
-                  <span className="text-[#085983] font-medium">
-                    BMI Calculator
-                  </span>
-                </li>
-              </ol>
-            </nav>
-
             {/* Header - Following how-it-works.tsx section header pattern */}
             <div className="text-center mb-12 sm:mb-16 lg:mb-20">
               {/* Mobile: Simple title without decorative lines */}
