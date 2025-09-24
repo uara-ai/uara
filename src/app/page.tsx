@@ -12,8 +12,9 @@ import { EarlyAdoptersSection } from "@/components/landing/early-adopters-sectio
 import { FAQ } from "@/components/landing/faq";
 import { BottomCTA } from "@/components/landing/bottom-cta";
 import { Wearables } from "@/components/landing/wearables";
-import HeroSection from "@/components/landing/hero/new/hero-section";
-import { HeroHeader } from "@/components/landing/hero/new/header";
+import HeroSection from "@/components/landing/new/hero-section";
+import { HeroHeader } from "@/components/landing/new/header";
+import Features from "@/components/landing/new/features";
 
 export default function Home() {
   return (
@@ -22,7 +23,8 @@ export default function Home() {
 
       <div>
         <HeroSection />
-        <Wearables />
+        <Features />
+
         <EarlyAdoptersSection />
         <HowItWorks />
         <PricingSection redirectTo="/waitlist" />

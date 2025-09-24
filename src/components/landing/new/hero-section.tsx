@@ -2,8 +2,8 @@ import React from "react";
 import { TextEffect } from "@/components/motion-primitives/text-effect";
 import { AnimatedGroup } from "@/components/motion-primitives/animated-group";
 
-import { LogoCloud } from "@/components/landing/hero/new/logo-cloud";
-import { SecondarySection } from "../secondary-section";
+import { LogoCloud } from "@/components/landing/new/logo-cloud";
+import { SecondarySection } from "../hero/secondary-section";
 import CTAButton from "./cta-button";
 
 const transitionVariants = {
