@@ -27,6 +27,7 @@ async function middleware(request: NextRequest) {
     middlewareAuth: {
       enabled: true,
       unauthenticatedPaths: [
+        "/",
         "/ui",
         "/ui/:path*",
         // Add other public paths here if needed
@@ -36,8 +37,6 @@ async function middleware(request: NextRequest) {
         "/pricing",
         "/founders",
         "/bmi-calculator",
-        "/api/pricing",
-        "/api/suggestions",
       ],
     },
   });
