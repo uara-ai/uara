@@ -12,14 +12,19 @@ import { EarlyAdoptersSection } from "@/components/landing/early-adopters-sectio
 import { FAQ } from "@/components/landing/faq";
 import { BottomCTA } from "@/components/landing/bottom-cta";
 import { Wearables } from "@/components/landing/wearables";
+import HeroSection from "@/components/landing/new/hero-section";
+import { HeroHeader } from "@/components/landing/new/header";
+import Features from "@/components/landing/new/features";
 
 export default function Home() {
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <Navbar />
+      <HeroHeader />
+
       <div>
-        <Hero />
-        <Wearables />
+        <HeroSection />
+        <Features />
+
         <EarlyAdoptersSection />
         <HowItWorks />
         <PricingSection redirectTo="/waitlist" />

@@ -23,7 +23,7 @@ export const AvatarCircles = ({
       {avatarUrls.map((url, index) => (
         <Image
           key={index}
-          className="h-10 w-10 rounded-full border-2 border-white/30 bg-white/20 backdrop-blur-sm"
+          className="h-10 w-10 rounded-full border-2 border-[#085983]/30 bg-[#085983]/20 backdrop-blur-sm"
           src={url.imageUrl}
           width={40}
           height={40}
@@ -33,7 +33,7 @@ export const AvatarCircles = ({
       {(numPeople ?? 0) > 0 && (
         <Link
           href="/"
-          className="font-[family-name:var(--font-instrument-serif)] font-semibold flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/30 bg-white/20 backdrop-blur-sm text-center text-xs text-white hover:bg-white/30 transition-colors"
+          className="font-geist-sans font-semibold flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#085983]/30 bg-white/20 backdrop-blur-sm text-center text-xs text-[#085983] transition-colors"
         >
           +{numPeople}
         </Link>
