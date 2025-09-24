@@ -7,6 +7,8 @@ import { prisma } from "@/lib/prisma";
 import { getTierById } from "@/lib/tier-calculator";
 import { Logo } from "@/components/logo";
 
+export const dynamic = "force-dynamic";
+
 export default async function SuccessPage() {
   let userTier = null;
   let tierInfo = null;

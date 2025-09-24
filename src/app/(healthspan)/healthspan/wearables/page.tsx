@@ -2,6 +2,8 @@ import React from "react";
 import { WearablesPage } from "@/components/healthspan/v1/wearables/wearables-page";
 import { getWearablesDataServer, getWhoopUserServer } from "@/actions/whoop";
 
+export const dynamic = "force-dynamic";
+
 export default async function WearablesPageRoute() {
   // Fetch WHOOP user and data in parallel for maximum efficiency
   const [whoopUser, wearablesData] = await Promise.all([

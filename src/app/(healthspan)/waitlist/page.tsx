@@ -26,6 +26,8 @@ interface TierInfo {
   isLastTier: boolean;
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function WaitlistPage() {
   // Check authentication
   const { user } = await withAuth();

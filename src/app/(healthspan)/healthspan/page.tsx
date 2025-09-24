@@ -2,6 +2,8 @@ import React from "react";
 import { HealthspanPage } from "@/components/healthspan/v1/healthspan/healthspan-page";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 
+export const dynamic = "force-dynamic";
+
 export default async function HealthspanPageRoute() {
   // Fetch user data with authentication check
   const user = await withAuth({ ensureSignedIn: true });

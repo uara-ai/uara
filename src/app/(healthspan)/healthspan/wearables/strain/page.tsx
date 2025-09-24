@@ -2,6 +2,8 @@ import React from "react";
 import { CycleDetailPage } from "@/components/healthspan/v1/wearables/cycles/cycle-detail-page";
 import { getCycleDataServer } from "@/actions/whoop";
 
+export const dynamic = "force-dynamic";
+
 export default async function CyclePage() {
   // Fetch cycle data efficiently with caching
   const cycleData = await getCycleDataServer(30, 30); // Last 30 days, 30 records

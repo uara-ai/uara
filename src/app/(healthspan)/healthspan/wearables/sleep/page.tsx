@@ -2,6 +2,8 @@ import React from "react";
 import { SleepDetailPage } from "@/components/healthspan/v1/wearables/sleep/sleep-detail-page";
 import { getSleepDataServer } from "@/actions/whoop";
 
+export const dynamic = "force-dynamic";
+
 export default async function SleepPage() {
   // Fetch sleep data efficiently with caching
   const sleepData = await getSleepDataServer(30, 30); // Last 30 days, 30 records

@@ -9,6 +9,8 @@ import {
   processWhoopDataToStats,
 } from "@/actions/whoop-data-action";
 
+export const dynamic = "force-dynamic";
+
 // Enhanced loading components
 function WhoopCardsLoading() {
   return (
