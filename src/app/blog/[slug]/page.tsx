@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { MarkdownParser } from "@/components/markdown-parser";
 import { ArrowLeft, BookOpen, Brain, Sparkles } from "lucide-react";
-import { Navbar } from "@/components/landing/hero/navbar";
-import { Footer } from "@/components/landing/footer";
+import { HeroHeader } from "@/components/landing/new/header";
+import { Footer } from "@/components/landing/new/footer";
 import Image from "next/image";
 
 export async function generateStaticParams() {
@@ -147,7 +147,7 @@ export default async function Blog({
         />
 
         {/* Navigation */}
-        <Navbar scrolled={true} />
+        <HeroHeader />
 
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
           <div className="relative mx-auto pt-20 sm:pt-24 lg:pt-28 max-w-6xl px-4 sm:px-6 lg:px-8 pb-16">

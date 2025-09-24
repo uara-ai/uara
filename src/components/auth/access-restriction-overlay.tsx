@@ -1,7 +1,7 @@
 "use client";
 
 import { Logo } from "@/components/logo";
-import { PricingCard } from "@/components/landing/pricing/pricing-card";
+import Pricing from "../landing/new/pricing";
 import { SignOut } from "@/components/auth/sign-out";
 import { getCurrentTierInfo } from "@/actions/tier-actions";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
@@ -82,7 +82,7 @@ export function AccessRestrictionOverlay() {
 
         {/* Dynamic Pricing Card */}
         <div className="w-full max-w-6xl mx-auto">
-          <PricingCard tierInfo={tierInfo} />
+          <Pricing />
         </div>
 
         {/* User Stats */}

@@ -14,7 +14,7 @@ export const tiers = [
       process.env.NODE_ENV === "production"
         ? "price_1S7b9gH7JERdDkEOHoyIrF3p"
         : "price_1S6CWaH7JERdDkEOj0vsRPcR",
-    maxUsers: 10, // First 10 users get tier 1 pricing
+    maxUsers: 0, // First 10 users get tier 1 pricing
     price: 4900, // $49 in cents
     displayPrice: "$49",
     mode: "payment" as const, // One-time payment for lifetime access
@@ -23,23 +23,23 @@ export const tiers = [
     id: "tier_2",
     name: "Tier 2",
     priceId: "price_1S7bA9H7JERdDkEO6v7dx0l8", // You'll need to create this in Stripe
-    maxUsers: 15, // Next 15 users get tier 2 pricing
+    maxUsers: 0, // Next 15 users get tier 2 pricing
     price: 7900, // $79 in cents
     displayPrice: "$79",
     mode: "payment" as const, // One-time payment for lifetime access
   },
   {
     id: "tier_3",
-    name: "Tier 3",
+    name: "Lifetime Deal",
     priceId: "price_1S7bAdH7JERdDkEOj8JRBGB1", // You'll need to create this in Stripe
-    maxUsers: 25, // Next 25 users get tier 3 pricing
+    maxUsers: 50, // Next 25 users get tier 3 pricing
     price: 9900, // $99 in cents
     displayPrice: "$99",
     mode: "payment" as const, // One-time payment for lifetime access
   },
   {
     id: "tier_4",
-    name: "Tier 4",
+    name: "Early Backer",
     priceId: "price_1S7bBDH7JERdDkEOnkQ9ePs2", // You'll need to create this in Stripe
     maxUsers: 25, // Next 25 users get tier 4 pricing
     price: 14900, // $149 in cents
@@ -48,7 +48,7 @@ export const tiers = [
   },
   {
     id: "tier_5",
-    name: "Tier 5",
+    name: "Seed Supporter",
     priceId: "price_1S7bBbH7JERdDkEOogYTms3c", // You'll need to create this in Stripe
     maxUsers: 25, // Next 25 users get tier 5 pricing
     price: 19900, // $199 in cents
@@ -76,4 +76,4 @@ export const tiers = [
 ];
 
 // Test users to exclude from tier calculation (for development)
-export const TEST_USER_COUNT = 1;
+export const TEST_USER_COUNT = 3;

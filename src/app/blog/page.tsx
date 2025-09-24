@@ -6,8 +6,8 @@ import { DATA } from "@/lib/metadata";
 import { formatDate } from "@/lib/utils";
 import { ArrowLeft, BookOpen, Sparkles } from "lucide-react";
 import Image from "next/image";
-import { Navbar } from "@/components/landing/hero/navbar";
-import { Footer } from "@/components/landing/footer";
+import { HeroHeader } from "@/components/landing/new/header";
+import { Footer } from "@/components/landing/new/footer";
 
 export const metadata = {
   title: "Blog — Longevity, Healthspan & AI Insights | Uara.ai",
@@ -108,7 +108,7 @@ export default async function BlogPage() {
       />
 
       {/* Navigation */}
-      <Navbar scrolled={true} />
+      <HeroHeader />
 
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
         <div className="relative mx-auto pt-20 sm:pt-24 lg:pt-28 max-w-7xl px-4 sm:px-6 lg:px-8 pb-16">
