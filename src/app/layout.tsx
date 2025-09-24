@@ -20,6 +20,7 @@ import {
   Baumans,
   Instrument_Serif,
 } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -160,6 +161,7 @@ export default async function RootLayout({
             disabled={process.env.NODE_ENV !== "production"}
           />
           <Toaster />
+          <SpeedInsights />
           {showTrackingConsent && <ConsentBanner />}
         </ThemeProvider>
       </body>

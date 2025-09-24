@@ -63,6 +63,7 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.3",
+    "@vercel/speed-insights": "^1.2.0",
     "@workos-inc/authkit-nextjs": "^2.6.0",
     "ai": "^5.0.35",
     "class-variance-authority": "^0.7.1",
