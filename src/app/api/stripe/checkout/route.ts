@@ -33,26 +33,38 @@ function absoluteUrl(origin: string | null, path: string): string {
 
 export async function POST(req: NextRequest) {
   try {
+    // Log the request for debugging
+    console.log("Stripe checkout request started");
+
     const { user } = await withAuth();
     if (!user) {
+      console.log("No user found in auth");
       return Response.json(
         { error: "Authentication required" },
         { status: 401 }
       );
     }
 
+    console.log("User authenticated:", user.id);
+
     const origin = req.headers.get("origin");
 
     const body = await req.json().catch(() => ({}));
 
     // Calculate current tier pricing
+    console.log("Calculating tier info...");
     const tierInfo = await calculateCurrentTier();
     const requestedTierId = body.tierId || tierInfo.currentTier.id;
+    console.log("Requested tier ID:", requestedTierId);
+
     const selectedTier = getTierById(requestedTierId);
 
     if (!selectedTier) {
+      console.error("Invalid tier selected:", requestedTierId);
       return Response.json({ error: "Invalid tier selected" }, { status: 400 });
     }
+
+    console.log("Selected tier:", selectedTier.name, selectedTier.priceId);
 
     // Check if user already has a tier
     const existingUser = await prisma.user.findUnique({
@@ -70,7 +82,13 @@ export async function POST(req: NextRequest) {
     const priceId = selectedTier.priceId;
 
     // Validate price ID
+    console.log("Validating price ID:", priceId);
     if (!validatePriceId(priceId, selectedTier.id)) {
+      console.error(
+        "Price ID validation failed for tier:",
+        selectedTier.id,
+        priceId
+      );
       return Response.json(
         {
           error: "Invalid pricing configuration. Please contact support.",
@@ -130,18 +148,46 @@ export async function POST(req: NextRequest) {
       };
     }
 
+    console.log(
+      "Creating Stripe checkout session with config:",
+      JSON.stringify(sessionConfig, null, 2)
+    );
+
     const session = await stripe.checkout.sessions.create(sessionConfig);
+    console.log("Stripe session created successfully:", session.id);
 
     if (!session.url) {
+      console.error("No checkout URL returned from Stripe");
       return Response.json(
         { error: "Failed to create checkout session" },
         { status: 500 }
       );
     }
 
+    console.log("Returning session URL:", session.url);
     return Response.json({ url: session.url });
   } catch (error) {
     console.error("Stripe checkout error:", error);
+
+    // Handle specific Stripe errors
+    if (error && typeof error === "object" && "code" in error) {
+      const stripeError = error as any;
+      console.error("Stripe error details:", {
+        code: stripeError.code,
+        message: stripeError.message,
+        type: stripeError.type,
+        param: stripeError.param,
+      });
+
+      return Response.json(
+        {
+          error: `Stripe error: ${stripeError.message}`,
+          code: stripeError.code,
+        },
+        { status: 400 }
+      );
+    }
+
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }

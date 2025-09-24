@@ -16,7 +16,7 @@ export const STRIPE = {
   priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY ?? "",
   publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "",
   successUrl: process.env.NEXT_PUBLIC_STRIPE_SUCCESS_URL ?? "/success",
-  cancelUrl: process.env.NEXT_PUBLIC_STRIPE_CANCEL_URL ?? "/pricing",
+  cancelUrl: process.env.NEXT_PUBLIC_STRIPE_CANCEL_URL ?? "/",
 };
 
 export const CookieKeys = {

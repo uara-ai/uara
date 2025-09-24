@@ -1,8 +1,13 @@
 import Stripe from "stripe";
-import { validateStripeEnvironment } from "./stripe-validation";
 
-// Validate environment on module load
-await validateStripeEnvironment();
+// Environment validation
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error("Missing required environment variable: STRIPE_SECRET_KEY");
+}
+
+if (!process.env.STRIPE_SECRET_KEY.startsWith("sk_")) {
+  throw new Error('STRIPE_SECRET_KEY must start with "sk_"');
+}
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-08-27.basil",
@@ -36,7 +41,7 @@ export const tiers = [
     id: "tier_3",
     name: "Lifetime Deal",
     priceId: "price_1S7bAdH7JERdDkEOj8JRBGB1", // Production price id
-    maxUsers: 50, // Next 25 users get tier 3 pricing
+    maxUsers: 50, // Next 50 users get tier 3 pricing
     price: 9900, // $99 in cents
     displayPrice: "$99",
     mode: "payment" as const, // One-time payment for lifetime access
@@ -68,15 +73,17 @@ export const tiers = [
     displayPrice: "$20",
     mode: "subscription" as const, // Subscription for monthly access
   },
-  {
-    id: "tier_7",
-    name: "Tier 7",
-    priceId: "price_1S7bC5H7JERdDkEOXXXXXXXX", // PLACEHOLDER - MUST CREATE IN STRIPE DASHBOARD
-    maxUsers: Infinity, // Unlimited after tier 5
-    price: 20000, // $200 in cents
-    displayPrice: "$200",
-    mode: "subscription" as const, // Subscription for monthly access
-  },
+  // NOTE: tier_7 temporarily disabled due to missing price ID
+  // Uncomment after creating price in Stripe Dashboard
+  // {
+  //   id: "tier_7",
+  //   name: "Tier 7",
+  //   priceId: "price_1S7bC5H7JERdDkEOXXXXXXXX", // PLACEHOLDER - MUST CREATE IN STRIPE DASHBOARD
+  //   maxUsers: Infinity, // Unlimited after tier 5
+  //   price: 20000, // $200 in cents
+  //   displayPrice: "$200",
+  //   mode: "subscription" as const, // Subscription for monthly access
+  // },
 ];
 
 // Test users to exclude from tier calculation (for development)
