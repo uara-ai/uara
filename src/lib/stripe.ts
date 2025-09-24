@@ -1,6 +1,10 @@
 import Stripe from "stripe";
+import { validateStripeEnvironment } from "./stripe-validation";
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+// Validate environment on module load
+await validateStripeEnvironment();
+
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-08-27.basil",
 });
 
@@ -67,7 +71,7 @@ export const tiers = [
   {
     id: "tier_7",
     name: "Tier 7",
-    priceId: "price_", // You'll need to create this in Stripe
+    priceId: "price_1S7bC5H7JERdDkEOXXXXXXXX", // PLACEHOLDER - MUST CREATE IN STRIPE DASHBOARD
     maxUsers: Infinity, // Unlimited after tier 5
     price: 20000, // $200 in cents
     displayPrice: "$200",

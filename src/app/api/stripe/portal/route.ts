@@ -8,9 +8,24 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 function absoluteUrl(origin: string | null, path: string): string {
-  if (!origin) return path;
+  // In production, use the environment variable or default to the current origin
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || origin;
+
+  if (!baseUrl) {
+    console.warn(
+      "No origin or NEXT_PUBLIC_APP_URL provided, using relative path"
+    );
+    return path;
+  }
+
   if (path.startsWith("http")) return path;
-  return new URL(path, origin).toString();
+
+  try {
+    return new URL(path, baseUrl).toString();
+  } catch (error) {
+    console.error("Failed to construct absolute URL:", error);
+    return path;
+  }
 }
 
 export async function POST(req: NextRequest) {
