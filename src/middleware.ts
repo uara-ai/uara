@@ -37,6 +37,9 @@ async function middleware(request: NextRequest) {
         "/pricing",
         "/founders",
         "/bmi-calculator",
+        "/api/pricing/tier",
+        "/api/stripe/:path*",
+        "/api/wearables/:path*",
       ],
     },
   });
