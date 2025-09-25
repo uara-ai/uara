@@ -6,6 +6,7 @@ import { UserProfileCard } from "./user-profile-card";
 import WhoopActivityCard from "./whoop-activity-card";
 import { ContributionChart } from "./contribution-chart";
 import { WearableStatsChart } from "./wearable-stats-chart";
+import { AiTipsChart } from "./ai-tips-chart";
 import { cn } from "@/lib/utils";
 import { ScoreOutput } from "@/lib/health/types";
 
@@ -78,6 +79,11 @@ export function HealthspanPage({
             currentStreak={30} // Mock streak data - replace with real data later
           />
         </div>
+      </div>
+
+      {/* Third Row: AI Tips Chart - Full Width */}
+      <div className="w-full">
+        <AiTipsChart data={wearableData} />
       </div>
     </div>
   );
