@@ -26,7 +26,6 @@ const today: Record<string, number> = {
   recoveryScore: 74,
   sleepPerformancePercentage: 88,
   respiratoryRate: 16,
-  strain: 14.2,
   averageHeartRate: 145,
   maxHeartRate: 175,
   kilojoule: 2600,
@@ -35,6 +34,7 @@ const today: Record<string, number> = {
   percentRecorded: 95,
   mood: 4,
   stress: 2,
+  strain: 14.2, // WHOOP strain data integrated into stress category
   energy: 4,
   focus: 4,
   mindfulness: 12,

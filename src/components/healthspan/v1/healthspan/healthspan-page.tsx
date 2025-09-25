@@ -79,11 +79,6 @@ export function HealthspanPage({
           />
         </div>
       </div>
-
-      {/* Additional content can be added here */}
-      <div className="text-center text-[#085983]/60 py-12">
-        <p>Additional healthspan insights and analytics will appear here...</p>
-      </div>
     </div>
   );
 }

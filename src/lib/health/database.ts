@@ -4,17 +4,58 @@ import { markers } from "./markers";
 import { MarkerValues } from "./types";
 
 /**
- * Calculate and save health score to database
+ * Calculate and save health score to database (once per day)
  * @param userId - WorkOS user ID
  * @param markerValues - Object containing marker values by ID
  * @param dataSourceVersion - Optional version string for the scoring algorithm
- * @returns The saved health score record
+ * @returns The saved health score record or existing daily score
  */
 export async function calculateAndSaveHealthScore(
   userId: string,
   markerValues: MarkerValues,
   dataSourceVersion?: string
 ) {
+  // Check if we already have a score for today
+  const today = new Date();
+  const startOfDay = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+  const endOfDay = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    23,
+    59,
+    59,
+    999
+  );
+
+  const existingScore = await prisma.healthScore.findFirst({
+    where: {
+      userId,
+      calculatedAt: {
+        gte: startOfDay,
+        lte: endOfDay,
+      },
+    },
+    orderBy: { calculatedAt: "desc" },
+  });
+
+  // If we already have a score for today, return it with updated calculation
+  if (existingScore) {
+    // Still calculate the scores for return value, but don't save a new record
+    const scoreResult = computeHealthScores(markers, markerValues);
+
+    return {
+      healthScore: existingScore,
+      scoreDetails: scoreResult,
+      isNewRecord: false,
+      message: "Daily score already exists for today",
+    };
+  }
+
   // Calculate the health scores using the scoring algorithm
   const scoreResult = computeHealthScores(markers, markerValues);
 
@@ -30,7 +71,7 @@ export async function calculateAndSaveHealthScore(
   const totalPossibleMarkers = scoreResult.perMarker.length;
   const dataQualityScore = (totalExpectedMarkers / totalPossibleMarkers) * 100;
 
-  // Save to database
+  // Save new daily score to database
   const healthScore = await prisma.healthScore.create({
     data: {
       userId,
@@ -49,6 +90,8 @@ export async function calculateAndSaveHealthScore(
   return {
     healthScore,
     scoreDetails: scoreResult,
+    isNewRecord: true,
+    message: "New daily health score saved successfully",
   };
 }
 
@@ -60,6 +103,40 @@ export async function calculateAndSaveHealthScore(
 export async function getLatestHealthScore(userId: string) {
   return prisma.healthScore.findFirst({
     where: { userId },
+    orderBy: { calculatedAt: "desc" },
+  });
+}
+
+/**
+ * Get today's health score for a user
+ * @param userId - WorkOS user ID
+ * @returns Today's health score record or null if none exists
+ */
+export async function getTodaysHealthScore(userId: string) {
+  const today = new Date();
+  const startOfDay = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+  const endOfDay = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    23,
+    59,
+    59,
+    999
+  );
+
+  return prisma.healthScore.findFirst({
+    where: {
+      userId,
+      calculatedAt: {
+        gte: startOfDay,
+        lte: endOfDay,
+      },
+    },
     orderBy: { calculatedAt: "desc" },
   });
 }
@@ -88,6 +165,50 @@ export async function getHealthScoreHistory(
     where,
     orderBy: { calculatedAt: "desc" },
   });
+}
+
+/**
+ * Get weekly health scores count for a user (should be max 7 scores per week)
+ * @param userId - WorkOS user ID
+ * @param weeks - Number of weeks to look back (default: 1)
+ * @returns Array of weekly score counts
+ */
+export async function getWeeklyScoreCounts(userId: string, weeks: number = 1) {
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - weeks * 7);
+
+  const scores = await prisma.healthScore.findMany({
+    where: {
+      userId,
+      calculatedAt: {
+        gte: startDate,
+      },
+    },
+    select: {
+      calculatedAt: true,
+    },
+    orderBy: { calculatedAt: "desc" },
+  });
+
+  // Group by week
+  const weeklyGroups: { [key: string]: number } = {};
+
+  scores.forEach((score) => {
+    const weekStart = new Date(score.calculatedAt);
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // Start of week (Sunday)
+    weekStart.setHours(0, 0, 0, 0);
+
+    const weekKey = weekStart.toISOString().split("T")[0];
+    weeklyGroups[weekKey] = (weeklyGroups[weekKey] || 0) + 1;
+  });
+
+  return Object.entries(weeklyGroups)
+    .map(([weekStart, count]) => ({
+      weekStart,
+      count,
+      isValid: count <= 7, // Should never exceed 7 scores per week
+    }))
+    .sort((a, b) => b.weekStart.localeCompare(a.weekStart));
 }
 
 /**

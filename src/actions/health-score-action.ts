@@ -6,6 +6,7 @@ import { withAuth } from "@workos-inc/authkit-nextjs";
 import {
   calculateAndSaveHealthScore,
   getLatestHealthScore,
+  getTodaysHealthScore,
   getHealthScoreHistory,
 } from "@/lib/health/database";
 import { getHealthDataAction } from "./health-data-action";
@@ -14,7 +15,7 @@ import { revalidateTag } from "next/cache";
 // Input schema for health score calculation
 const calculateHealthScoreSchema = z.object({
   includeMockData: z.boolean().default(false), // For testing with mock data
-  forceRecalculate: z.boolean().default(false), // Force recalculation even if recent score exists
+  forceRecalculate: z.boolean().default(false), // Force recalculation even if daily score exists
 });
 
 const getHealthScoreHistorySchema = z.object({
@@ -23,6 +24,7 @@ const getHealthScoreHistorySchema = z.object({
 
 /**
  * Calculate and save a new health score for the authenticated user
+ * Enforces once-per-day limit: only saves one health score per calendar day
  */
 export const calculateHealthScoreAction = actionClient
   .schema(calculateHealthScoreSchema)
@@ -35,18 +37,17 @@ export const calculateHealthScoreAction = actionClient
     const { includeMockData, forceRecalculate } = parsedInput;
 
     try {
-      // Check if we already have a recent health score (within last 6 hours)
+      // Check if we already have a health score for today (unless forcing recalculation)
       if (!forceRecalculate) {
-        const latestScore = await getLatestHealthScore(user.id);
-        const sixHoursAgo = new Date();
-        sixHoursAgo.setHours(sixHoursAgo.getHours() - 6);
+        const todaysScore = await getTodaysHealthScore(user.id);
 
-        if (latestScore && latestScore.calculatedAt > sixHoursAgo) {
+        if (todaysScore) {
           return {
             success: true,
-            message: "Recent health score found, skipping calculation",
-            healthScore: latestScore,
+            message: "Daily health score already exists for today",
+            healthScore: todaysScore,
             recalculated: false,
+            isNewRecord: false,
           };
         }
       }
@@ -75,14 +76,17 @@ export const calculateHealthScoreAction = actionClient
 
       return {
         success: true,
-        message: "Health score calculated and saved successfully",
+        message:
+          result.message || "Health score calculated and saved successfully",
         healthScore: result.healthScore,
         scoreDetails: result.scoreDetails,
+        isNewRecord: result.isNewRecord,
         sources,
         metadata: {
           ...metadata,
           recalculated: true,
           algorithmVersion: "v1.0.0",
+          dailyLimit: true,
         },
       };
     } catch (error) {
@@ -184,7 +188,8 @@ export async function getLatestHealthScoreServer() {
 }
 
 /**
- * Server function to calculate health score with automatic fallback to mock data
+ * Server function to calculate health score with daily limit enforcement
+ * Only calculates and saves one score per calendar day unless forced
  */
 export async function calculateHealthScoreServer(
   forceRecalculate: boolean = false
@@ -196,6 +201,7 @@ export async function calculateHealthScoreServer(
     }
 
     // Calculate with real data only (no mock data fallback)
+    // Respects daily limit unless forceRecalculate is true
     const result = await calculateHealthScoreAction({
       includeMockData: false,
       forceRecalculate,

@@ -177,6 +177,12 @@ export const markers: MarkersConfig = {
   MindStress: [
     { id: "mood", label: "Mood (1–5)", type: "higher", range: [1, 5] },
     { id: "stress", label: "Stress (1–5)", type: "lower", range: [1, 5] },
+    {
+      id: "strain",
+      label: "WHOOP Strain (0–21)",
+      type: "optimal",
+      range: [0, 8, 16, 21], // Low strain: 0-8 (excellent), Moderate: 8-16 (good), High: 16-21 (fair/poor)
+    },
     { id: "energy", label: "Energy (1–5)", type: "higher", range: [1, 5] },
     { id: "focus", label: "Focus (1–5)", type: "higher", range: [1, 5] },
     {
