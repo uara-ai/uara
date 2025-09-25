@@ -201,46 +201,7 @@ export const getHealthDataAction = actionClient
         healthData.weight = userProfile.weightKg;
       }
 
-      // 5. Add mock data for missing markers if requested (for testing)
-      if (includeMockData) {
-        // Add mock nutrition data
-        healthData.calories = healthData.calories || 2300;
-        healthData.protein = healthData.protein || 120;
-        healthData.carbs = healthData.carbs || 240;
-        healthData.fat = healthData.fat || 80;
-        healthData.fiber = healthData.fiber || 28;
-        healthData.sugar = healthData.sugar || 35;
-        healthData.water = healthData.water || 2.4;
-        healthData.caffeine = healthData.caffeine || 180;
-        healthData.alcohol = healthData.alcohol || 0;
-        healthData.eatingWindow = healthData.eatingWindow || 11;
-
-        // Add mock mind & stress data
-        healthData.mood = healthData.mood || 4;
-        healthData.stress = healthData.stress || 2;
-        healthData.energy = healthData.energy || 4;
-        healthData.focus = healthData.focus || 4;
-        healthData.mindfulness = healthData.mindfulness || 12;
-        healthData.journaling = healthData.journaling || 80;
-        healthData.screenTime = healthData.screenTime || 3.5;
-        healthData.socialQuality = healthData.socialQuality || 4;
-        healthData.gratitude = healthData.gratitude || 1;
-        healthData.workloadPerception = healthData.workloadPerception || 2;
-
-        // Add mock health checks
-        healthData.waistCircumference = healthData.waistCircumference || 86;
-        healthData.bodyFat = healthData.bodyFat || 18;
-        healthData.bloodPressureSys = healthData.bloodPressureSys || 118;
-        healthData.bloodPressureDia = healthData.bloodPressureDia || 76;
-        healthData.fastingGlucose = healthData.fastingGlucose || 90;
-        healthData.hba1c = healthData.hba1c || 5.2;
-        healthData.ldl = healthData.ldl || 95;
-        healthData.hdl = healthData.hdl || 55;
-        healthData.triglycerides = healthData.triglycerides || 110;
-        healthData.totalCholesterol = healthData.totalCholesterol || 185;
-        healthData.crp = healthData.crp || 0.7;
-        healthData.vitaminD = healthData.vitaminD || 34;
-      }
+      // 5. Only use real data - no mock data added
 
       return {
         success: true,
@@ -249,7 +210,7 @@ export const getHealthDataAction = actionClient
           sources: {
             whoop: !!whoopData,
             userProfile: !!userProfile,
-            mockData: includeMockData,
+            mockData: false, // No longer using mock data
           },
           metadata: {
             availableMarkers: Object.keys(healthData).length,

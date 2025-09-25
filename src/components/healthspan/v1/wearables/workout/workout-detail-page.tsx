@@ -69,13 +69,13 @@ export function WorkoutDetailPage({
   };
 
   const formatDistance = (meters: number) => {
-    if (meters === 0) return "N/A";
+    if (meters === 0) return "-";
     const km = meters / 1000;
     return km >= 1 ? `${km.toFixed(2)} km` : `${meters.toFixed(0)} m`;
   };
 
   const formatAltitude = (meters: number) => {
-    if (meters === 0) return "N/A";
+    if (meters === 0) return "-";
     return `${meters.toFixed(0)} m`;
   };
 

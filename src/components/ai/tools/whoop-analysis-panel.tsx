@@ -371,7 +371,7 @@ export function WhoopAnalysisPanel({
             <div className="text-2xl font-[family-name:var(--font-instrument-serif)] font-normal text-[#085983]">
               {typeConfig.primaryMetric !== undefined
                 ? `${typeConfig.primaryMetric}${typeConfig.primaryUnit}`
-                : "N/A"}
+                : "-"}
             </div>
           </CardContent>
         </Card>

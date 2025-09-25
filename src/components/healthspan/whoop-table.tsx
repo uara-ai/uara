@@ -136,7 +136,7 @@ interface WhoopTableProps {
 }
 
 const formatTime = (milliseconds: number | null): string => {
-  if (!milliseconds) return "N/A";
+  if (!milliseconds) return "-";
   const hours = Math.floor(milliseconds / (1000 * 60 * 60));
   const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
   return `${hours}h ${minutes}m`;
@@ -239,7 +239,7 @@ const recoveryColumns: ColumnDef<WhoopRecoveryRecord>[] = [
     cell: ({ row }) =>
       row.original.recoveryScore
         ? `${Math.round(row.original.recoveryScore)}%`
-        : "N/A",
+        : "-",
   },
   {
     accessorKey: "restingHeartRate",
@@ -247,13 +247,13 @@ const recoveryColumns: ColumnDef<WhoopRecoveryRecord>[] = [
     cell: ({ row }) =>
       row.original.restingHeartRate
         ? `${row.original.restingHeartRate} bpm`
-        : "N/A",
+        : "-",
   },
   {
     accessorKey: "hrvRmssd",
     header: "HRV",
     cell: ({ row }) =>
-      row.original.hrvRmssd ? `${Math.round(row.original.hrvRmssd)}ms` : "N/A",
+      row.original.hrvRmssd ? `${Math.round(row.original.hrvRmssd)}ms` : "-",
   },
   {
     accessorKey: "scoreState",
@@ -306,7 +306,7 @@ const sleepColumns: ColumnDef<WhoopSleepRecord>[] = [
     cell: ({ row }) =>
       row.original.sleepPerformancePercentage
         ? `${Math.round(row.original.sleepPerformancePercentage)}%`
-        : "N/A",
+        : "-",
   },
   {
     accessorKey: "sleepEfficiencyPercentage",
@@ -314,7 +314,7 @@ const sleepColumns: ColumnDef<WhoopSleepRecord>[] = [
     cell: ({ row }) =>
       row.original.sleepEfficiencyPercentage
         ? `${Math.round(row.original.sleepEfficiencyPercentage)}%`
-        : "N/A",
+        : "-",
   },
   {
     accessorKey: "totalInBedTime",
@@ -327,7 +327,7 @@ const sleepColumns: ColumnDef<WhoopSleepRecord>[] = [
     cell: ({ row }) =>
       row.original.respiratoryRate
         ? `${row.original.respiratoryRate.toFixed(1)} rpm`
-        : "N/A",
+        : "-",
   },
   {
     accessorKey: "scoreState",
@@ -378,7 +378,7 @@ const cycleColumns: ColumnDef<WhoopCycleRecord>[] = [
     accessorKey: "strain",
     header: "Strain",
     cell: ({ row }) =>
-      row.original.strain ? row.original.strain.toFixed(1) : "N/A",
+      row.original.strain ? row.original.strain.toFixed(1) : "-",
   },
   {
     accessorKey: "averageHeartRate",
@@ -386,13 +386,13 @@ const cycleColumns: ColumnDef<WhoopCycleRecord>[] = [
     cell: ({ row }) =>
       row.original.averageHeartRate
         ? `${row.original.averageHeartRate} bpm`
-        : "N/A",
+        : "-",
   },
   {
     accessorKey: "maxHeartRate",
     header: "Max HR",
     cell: ({ row }) =>
-      row.original.maxHeartRate ? `${row.original.maxHeartRate} bpm` : "N/A",
+      row.original.maxHeartRate ? `${row.original.maxHeartRate} bpm` : "-",
   },
   {
     accessorKey: "kilojoule",
@@ -400,7 +400,7 @@ const cycleColumns: ColumnDef<WhoopCycleRecord>[] = [
     cell: ({ row }) =>
       row.original.kilojoule
         ? `${Math.round(row.original.kilojoule * 0.239)} cal`
-        : "N/A",
+        : "-",
   },
   {
     accessorKey: "scoreState",
@@ -451,7 +451,7 @@ const workoutColumns: ColumnDef<WhoopWorkoutRecord>[] = [
     accessorKey: "strain",
     header: "Strain",
     cell: ({ row }) =>
-      row.original.strain ? row.original.strain.toFixed(1) : "N/A",
+      row.original.strain ? row.original.strain.toFixed(1) : "-",
   },
   {
     accessorKey: "averageHeartRate",
@@ -459,13 +459,13 @@ const workoutColumns: ColumnDef<WhoopWorkoutRecord>[] = [
     cell: ({ row }) =>
       row.original.averageHeartRate
         ? `${row.original.averageHeartRate} bpm`
-        : "N/A",
+        : "-",
   },
   {
     accessorKey: "distanceMeters",
     header: "Distance",
     cell: ({ row }) => {
-      if (!row.original.distanceMeters) return "N/A";
+      if (!row.original.distanceMeters) return "-";
       const km = row.original.distanceMeters / 1000;
       return km >= 1
         ? `${km.toFixed(2)} km`
@@ -478,7 +478,7 @@ const workoutColumns: ColumnDef<WhoopWorkoutRecord>[] = [
     cell: ({ row }) =>
       row.original.kilojoule
         ? `${Math.round(row.original.kilojoule * 0.239)} cal`
-        : "N/A",
+        : "-",
   },
   {
     accessorKey: "scoreState",

@@ -12,21 +12,10 @@ import {
 async function exampleSaveHealthScore() {
   const userId = "user_123"; // WorkOS user ID
 
-  // Example health data (this would typically come from WHOOP, manual input, etc.)
+  // Example health data with only available data (this would typically come from WHOOP, manual input, etc.)
+  // Only include markers where you have actual data - missing data will be handled by the scoring algorithm
   const todaysHealthData = {
-    // Nutrition
-    calories: 2300,
-    protein: 120,
-    carbs: 240,
-    fat: 80,
-    fiber: 28,
-    sugar: 35,
-    water: 2.4,
-    caffeine: 180,
-    alcohol: 0,
-    eatingWindow: 11,
-
-    // Sleep & Recovery (from WHOOP)
+    // Sleep & Recovery (from WHOOP - if available)
     totalInBedTime: 27360000, // 7.6 hours in milliseconds
     sleepEfficiencyPercentage: 90,
     totalAwakeTime: 1200000, // 20 minutes
@@ -34,47 +23,22 @@ async function exampleSaveHealthScore() {
     totalSlowWaveSleepTime: 3960000, // 1.1 hours
     restingHeartRate: 58,
     hrvRmssd: 55,
-    sleepConsistencyPercentage: 85,
-    disturbanceCount: 1,
     recoveryScore: 74,
     sleepPerformancePercentage: 88,
     respiratoryRate: 16,
 
-    // Movement & Fitness (from WHOOP)
+    // Movement & Fitness (from WHOOP - if available)
     strain: 14.2,
     averageHeartRate: 145,
     maxHeartRate: 175,
     kilojoule: 2600,
-    distanceMeters: 5000,
-    altitudeGainMeters: 100,
     percentRecorded: 95,
 
-    // Mind & Stress (user input)
-    mood: 4,
-    stress: 2,
-    energy: 4,
-    focus: 4,
-    mindfulness: 12,
-    journaling: 80,
-    screenTime: 3.5,
-    socialQuality: 4,
-    gratitude: 1,
-    workloadPerception: 2,
-
-    // Health Checks (lab results, measurements)
+    // Health Checks (from user profile or lab results - if available)
     bmi: 23.4,
-    waistCircumference: 86,
-    bodyFat: 18,
-    bloodPressureSys: 118,
-    bloodPressureDia: 76,
-    fastingGlucose: 90,
-    hba1c: 5.2,
-    ldl: 95,
-    hdl: 55,
-    triglycerides: 110,
-    totalCholesterol: 185,
-    crp: 0.7,
-    vitaminD: 34,
+
+    // Note: Missing categories like Nutrition and Mind & Stress will not contribute to the score
+    // until the user provides that data. The algorithm handles missing data gracefully.
   };
 
   try {
@@ -172,25 +136,22 @@ async function exampleGetAverageScores() {
     if (averages) {
       console.log("30-day averages:");
       console.log("Overall:", averages.averages.overall.toFixed(1));
-      console.log(
-        "Nutrition:",
-        averages.averages.nutrition?.toFixed(1) || "N/A"
-      );
+      console.log("Nutrition:", averages.averages.nutrition?.toFixed(1) || "-");
       console.log(
         "Sleep & Recovery:",
-        averages.averages.sleepRecovery?.toFixed(1) || "N/A"
+        averages.averages.sleepRecovery?.toFixed(1) || "-"
       );
       console.log(
         "Movement & Fitness:",
-        averages.averages.movementFitness?.toFixed(1) || "N/A"
+        averages.averages.movementFitness?.toFixed(1) || "-"
       );
       console.log(
         "Mind & Stress:",
-        averages.averages.mindStress?.toFixed(1) || "N/A"
+        averages.averages.mindStress?.toFixed(1) || "-"
       );
       console.log(
         "Health Checks:",
-        averages.averages.healthChecks?.toFixed(1) || "N/A"
+        averages.averages.healthChecks?.toFixed(1) || "-"
       );
       console.log(`Based on ${averages.sampleSize} data points`);
     } else {

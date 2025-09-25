@@ -63,7 +63,7 @@ export function WhoopCards({
   whoopUser,
 }: WhoopCardsProps) {
   const formatTime = (milliseconds: number | null): string => {
-    if (!milliseconds) return "N/A";
+    if (!milliseconds) return "-";
     const hours = Math.floor(milliseconds / (1000 * 60 * 60));
     const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
     return `${hours}h ${minutes}m`;
@@ -217,7 +217,7 @@ export function WhoopCards({
                       ? `${Math.round(
                           whoopStats.latestRecovery.recoveryScore
                         )}%`
-                      : "N/A"}
+                      : "-"}
                   </CardTitle>
                   <Badge
                     variant="outline"
@@ -270,7 +270,7 @@ export function WhoopCards({
                   <div className="font-medium text-[#085983] ">
                     {whoopStats.latestRecovery?.restingHeartRate
                       ? `${whoopStats.latestRecovery.restingHeartRate} bpm`
-                      : "N/A"}
+                      : "-"}
                   </div>
                 </div>
                 <div className="space-y-1">
@@ -281,7 +281,7 @@ export function WhoopCards({
                   <div className="font-medium text-[#085983]">
                     {whoopStats.latestRecovery?.hrvRmssd
                       ? `${Math.round(whoopStats.latestRecovery.hrvRmssd)}ms`
-                      : "N/A"}
+                      : "-"}
                   </div>
                 </div>
               </div>
@@ -293,7 +293,7 @@ export function WhoopCards({
                   <span className="font-medium text-[#085983]">
                     {weeklyRecoveryAvg
                       ? `${weeklyRecoveryAvg.toFixed(1)}%`
-                      : "N/A"}
+                      : "-"}
                   </span>
                 </div>
               </div>
@@ -348,7 +348,7 @@ export function WhoopCards({
                       ? `${Math.round(
                           whoopStats.latestSleep.sleepPerformancePercentage
                         )}%`
-                      : "N/A"}
+                      : "-"}
                   </CardTitle>
                   <Badge
                     variant="outline"
@@ -408,7 +408,7 @@ export function WhoopCards({
                       ? `${Math.round(
                           whoopStats.latestSleep.sleepEfficiencyPercentage
                         )}%`
-                      : "N/A"}
+                      : "-"}
                   </div>
                 </div>
                 <div className="space-y-1">
@@ -419,7 +419,7 @@ export function WhoopCards({
                   <div className="font-medium text-[#085983]">
                     {whoopStats.latestSleep?.totalInBedTime
                       ? formatTime(whoopStats.latestSleep.totalInBedTime)
-                      : "N/A"}
+                      : "-"}
                   </div>
                 </div>
               </div>
@@ -431,7 +431,7 @@ export function WhoopCards({
                   <span className="font-medium text-[#085983]">
                     {weeklySleepEfficiency
                       ? `${weeklySleepEfficiency.toFixed(1)}%`
-                      : "N/A"}
+                      : "-"}
                   </span>
                 </div>
               </div>
@@ -483,7 +483,7 @@ export function WhoopCards({
                   >
                     {whoopStats.weeklyStrain?.averageStrain
                       ? whoopStats.weeklyStrain.averageStrain.toFixed(1)
-                      : "N/A"}
+                      : "-"}
                   </CardTitle>
                   <Badge
                     variant="outline"
@@ -538,7 +538,7 @@ export function WhoopCards({
                   <div className="font-medium text-[#085983]">
                     {whoopStats.weeklyStrain?.maxStrain
                       ? whoopStats.weeklyStrain.maxStrain.toFixed(1)
-                      : "N/A"}
+                      : "-"}
                   </div>
                 </div>
                 <div className="space-y-1">
@@ -563,7 +563,7 @@ export function WhoopCards({
                         : whoopStats.weeklyStrain.averageStrain >= 10
                         ? "Moderate"
                         : "Light"
-                      : "N/A"}
+                      : "-"}
                   </span>
                 </div>
               </div>
@@ -619,7 +619,7 @@ export function WhoopCards({
                   >
                     {whoopStats.latestWorkout?.strain
                       ? whoopStats.latestWorkout.strain.toFixed(1)
-                      : "N/A"}
+                      : "-"}
                   </CardTitle>
                   <Badge
                     variant="outline"
@@ -674,7 +674,7 @@ export function WhoopCards({
                   <div className="font-medium text-[#085983]">
                     {whoopStats.latestWorkout?.averageHeartRate
                       ? `${whoopStats.latestWorkout.averageHeartRate} bpm`
-                      : "N/A"}
+                      : "-"}
                   </div>
                 </div>
                 <div className="space-y-1">
@@ -685,7 +685,7 @@ export function WhoopCards({
                   <div className="font-medium text-[#085983]">
                     {whoopStats.latestWorkout?.maxHeartRate
                       ? `${whoopStats.latestWorkout.maxHeartRate} bpm`
-                      : "N/A"}
+                      : "-"}
                   </div>
                 </div>
                 <div className="space-y-1">
@@ -702,7 +702,7 @@ export function WhoopCards({
                         : `${Math.round(
                             whoopStats.latestWorkout.distanceMeters
                           )} m`
-                      : "N/A"}
+                      : "-"}
                   </div>
                 </div>
                 <div className="space-y-1">
@@ -713,7 +713,7 @@ export function WhoopCards({
                   <div className="font-medium text-[#085983]">
                     {whoopStats.latestWorkout?.kilojoule
                       ? `${Math.round(whoopStats.latestWorkout.kilojoule)} kJ`
-                      : "N/A"}
+                      : "-"}
                   </div>
                 </div>
               </div>
@@ -731,7 +731,7 @@ export function WhoopCards({
                   <span className="font-medium text-[#085983]">
                     {whoopStats.latestWorkout?.duration
                       ? formatTime(whoopStats.latestWorkout.duration)
-                      : "N/A"}
+                      : "-"}
                   </span>
                 </div>
               </div>

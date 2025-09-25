@@ -195,25 +195,11 @@ export async function calculateHealthScoreServer(
       return null;
     }
 
-    // Try to calculate with real data first
-    let result = await calculateHealthScoreAction({
+    // Calculate with real data only (no mock data fallback)
+    const result = await calculateHealthScoreAction({
       includeMockData: false,
       forceRecalculate,
     });
-
-    // If that fails or returns insufficient data, try with mock data
-    if (
-      !result.data?.healthScore ||
-      Object.keys(result.data.scoreDetails?.category || {}).length < 2
-    ) {
-      console.log(
-        "Insufficient real data, falling back to mock data for health score calculation"
-      );
-      result = await calculateHealthScoreAction({
-        includeMockData: true,
-        forceRecalculate: true,
-      });
-    }
 
     return result.data;
   } catch (error) {

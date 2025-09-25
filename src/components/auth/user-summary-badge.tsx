@@ -54,7 +54,7 @@ export function UserSummaryBadge() {
   }
 
   const formatGender = (gender: string | null) => {
-    if (!gender) return "N/A";
+    if (!gender) return "-";
     switch (gender) {
       case "MALE":
         return "M";
@@ -63,16 +63,16 @@ export function UserSummaryBadge() {
       case "NON_BINARY":
         return "NB";
       case "PREFER_NOT_TO_SAY":
-        return "N/A";
+        return "-";
       case "OTHER":
         return "O";
       default:
-        return "N/A";
+        return "-";
     }
   };
 
   const formatEthnicity = (ethnicity: string | null) => {
-    if (!ethnicity) return "N/A";
+    if (!ethnicity) return "-";
     switch (ethnicity) {
       case "ASIAN":
         return "Asian";
@@ -89,30 +89,30 @@ export function UserSummaryBadge() {
       case "NATIVE_HAWAIIAN_PACIFIC_ISLANDER":
         return "Pacific";
       case "PREFER_NOT_TO_SAY":
-        return "N/A";
+        return "-";
       case "OTHER":
         return "Other";
       default:
-        return "N/A";
+        return "-";
     }
   };
 
   const formatBloodType = (bloodType: string | null) => {
-    if (!bloodType || bloodType === "UNKNOWN") return "N/A";
+    if (!bloodType || bloodType === "UNKNOWN") return "-";
     return bloodType.replace("_", "");
   };
 
   const formatHeight = (heightCm: number | null) => {
-    if (!heightCm) return "N/A";
+    if (!heightCm) return "-";
     return `${heightCm}cm`;
   };
 
   const formatWeight = (weightKg: number | null) => {
-    if (!weightKg) return "N/A";
+    if (!weightKg) return "-";
     return `${weightKg}kg`;
   };
 
-  const summaryText = `${profile.age || "N/A"}y • ${formatGender(
+  const summaryText = `${profile.age || "-"}y • ${formatGender(
     profile.gender
   )}`;
 
@@ -131,7 +131,7 @@ export function UserSummaryBadge() {
         <div className="space-y-1">
           <div className="font-semibold">Health Profile</div>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div>Age: {profile.age || "N/A"}</div>
+            <div>Age: {profile.age || "-"}</div>
             <div>Gender: {formatGender(profile.gender)}</div>
             <div>Ethnicity: {formatEthnicity(profile.ethnicity)}</div>
             <div>Blood: {formatBloodType(profile.bloodType)}</div>

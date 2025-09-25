@@ -46,7 +46,7 @@ export function HealthStats({
 
   // Format score to display
   const formatScore = (score: number | undefined) => {
-    if (score === undefined || Number.isNaN(score)) return "N/A";
+    if (score === undefined || Number.isNaN(score)) return "-";
     return Math.round(score).toString();
   };
 

@@ -53,19 +53,8 @@ export default async function HealthspanPageRoute() {
   } catch (error) {
     console.error("Error in healthspan page:", error);
 
-    // Fallback to basic page with mock data
-    const fallbackHealthData = {
-      calories: 2300,
-      protein: 120,
-      bmi: 23.4,
-      restingHeartRate: 58,
-      strain: 14.2,
-      recoveryScore: 74,
-      sleepPerformancePercentage: 88,
-      mood: 4,
-      stress: 2,
-      energy: 4,
-    };
+    // Fallback to basic page with empty data (no mock data)
+    const fallbackHealthData = {};
 
     const fallbackHealthScores = computeHealthScores(
       markers,
