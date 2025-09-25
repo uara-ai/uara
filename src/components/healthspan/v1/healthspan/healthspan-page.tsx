@@ -6,6 +6,7 @@ import { UserProfileCard } from "./user-profile-card";
 import WhoopActivityCard from "./whoop-activity-card";
 import { ContributionChart } from "./contribution-chart";
 import { cn } from "@/lib/utils";
+import { ScoreOutput } from "@/lib/health/types";
 
 interface HealthspanPageProps {
   user: User;
@@ -14,6 +15,7 @@ interface HealthspanPageProps {
     recoveryScore?: number;
     strainScore?: number;
   };
+  healthScores?: ScoreOutput;
   className?: string;
 }
 
@@ -24,6 +26,7 @@ export function HealthspanPage({
     recoveryScore: 72,
     strainScore: 14.2,
   },
+  healthScores,
   className,
 }: HealthspanPageProps) {
   return (
@@ -34,9 +37,9 @@ export function HealthspanPage({
       )}
     >
       {/* First Row: Minimal Profile Card - Full Width */}
-      <UserProfileCard user={user} />
+      <UserProfileCard user={user} healthScores={healthScores} />
 
-      {/* Whoop Activity Card */}
+      {/* Whoop Activity Card 
       <div className="w-full">
         <WhoopActivityCard
           sleepPerformance={whoopData.sleepPerformance}
@@ -44,7 +47,7 @@ export function HealthspanPage({
           strainScore={whoopData.strainScore}
           title="Today's Metrics"
         />
-      </div>
+      </div>*/}
 
       {/* Second Row: Contribution Chart taking up half page width */}
       <div className="sm:w-1/2 max-w-full">

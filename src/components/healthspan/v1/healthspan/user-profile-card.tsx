@@ -19,13 +19,20 @@ import { TierBadge } from "@/components/healthspan/tiers";
 import { cn } from "@/lib/utils";
 import { ContributionChart } from "./contribution-chart";
 import { TwitterUsername } from "./twitter-username";
+import { HealthStats } from "./health-stats";
+import { ScoreOutput } from "@/lib/health/types";
 
 interface UserProfileCardProps {
   user: User | null;
+  healthScores?: ScoreOutput;
   className?: string;
 }
 
-export function UserProfileCard({ user, className }: UserProfileCardProps) {
+export function UserProfileCard({
+  user,
+  healthScores,
+  className,
+}: UserProfileCardProps) {
   const [userTier, setUserTier] = useState<{
     tierNumber: 1 | 2 | 3 | 4 | 5 | 6 | 7 | null;
     tierPurchasedAt: Date | null;
@@ -155,16 +162,17 @@ export function UserProfileCard({ user, className }: UserProfileCardProps) {
   return (
     <div
       className={cn(
-        "w-full mx-auto space-y-8 px-6 font-[family-name:var(--font-geist-sans)]",
+        "w-full mx-auto space-y-8 font-[family-name:var(--font-geist-sans)]",
         className
       )}
     >
-      {/* Minimal Profile Section - Horizontal Layout */}
+      {/* Minimal Profile Section - Responsive Layout */}
       <div className="w-full">
-        <div className="flex items-center gap-4 sm:gap-6">
+        {/* Desktop Layout - Horizontal */}
+        <div className="hidden lg:flex items-center gap-4 sm:gap-6">
           {/* Profile Avatar */}
           <div className="relative flex-shrink-0">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-[#085983] to-blue-600 p-0.5">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br p-0.5">
               <div className="w-full h-full rounded-full overflow-hidden bg-white">
                 <Image
                   src={profileData.avatar}
@@ -189,51 +197,58 @@ export function UserProfileCard({ user, className }: UserProfileCardProps) {
             </div>
           </div>
 
-          {/* Stats Section - Hidden on mobile, shown on larger screens */}
-          <div className="hidden md:flex items-center gap-6 text-center">
-            <div>
-              <div className="text-lg font-bold text-[#085983]">213</div>
-              <div className="text-xs text-[#085983]/60">Posts</div>
+          {/* Health Stats Section - Aligned to the right */}
+          {healthScores && (
+            <div className="flex-shrink-0">
+              <HealthStats
+                categoryScores={healthScores.category}
+                overallScore={healthScores.overall}
+              />
             </div>
-            <div>
-              <div className="text-lg font-bold text-[#085983]">232.47K</div>
-              <div className="text-xs text-[#085983]/60">Impressions</div>
+          )}
+        </div>
+
+        {/* Mobile/Tablet Layout - Vertical */}
+        <div className="lg:hidden">
+          {/* Profile Section */}
+          <div className="flex items-center gap-4 sm:gap-6 mb-4">
+            {/* Profile Avatar */}
+            <div className="relative flex-shrink-0">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br p-0.5">
+                <div className="w-full h-full rounded-full overflow-hidden bg-white">
+                  <Image
+                    src={profileData.avatar}
+                    alt={profileData.name}
+                    width={80}
+                    height={80}
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                </div>
+              </div>
             </div>
-            <div>
-              <div className="text-lg font-bold text-[#085983]">3.15K</div>
-              <div className="text-xs text-[#085983]/60">Profile Clicks</div>
-            </div>
-            <div>
-              <div className="text-lg font-bold text-[#085983]">1.46K</div>
-              <div className="text-xs text-[#085983]/60 flex items-center gap-1">
-                Followers
-                <span className="text-green-500 text-xs">↑72.2%</span>
+
+            {/* Profile Info */}
+            <div className="flex-1 min-w-0">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#085983] mb-1 truncate">
+                {profileData.name}
+              </h2>
+
+              {/* Twitter Username */}
+              <div className="mb-2">
+                <TwitterUsername />
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Mobile Stats - Only shown on mobile */}
-        <div className="md:hidden mt-4 grid grid-cols-2 gap-4 text-center">
-          <div>
-            <div className="text-base font-bold text-[#085983]">213</div>
-            <div className="text-xs text-[#085983]/60">Posts</div>
-          </div>
-          <div>
-            <div className="text-base font-bold text-[#085983]">232.47K</div>
-            <div className="text-xs text-[#085983]/60">Impressions</div>
-          </div>
-          <div>
-            <div className="text-base font-bold text-[#085983]">3.15K</div>
-            <div className="text-xs text-[#085983]/60">Profile Clicks</div>
-          </div>
-          <div>
-            <div className="text-base font-bold text-[#085983]">1.46K</div>
-            <div className="text-xs text-[#085983]/60 flex items-center justify-center gap-1">
-              Followers
-              <span className="text-green-500 text-xs">↑72.2%</span>
+          {/* Health Stats Section - Below profile info */}
+          {healthScores && (
+            <div className="w-full">
+              <HealthStats
+                categoryScores={healthScores.category}
+                overallScore={healthScores.overall}
+              />
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
