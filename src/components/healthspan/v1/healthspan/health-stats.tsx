@@ -3,6 +3,10 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { CategoryScores } from "@/lib/health/types";
+import Link from "next/link";
+import { Info, ArrowUpRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { IconArrowRight } from "@tabler/icons-react";
 
 interface HealthStatsProps {
   categoryScores: CategoryScores;
@@ -15,6 +19,9 @@ export function HealthStats({
   overallScore,
   className,
 }: HealthStatsProps) {
+  const handleScoreNavigation = () => {
+    window.location.href = "/healthspan/score";
+  };
   // Map category keys to display names and colors
   const categoryDisplayMap = {
     Nutrition: {
@@ -72,7 +79,10 @@ export function HealthStats({
   return (
     <div className={cn("flex items-center", className)}>
       {/* Desktop Stats - Horizontal layout aligned to the right */}
-      <div className="hidden lg:flex items-center gap-3 rounded-lg px-4 py-2.5 border border-[#085983]/50">
+      <div
+        className="hidden lg:flex items-center gap-3 rounded-lg px-4 py-2.5 border border-[#085983]/50 relative group cursor-pointer transition-all duration-300 hover:border-[#085983]/70"
+        onClick={handleScoreNavigation}
+      >
         {Object.entries(categoryDisplayMap).map(([key, config]) => {
           const score = categoryScores[key];
           return (
@@ -102,14 +112,17 @@ export function HealthStats({
           >
             {formatScore(overallScore)}
           </div>
-          <div className="text-[10px] text-[#085983] mt-1 leading-tight font-medium">
-            Overall
+          <div className="text-[10px] text-[#085983] mt-1 leading-tight font-medium flex items-center gap-0.5">
+            Overall <IconArrowRight className="h-3 w-3" />
           </div>
         </div>
       </div>
 
       {/* Tablet Stats - Compact horizontal layout */}
-      <div className="hidden md:flex lg:hidden items-center gap-2 rounded-lg px-3 py-2 border border-[#085983]/50 justify-center">
+      <div
+        className="hidden md:flex lg:hidden items-center gap-2 rounded-lg px-3 py-2 border border-[#085983]/50 justify-center relative group cursor-pointer transition-all duration-300 hover:border-[#085983]/70"
+        onClick={handleScoreNavigation}
+      >
         {Object.entries(categoryDisplayMap)
           .slice(0, 3)
           .map(([key, config]) => {
@@ -144,14 +157,17 @@ export function HealthStats({
           >
             {formatScore(overallScore)}
           </div>
-          <div className="text-[9px] text-[#085983] mt-0.5 leading-tight font-medium">
-            Overall
+          <div className="text-[9px] text-[#085983] mt-0.5 leading-tight font-medium flex items-center gap-0.5">
+            Overall <IconArrowRight className="h-3 w-3" />
           </div>
         </div>
       </div>
 
       {/* Mobile Stats - All categories in compact layout */}
-      <div className="flex md:hidden items-center gap-1.5 rounded-lg px-2.5 py-2 overflow-x-auto border border-[#085983]/50">
+      <div
+        className="px-2 scrollbar-hide flex md:hidden items-center gap-1 rounded-lg mx-auto py-2 overflow-x-auto border border-[#085983]/50 relative cursor-pointer transition-all duration-300 active:border-[#085983]/70"
+        onClick={handleScoreNavigation}
+      >
         {Object.entries(categoryDisplayMap).map(([key, config]) => {
           const score = categoryScores[key];
           return (
@@ -184,8 +200,8 @@ export function HealthStats({
           >
             {formatScore(overallScore)}
           </div>
-          <div className="text-[8px] text-[#085983] mt-0.5 leading-tight font-medium">
-            Overall
+          <div className="text-[8px] text-[#085983] mt-0.5 leading-tight font-medium flex items-center gap-0.5">
+            Overall <IconArrowRight className="h-3 w-3" />
           </div>
         </div>
       </div>

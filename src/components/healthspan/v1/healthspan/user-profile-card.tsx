@@ -173,7 +173,7 @@ export function UserProfileCard({
           {/* Profile Avatar */}
           <div className="relative flex-shrink-0">
             <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br p-0.5">
-              <div className="w-full h-full rounded-full overflow-hidden bg-white">
+              <div className="w-full h-full rounded-full overflow-hidden bg-white border border-[#085983]/50">
                 <Image
                   src={profileData.avatar}
                   alt={profileData.name}
@@ -215,7 +215,7 @@ export function UserProfileCard({
             {/* Profile Avatar */}
             <div className="relative flex-shrink-0">
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br p-0.5">
-                <div className="w-full h-full rounded-full overflow-hidden bg-white">
+                <div className="w-full h-full rounded-full overflow-hidden bg-white border border-[#085983]/50">
                   <Image
                     src={profileData.avatar}
                     alt={profileData.name}
