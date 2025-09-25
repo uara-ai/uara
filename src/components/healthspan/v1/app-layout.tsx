@@ -5,6 +5,7 @@ import { Header } from "./header";
 import { MobileSidebar } from "./mobile-sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { RateLimitProvider } from "@/hooks/use-rate-limit-context";
+import { IconCamera } from "@tabler/icons-react";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -32,9 +33,14 @@ export function AppLayout({ children, className, user }: AppLayoutProps) {
               <Header user={user} />
 
               {/* Main content */}
-              <main className={cn("flex-1 p-4 sm:p-0", className)}>
+              <main className={cn("flex-1 px-2 sm:p-0", className)}>
                 {/* Content container with responsive padding - add bottom padding for mobile nav */}
-                <div className="py-6 pb-20 md:pb-6 bg-slate-100 rounded-3xl mb-8">
+                <div className="relative py-6 pb-20 md:pb-6 bg-slate-50 rounded-2xl mb-8 border border-dotted border-[#085983]">
+                  {/* Screenshot watermark */}
+                  <div className="flex items-center gap-1 absolute top-[-1px] left-1/2 transform -translate-x-1/2 text-xs text-[#085983] font-medium opacity-70 bg-slate-50 px-2 z-10">
+                    <IconCamera className="size-3.5" />
+                    screenshot and share
+                  </div>
                   {children}
                 </div>
               </main>
