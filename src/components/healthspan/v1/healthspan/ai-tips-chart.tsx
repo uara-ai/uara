@@ -41,11 +41,11 @@ export interface AiTipsChartProps {
 
 interface HealthTip {
   category:
-    | "sleep"
-    | "recovery"
-    | "strain"
     | "nutrition"
-    | "exercise"
+    | "sleep-recovery"
+    | "movement-fitness"
+    | "mind-stress"
+    | "health-checks"
     | "lifestyle";
   title: string;
   description: string;
@@ -54,11 +54,13 @@ interface HealthTip {
   timeframe: "immediate" | "daily" | "weekly" | "monthly";
   impact: "minor" | "moderate" | "significant";
   difficulty: "easy" | "moderate" | "challenging";
-  statImpact: {
-    sleep?: number;
-    recovery?: number;
-    strain?: number;
-  };
+  relatedMarkers?: string[];
+}
+
+interface CategoryInsight {
+  score?: number;
+  summary?: string;
+  topMarkers?: string[];
 }
 
 interface AiTipsResult {
@@ -67,16 +69,31 @@ interface AiTipsResult {
   primaryConcern: string;
   strengths: string[];
   summary: string;
+  categoryInsights: {
+    nutrition: CategoryInsight;
+    sleepRecovery: CategoryInsight;
+    movementFitness: CategoryInsight;
+    mindStress: CategoryInsight;
+    healthChecks: CategoryInsight;
+  };
   tips: HealthTip[];
 }
 
 const categoryIcons = {
-  sleep: Moon,
-  recovery: Heart,
-  strain: Activity,
   nutrition: Utensils,
-  exercise: Dumbbell,
+  "sleep-recovery": Moon,
+  "movement-fitness": Dumbbell,
+  "mind-stress": Brain,
+  "health-checks": Heart,
   lifestyle: Users,
+};
+
+const categoryInsightIcons = {
+  nutrition: Utensils,
+  sleepRecovery: Moon,
+  movementFitness: Dumbbell,
+  mindStress: Brain,
+  healthChecks: Heart,
 };
 
 const priorityColors = {
@@ -101,65 +118,16 @@ function AiTipsChart({ data, className }: AiTipsChartProps) {
       setLoading(true);
       setError(null);
 
-      // Calculate health stats from wearable data
-      const sleepScore =
-        data?.sleep?.[0]?.score?.sleep_performance_percentage || 78;
-      const recoveryScore = data?.recovery?.[0]?.score?.recovery_score || 72;
-      const strainScore = data?.cycles?.[0]?.score?.strain || 12.5;
-
-      // Calculate derived metrics
-      const sleepEfficiency = sleepScore > 80 ? 85 : sleepScore > 60 ? 75 : 65;
-      const sleepDuration = sleepScore > 80 ? 8.2 : sleepScore > 60 ? 7.5 : 6.8;
-      const sleepConsistency = sleepScore > 80 ? 90 : sleepScore > 60 ? 75 : 60;
-
-      const hrv = recoveryScore > 80 ? 45 : recoveryScore > 60 ? 35 : 25;
-      const restingHR = recoveryScore > 80 ? 55 : recoveryScore > 60 ? 65 : 75;
-
-      const strainBalance =
-        strainScore > 15 ? "over" : strainScore < 8 ? "under" : "optimal";
-      const workoutFrequency = strainScore > 12 ? 5 : strainScore > 8 ? 4 : 2;
-
-      const overallScore = Math.round(
-        (sleepScore + recoveryScore + Math.min(strainScore * 6, 100)) / 3
+      console.log(
+        "Generating AI tips with comprehensive health marker data..."
       );
 
-      const healthStats = {
-        sleep: {
-          performance: sleepScore,
-          efficiency: sleepEfficiency,
-          duration: sleepDuration,
-          consistency: sleepConsistency,
-        },
-        recovery: {
-          score: recoveryScore,
-          hrv: hrv,
-          restingHR: restingHR,
-          trend: "stable" as const,
-        },
-        strain: {
-          daily: strainScore,
-          weekly: strainScore,
-          balance: strainBalance,
-          workoutFrequency: workoutFrequency,
-        },
-        overall: {
-          healthScore: overallScore,
-          streak: 30,
-          memberSince: new Date().toISOString(),
-        },
-      };
-
-      console.log("Generating AI tips with health stats:", healthStats);
-
-      // Call our dedicated AI tips API
+      // Call our enhanced AI tips API (no body needed - it fetches from database)
       const response = await fetch("/api/ai-tips", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          healthStats,
-        }),
       });
 
       if (!response.ok) {
@@ -377,6 +345,73 @@ function AiTipsChart({ data, className }: AiTipsChartProps) {
         )}
       </div>
 
+      {/* Category Insights */}
+      {aiTips.categoryInsights && (
+        <div>
+          <h3 className="text-lg font-medium text-[#085983] mb-4 flex items-center gap-2">
+            <Activity className="size-5" />
+            Health Category Analysis
+          </h3>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Object.entries(aiTips.categoryInsights).map(
+              ([categoryKey, insight]) => {
+                const IconComponent =
+                  categoryInsightIcons[
+                    categoryKey as keyof typeof categoryInsightIcons
+                  ];
+                if (!insight.summary) return null;
+
+                return (
+                  <div
+                    key={categoryKey}
+                    className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="bg-[#085983]/10 p-2 rounded-lg">
+                        <IconComponent className="size-5 text-[#085983]" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-medium text-[#085983] text-sm capitalize">
+                            {categoryKey.replace(/([A-Z])/g, " $1").trim()}
+                          </h4>
+                          {insight.score !== undefined && (
+                            <span
+                              className={cn(
+                                "px-2 py-1 rounded-full text-xs font-medium",
+                                insight.score >= 80
+                                  ? "bg-green-100 text-green-800"
+                                  : insight.score >= 60
+                                  ? "bg-amber-100 text-amber-800"
+                                  : "bg-red-100 text-red-800"
+                              )}
+                            >
+                              {Math.round(insight.score)}/100
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[#085983]/70 text-xs mb-2">
+                          {insight.summary}
+                        </p>
+                        {insight.topMarkers &&
+                          insight.topMarkers.length > 0 && (
+                            <div className="text-xs text-[#085983]/60">
+                              <span className="font-medium">Key markers:</span>
+                              <span className="ml-1">
+                                {insight.topMarkers.join(", ")}
+                              </span>
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+            )}
+          </div>
+        </div>
+      )}
+
       {/* High Priority Tips */}
       {highPriorityTips.length > 0 && (
         <div>
@@ -420,7 +455,7 @@ function AiTipsChart({ data, className }: AiTipsChartProps) {
                           {tip.action}
                         </p>
                       </div>
-                      <div className="flex items-center gap-4 text-xs text-[#085983]/60">
+                      <div className="flex items-center gap-4 text-xs text-[#085983]/60 mb-2">
                         <div className="flex items-center gap-1">
                           <Clock className="size-3" />
                           {tip.timeframe}
@@ -434,6 +469,14 @@ function AiTipsChart({ data, className }: AiTipsChartProps) {
                           {tip.impact} impact
                         </div>
                       </div>
+                      {tip.relatedMarkers && tip.relatedMarkers.length > 0 && (
+                        <div className="text-xs text-[#085983]/60">
+                          <span className="font-medium">Related markers:</span>
+                          <span className="ml-1">
+                            {tip.relatedMarkers.join(", ")}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -483,7 +526,7 @@ function AiTipsChart({ data, className }: AiTipsChartProps) {
                     <p className="font-medium text-[#085983] text-xs mb-2">
                       {tip.action}
                     </p>
-                    <div className="flex items-center gap-3 text-xs text-[#085983]/60">
+                    <div className="flex items-center gap-3 text-xs text-[#085983]/60 mb-2">
                       <div className="flex items-center gap-1">
                         <Clock className="size-3" />
                         {tip.timeframe}
@@ -493,6 +536,15 @@ function AiTipsChart({ data, className }: AiTipsChartProps) {
                         {tip.difficulty}
                       </div>
                     </div>
+                    {tip.relatedMarkers && tip.relatedMarkers.length > 0 && (
+                      <div className="text-xs text-[#085983]/60">
+                        <span className="font-medium">Related markers:</span>
+                        <span className="ml-1">
+                          {tip.relatedMarkers.slice(0, 2).join(", ")}
+                          {tip.relatedMarkers.length > 2 ? "..." : ""}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

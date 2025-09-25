@@ -4,6 +4,11 @@ import { client } from "@/packages/redis/client";
 import { generateObject } from "ai";
 import { myProvider } from "@/lib/ai/providers";
 import { z } from "zod";
+import {
+  getLatestHealthScore,
+  getLatestMarkerScoresByCategory,
+  getCategoryPerformanceSummary,
+} from "@/lib/health/database";
 
 // Cache for 8 hours
 const CACHE_TTL = 8 * 60 * 60; // 8 hours in seconds
@@ -15,14 +20,41 @@ const aiTipsResponseSchema = z.object({
   primaryConcern: z.string(),
   strengths: z.array(z.string()),
   summary: z.string(),
+  categoryInsights: z.object({
+    nutrition: z.object({
+      score: z.number().optional(),
+      summary: z.string().optional(),
+      topMarkers: z.array(z.string()).optional(),
+    }),
+    sleepRecovery: z.object({
+      score: z.number().optional(),
+      summary: z.string().optional(),
+      topMarkers: z.array(z.string()).optional(),
+    }),
+    movementFitness: z.object({
+      score: z.number().optional(),
+      summary: z.string().optional(),
+      topMarkers: z.array(z.string()).optional(),
+    }),
+    mindStress: z.object({
+      score: z.number().optional(),
+      summary: z.string().optional(),
+      topMarkers: z.array(z.string()).optional(),
+    }),
+    healthChecks: z.object({
+      score: z.number().optional(),
+      summary: z.string().optional(),
+      topMarkers: z.array(z.string()).optional(),
+    }),
+  }),
   tips: z.array(
     z.object({
       category: z.enum([
-        "sleep",
-        "recovery",
-        "strain",
         "nutrition",
-        "exercise",
+        "sleep-recovery",
+        "movement-fitness",
+        "mind-stress",
+        "health-checks",
         "lifestyle",
       ]),
       title: z.string(),
@@ -32,11 +64,7 @@ const aiTipsResponseSchema = z.object({
       timeframe: z.enum(["immediate", "daily", "weekly", "monthly"]),
       impact: z.enum(["minor", "moderate", "significant"]),
       difficulty: z.enum(["easy", "moderate", "challenging"]),
-      statImpact: z.object({
-        sleep: z.number().optional(),
-        recovery: z.number().optional(),
-        strain: z.number().optional(),
-      }),
+      relatedMarkers: z.array(z.string()).optional(),
     })
   ),
 });
@@ -48,26 +76,9 @@ export async function POST(req: Request) {
       return new ChatSDKError("bad_request:auth").toResponse();
     }
 
-    const { healthStats } = await req.json();
-
-    if (!healthStats) {
-      return Response.json({ error: "Health stats required" }, { status: 400 });
-    }
-
     // Use simple, consistent cache key for user (not data-dependent)
     const cacheKey = `ai_tips:${user.id}`;
     console.log("Looking for cached AI tips with key:", cacheKey);
-
-    // Debug: Check what AI tips keys exist in Redis
-    try {
-      const allKeys = await client.keys(`ai_tips:${user.id}*`);
-      console.log("Existing AI tips keys for user:", allKeys);
-    } catch (debugError) {
-      console.log(
-        "Could not check existing keys:",
-        debugError instanceof Error ? debugError.message : "Unknown error"
-      );
-    }
 
     // Try to get from cache first
     const cached = await client.get(cacheKey);
@@ -115,40 +126,132 @@ export async function POST(req: Request) {
       console.log("No cached AI tips found, generating new ones");
     }
 
+    // Fetch real health data from database
+    console.log("Fetching health marker data from database...");
+
+    const [latestHealthScore, markerScoresByCategory, categoryPerformance] =
+      await Promise.all([
+        getLatestHealthScore(user.id),
+        getLatestMarkerScoresByCategory(user.id),
+        getCategoryPerformanceSummary(user.id, 30),
+      ]);
+
+    if (!latestHealthScore) {
+      return Response.json(
+        {
+          error:
+            "No health score found. Please ensure your health data is synced.",
+        },
+        { status: 404 }
+      );
+    }
+
+    console.log("Retrieved health data:", {
+      overallScore: latestHealthScore.overallScore,
+      categoriesCount: markerScoresByCategory
+        ? Object.keys(markerScoresByCategory.markerScores).length
+        : 0,
+      totalMarkers: markerScoresByCategory?.totalMarkers || 0,
+    });
+
+    // Prepare detailed health data for AI analysis
+    const healthData = {
+      overallScore: latestHealthScore.overallScore,
+      categoryScores: {
+        nutrition: latestHealthScore.nutritionScore,
+        sleepRecovery: latestHealthScore.sleepRecoveryScore,
+        movementFitness: latestHealthScore.movementFitnessScore,
+        mindStress: latestHealthScore.mindStressScore,
+        healthChecks: latestHealthScore.healthChecksScore,
+      },
+      markersByCategory: markerScoresByCategory?.markerScores || {},
+      categoryPerformance: categoryPerformance?.categories || {},
+      metadata: {
+        calculatedAt: latestHealthScore.calculatedAt,
+        totalMarkersUsed: latestHealthScore.totalMarkersUsed,
+        dataQualityScore: latestHealthScore.dataQualityScore,
+      },
+    };
+
+    // Build detailed prompt with marker data
+    let detailedPrompt = `Analyze this comprehensive health profile and provide detailed, personalized insights:
+
+## OVERALL HEALTH SCORE: ${healthData.overallScore}/100
+
+## CATEGORY SCORES:
+- Nutrition: ${healthData.categoryScores.nutrition || "Not calculated"}/100
+- Sleep & Recovery: ${
+      healthData.categoryScores.sleepRecovery || "Not calculated"
+    }/100
+- Movement & Fitness: ${
+      healthData.categoryScores.movementFitness || "Not calculated"
+    }/100
+- Mind & Stress: ${healthData.categoryScores.mindStress || "Not calculated"}/100
+- Health Checks: ${
+      healthData.categoryScores.healthChecks || "Not calculated"
+    }/100
+
+## DETAILED MARKER ANALYSIS:`;
+
+    // Add detailed marker information by category
+    Object.entries(healthData.markersByCategory).forEach(
+      ([categoryName, markers]) => {
+        detailedPrompt += `\n\n### ${categoryName.toUpperCase()}:`;
+        (markers as any[]).forEach((marker) => {
+          detailedPrompt += `\n- ${marker.markerLabel}: ${
+            marker.rawValue !== null ? marker.rawValue : "No data"
+          } (Score: ${
+            marker.score !== null ? Math.round(marker.score) : "N/A"
+          }/100)`;
+          if (marker.dataQuality) {
+            detailedPrompt += ` [Quality: ${marker.dataQuality}]`;
+          }
+        });
+      }
+    );
+
+    // Add performance trends if available
+    if (Object.keys(healthData.categoryPerformance).length > 0) {
+      detailedPrompt += `\n\n## 30-DAY PERFORMANCE TRENDS:`;
+      Object.entries(healthData.categoryPerformance).forEach(
+        ([categoryName, performance]: [string, any]) => {
+          detailedPrompt += `\n- ${categoryName}: ${Math.round(
+            performance.average
+          )}/100 avg (${performance.trend}, ${
+            performance.dataPoints
+          } data points)`;
+        }
+      );
+    }
+
+    detailedPrompt += `\n\n## YOUR TASK:
+Based on this comprehensive health data, provide:
+1. A detailed summary of their health status
+2. Category-specific insights for each area with data
+3. 6-10 actionable, prioritized recommendations
+4. Focus on the areas with the lowest scores or concerning trends
+5. Include specific marker improvements where possible
+
+Be specific, actionable, and evidence-based. Tailor advice to their actual data patterns.`;
+
     // Generate AI tips using generateObject for structured output
     const result = await generateObject({
       model: myProvider.languageModel("chat-model"),
-      system: `You are a longevity and health optimization expert. Analyze the provided health data and generate personalized tips to improve health metrics.
+      system: `You are a longevity and health optimization expert analyzing comprehensive health marker data. 
 
-Focus on:
-- Sleep quality and consistency
-- Recovery optimization
-- Strain balance and training
-- Nutrition and lifestyle factors
-- Evidence-based recommendations
+Your expertise covers:
+- Biomarker interpretation and optimization
+- Nutrition science and personalized dietary recommendations  
+- Sleep science and recovery optimization
+- Exercise physiology and movement patterns
+- Stress management and mental health
+- Preventive medicine and health screening
+- Longevity research and anti-aging protocols
 
-Provide actionable, specific advice that users can implement immediately.`,
-      prompt: `Analyze these health stats and provide personalized tips:
-
-Sleep Performance: ${healthStats.sleep?.performance || 0}%
-Sleep Efficiency: ${healthStats.sleep?.efficiency || 0}%
-Sleep Duration: ${healthStats.sleep?.duration || 0} hours
-Sleep Consistency: ${healthStats.sleep?.consistency || 0}%
-
-Recovery Score: ${healthStats.recovery?.score || 0}%
-HRV: ${healthStats.recovery?.hrv || 0}ms
-Resting HR: ${healthStats.recovery?.restingHR || 0} bpm
-
-Daily Strain: ${healthStats.strain?.daily || 0}
-Weekly Strain: ${healthStats.strain?.weekly || 0}
-Strain Balance: ${healthStats.strain?.balance || "unknown"}
-Workout Frequency: ${healthStats.strain?.workoutFrequency || 0}/week
-
-Overall Health Score: ${healthStats.overall?.healthScore || 0}%
-
-Generate an overall health assessment and 5-8 specific, actionable tips to improve these metrics.`,
+Provide detailed, science-backed recommendations based on the user's actual health marker scores and trends. Focus on actionable interventions that can measurably improve their specific biomarkers.`,
+      prompt: detailedPrompt,
       schema: aiTipsResponseSchema,
-      maxOutputTokens: 2000,
+      maxOutputTokens: 3000,
       temperature: 0.7,
     });
 
