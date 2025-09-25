@@ -8,6 +8,9 @@ import {
   getLatestHealthScore,
   getTodaysHealthScore,
   getHealthScoreHistory,
+  getLatestMarkerScoresByCategory,
+  getMarkerScoreTrends,
+  getCategoryPerformanceSummary,
 } from "@/lib/health/database";
 import { getHealthDataAction } from "./health-data-action";
 import { revalidateTag } from "next/cache";
@@ -19,6 +22,19 @@ const calculateHealthScoreSchema = z.object({
 });
 
 const getHealthScoreHistorySchema = z.object({
+  days: z.number().min(1).max(365).default(30),
+});
+
+const getMarkerScoresByCategorySchema = z.object({
+  category: z.string().optional(),
+});
+
+const getMarkerScoreTrendsSchema = z.object({
+  markerIds: z.array(z.string()),
+  days: z.number().min(1).max(365).default(30),
+});
+
+const getCategoryPerformanceSchema = z.object({
   days: z.number().min(1).max(365).default(30),
 });
 
@@ -258,6 +274,137 @@ export async function getHealthScoreSummaryServer() {
     };
   } catch (error) {
     console.error("Error fetching health score summary:", error);
+    return null;
+  }
+}
+
+/**
+ * Get marker scores by category for the authenticated user
+ */
+export const getMarkerScoresByCategoryAction = actionClient
+  .schema(getMarkerScoresByCategorySchema)
+  .action(async ({ parsedInput }) => {
+    const { user } = await withAuth();
+    if (!user?.id) {
+      throw new Error("Not authenticated");
+    }
+
+    const { category } = parsedInput;
+
+    try {
+      const markerScores = await getLatestMarkerScoresByCategory(
+        user.id,
+        category
+      );
+
+      if (!markerScores) {
+        return {
+          success: false,
+          message: "No marker scores found",
+          markerScores: null,
+        };
+      }
+
+      return {
+        success: true,
+        markerScores,
+      };
+    } catch (error) {
+      console.error("Error fetching marker scores by category:", error);
+      throw new Error("Failed to fetch marker scores by category");
+    }
+  });
+
+/**
+ * Get marker score trends for specific markers
+ */
+export const getMarkerScoreTrendsAction = actionClient
+  .schema(getMarkerScoreTrendsSchema)
+  .action(async ({ parsedInput }) => {
+    const { user } = await withAuth();
+    if (!user?.id) {
+      throw new Error("Not authenticated");
+    }
+
+    const { markerIds, days } = parsedInput;
+
+    try {
+      const trends = await getMarkerScoreTrends(user.id, markerIds, days);
+
+      return {
+        success: true,
+        trends,
+      };
+    } catch (error) {
+      console.error("Error fetching marker score trends:", error);
+      throw new Error("Failed to fetch marker score trends");
+    }
+  });
+
+/**
+ * Get category performance summary for the authenticated user
+ */
+export const getCategoryPerformanceAction = actionClient
+  .schema(getCategoryPerformanceSchema)
+  .action(async ({ parsedInput }) => {
+    const { user } = await withAuth();
+    if (!user?.id) {
+      throw new Error("Not authenticated");
+    }
+
+    const { days } = parsedInput;
+
+    try {
+      const performance = await getCategoryPerformanceSummary(user.id, days);
+
+      return {
+        success: true,
+        performance,
+      };
+    } catch (error) {
+      console.error("Error fetching category performance:", error);
+      throw new Error("Failed to fetch category performance");
+    }
+  });
+
+/**
+ * Server function to get marker scores by category (for server components)
+ */
+export async function getMarkerScoresByCategoryServer(category?: string) {
+  try {
+    const { user } = await withAuth();
+    if (!user?.id) {
+      return null;
+    }
+
+    const markerScores = await getLatestMarkerScoresByCategory(
+      user.id,
+      category
+    );
+    return markerScores;
+  } catch (error) {
+    console.error(
+      "Error fetching marker scores by category from server:",
+      error
+    );
+    return null;
+  }
+}
+
+/**
+ * Server function to get category performance summary (for server components)
+ */
+export async function getCategoryPerformanceServer(days: number = 30) {
+  try {
+    const { user } = await withAuth();
+    if (!user?.id) {
+      return null;
+    }
+
+    const performance = await getCategoryPerformanceSummary(user.id, days);
+    return performance;
+  } catch (error) {
+    console.error("Error fetching category performance from server:", error);
     return null;
   }
 }

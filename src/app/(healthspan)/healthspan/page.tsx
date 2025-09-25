@@ -51,7 +51,7 @@ export default async function HealthspanPageRoute() {
       hasStoredScore: !!healthScoreResult?.healthScore,
       overallScore: healthScoreResult?.healthScore?.overallScore,
       isFromDatabase: healthScoreResult?.isFromDatabase,
-      isFallback: healthScoreResult?.isFallback,
+      message: healthScoreResult?.message,
     });
 
     return (

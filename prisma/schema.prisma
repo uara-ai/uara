@@ -56,7 +56,8 @@ model User {
   Socials Socials[]
 
   // Health Score tracking
-  healthScores HealthScore[]
+  healthScores       HealthScore[]
+  healthMarkerScores HealthMarkerScore[]
 
   @@map("users")
 }
@@ -477,8 +478,64 @@ model HealthScore {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Related detailed marker scores
+  markerScores HealthMarkerScore[]
+
   @@index([userId, calculatedAt])
   @@index([userId, overallScore])
   @@index([calculatedAt]) // For querying scores by date range
   @@map("health_scores")
+}
+
+// Detailed marker scores by category - stores individual marker values and scores
+model HealthMarkerScore {
+  id            String      @id @default(cuid())
+  healthScoreId String
+  healthScore   HealthScore @relation(fields: [healthScoreId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Marker identification
+  markerId     String // Marker ID from markers config (e.g., "calories", "protein", etc.)
+  markerLabel  String // Human-readable label (e.g., "Daily calories (kcal)")
+  category     HealthMarkerCategory // Category enum
+  categoryName String // Category name for flexibility
+
+  // Marker data
+  rawValue        Float? // Original value from data source
+  normalizedValue Float? // Processed/normalized value used for scoring
+  score           Float? // Calculated score (0-100, null if not scorable)
+
+  // Scoring metadata
+  scoringType  String? // "higher", "lower", "optimal", "ignore"
+  scoringRange Json? // The range used for scoring [L, U] or [L, A, B, U]
+
+  // Data source information
+  dataSource  String? // "whoop", "manual", "calculated", "estimated"
+  dataQuality String? // "excellent", "good", "fair", "poor"
+
+  // Timestamps
+  measuredAt   DateTime? // When the original value was measured
+  calculatedAt DateTime  @default(now()) // When the score was calculated
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([healthScoreId, markerId]) // One score per marker per health score
+  @@index([userId, category, calculatedAt])
+  @@index([userId, markerId, calculatedAt])
+  @@index([healthScoreId, category])
+  @@index([category, score]) // For category analysis
+  @@map("health_marker_scores")
+}
+
+// Health marker categories enum
+enum HealthMarkerCategory {
+  NUTRITION
+  SLEEP_RECOVERY
+  MOVEMENT_FITNESS
+  MIND_STRESS
+  HEALTH_CHECKS
+
+  @@map("health_marker_category")
 }

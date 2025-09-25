@@ -51,16 +51,38 @@ export async function getHealthScoresServer() {
   } catch (error) {
     console.error("Error getting health scores:", error);
 
-    // Fallback to basic calculation with empty data (no mock data)
-    const emptyData = {};
-    const fallbackScores = computeHealthScores(markers, emptyData);
+    // Don't fallback to empty data - instead try to fetch available data and calculate properly
+    try {
+      // Re-authenticate for the catch block
+      const { user: fallbackUser } = await withAuth();
+      if (!fallbackUser?.id) {
+        return null;
+      }
 
-    return {
-      healthScore: null,
-      scoreDetails: fallbackScores,
-      isFromDatabase: false,
-      isFallback: true,
-    };
+      // Attempt to get whatever health data is available
+      const healthData = await fetchHealthData(fallbackUser.id, false);
+
+      // If we have some data, calculate scores properly
+      if (Object.keys(healthData).length > 0) {
+        const result = await calculateAndSaveHealthScore(
+          fallbackUser.id,
+          healthData,
+          "v0.0.1"
+        );
+
+        return {
+          healthScore: result.healthScore,
+          scoreDetails: result.scoreDetails,
+          isFromDatabase: false,
+          message: "Calculated with available data after initial error",
+        };
+      }
+    } catch (secondError) {
+      console.error("Secondary calculation attempt failed:", secondError);
+    }
+
+    // Only if absolutely no data is available, return null
+    return null;
   }
 }
 

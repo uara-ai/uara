@@ -16,6 +16,7 @@ import {
   TrendingUp,
   CheckCircle,
 } from "lucide-react";
+import { Logo } from "@/components/logo";
 
 export interface AiTipsChartProps {
   data?: {
@@ -208,7 +209,7 @@ function AiTipsChart({ data, className }: AiTipsChartProps) {
             </div>
           </div>
           <div className="animate-spin">
-            <Activity className="size-6 text-[#085983]" />
+            <Logo hidden />
           </div>
         </div>
 
@@ -315,7 +316,6 @@ function AiTipsChart({ data, className }: AiTipsChartProps) {
             </p>
           </div>
         </div>
-        <Activity className="size-6 text-[#085983]" />
       </div>
 
       {/* Health Overview */}
