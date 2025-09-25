@@ -35,7 +35,7 @@ export function OverallHealthScore({
     ? null
     : aiAnalysis?.overallHealthScore ??
       whoopStats?.latestRecovery?.recoveryScore?.toFixed(0) ??
-      "N/A";
+      "-";
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return "text-[#085983]";
@@ -85,7 +85,7 @@ export function OverallHealthScore({
                   )}
                 >
                   {displayScore}
-                  {displayScore !== "N/A" && (
+                  {displayScore !== "-" && (
                     <span className="text-lg ml-1">%</span>
                   )}
                 </div>

@@ -33,15 +33,15 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-full flex-col bg-background">
-      {/* Logo Section - just like Revolut */}
-      <div className="flex justify-center my-4 mx-10">
+    <div className="flex h-full flex-col bg-background border-r border-border/50">
+      {/* Logo Section - improved spacing */}
+      <div className="flex justify-center my-6 px-4">
         <Logo hidden className="justify-center" />
       </div>
 
-      {/* Navigation - exactly like Revolut layout */}
-      <nav className="flex-1">
-        <div>
+      {/* Navigation - enhanced Revolut-style layout */}
+      <nav className="flex-1 px-2">
+        <div className="space-y-1">
           {routes.map((route) => {
             const isActive = pathname === route.href;
             const Icon = route.icon;
@@ -51,24 +51,31 @@ export function Sidebar() {
                 key={route.href}
                 href={route.href}
                 className={cn(
-                  "flex flex-col items-center gap-2 px-3 py-4 text-sm font-medium transition-colors group",
-                  isActive ? "text-[#085983]" : "text-muted-foreground"
+                  "flex flex-col items-center gap-2 px-3 py-4 text-sm font-medium transition-all duration-200 group rounded-lg hover:scale-[1.02] active:scale-[0.98]",
+                  isActive
+                    ? "text-[#085983] bg-accent/30"
+                    : "text-muted-foreground hover:text-[#085983] hover:bg-accent/20"
                 )}
               >
-                {/* Icon with conditional background - centered like Revolut */}
+                {/* Icon with enhanced styling */}
                 <div
                   className={cn(
-                    "p-2 rounded-lg transition-colors",
+                    "p-2.5 rounded-xl transition-all duration-200",
                     isActive
-                      ? "bg-accent text-accent-foreground"
-                      : "hover:bg-accent/50"
+                      ? "text-[#085983]"
+                      : "group-hover:scale-110 hover:text-[#085983]"
                   )}
                 >
                   <Icon className="size-6 flex-shrink-0" />
                 </div>
 
-                {/* Text label - centered below icon like Revolut */}
-                <span className="text-[10px] font-medium font-[family-name:var(--font-geist-sans)] tracking-wider">
+                {/* Text label with better typography */}
+                <span
+                  className={cn(
+                    "text-[10px] font-medium font-[family-name:var(--font-geist-sans)] tracking-wider transition-colors",
+                    isActive && "text-[#085983]"
+                  )}
+                >
                   {route.label}
                 </span>
               </Link>

@@ -1,5 +1,6 @@
 import { analyzeWhoopData } from "./analyze-whoop-data";
 import { analyzeBurnRateTool } from "./burn-rate";
+import { analyzeHealthTips } from "./health-tips";
 import { analyzeWhoopRecoveryTool } from "./whoop-recovery";
 import { analyzeWhoopSleepTool } from "./whoop-sleep";
 import { analyzeWhoopStrainTool } from "./whoop-strain";
@@ -15,6 +16,7 @@ export function tools() {
   return {
     analyzeWhoopData,
     analyzeBurnRate: analyzeBurnRateTool,
+    analyzeHealthTips,
     // Auto WHOOP tools (with automatic data fetching)
     analyzeWhoopRecovery: autoWhoopRecoveryTool,
     analyzeWhoopSleep: autoWhoopSleepTool,

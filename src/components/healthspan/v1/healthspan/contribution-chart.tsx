@@ -309,9 +309,7 @@ export function ContributionChart({
                           <div className="font-medium">
                             {formatTooltipDate(day.date)}
                           </div>
-                          <div className="text-gray-300">
-                            {getActivityText(day.level)}
-                          </div>
+                          <div>{getActivityText(day.level)}</div>
                           {/* Tooltip arrow */}
                           <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-2 border-transparent border-t-gray-900"></div>
                         </div>

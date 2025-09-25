@@ -28,40 +28,42 @@ export function BottomMobileNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t md:hidden pb-8">
-      <div className="flex items-center justify-around px-4 py-2">
-        {mobileRoutes.map((route) => {
-          const isActive = pathname === route.href;
-          const Icon = route.icon;
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-t lg:hidden pb-safe-area-inset-bottom">
+      <div className="safe-area-inset-bottom">
+        <div className="flex items-center justify-around px-2 sm:px-6 py-2 sm:py-3 max-w-md mx-auto">
+          {mobileRoutes.map((route) => {
+            const isActive = pathname === route.href;
+            const Icon = route.icon;
 
-          return (
-            <Link
-              key={route.href}
-              href={route.href}
-              className={cn(
-                "flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors min-w-0 flex-1",
-                isActive
-                  ? "text-accent-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Icon
+            return (
+              <Link
+                key={route.href}
+                href={route.href}
                 className={cn(
-                  "h-5 w-5 flex-shrink-0",
-                  isActive && "text-accent-foreground"
-                )}
-              />
-              <span
-                className={cn(
-                  "text-xs font-medium truncate",
-                  isActive && "text-accent-foreground"
+                  "flex flex-col items-center gap-1 sm:gap-1.5 px-2 sm:px-4 py-2 sm:py-3 rounded-lg transition-all duration-200 min-w-0 flex-1 hover:scale-105 active:scale-95",
+                  isActive
+                    ? "text-[#085983] bg-accent/50"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/30"
                 )}
               >
-                {route.label}
-              </span>
-            </Link>
-          );
-        })}
+                <Icon
+                  className={cn(
+                    "h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0 transition-colors",
+                    isActive && "text-[#085983]"
+                  )}
+                />
+                <span
+                  className={cn(
+                    "text-[10px] sm:text-xs font-medium truncate transition-colors",
+                    isActive && "text-[#085983]"
+                  )}
+                >
+                  {route.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </nav>
   );
