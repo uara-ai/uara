@@ -54,17 +54,65 @@ export async function POST(req: Request) {
       return Response.json({ error: "Health stats required" }, { status: 400 });
     }
 
-    // Create cache key based on user and health data
-    const cacheKey = `ai_tips:${user.id}:${JSON.stringify(healthStats).slice(
-      0,
-      50
-    )}`;
+    // Use simple, consistent cache key for user (not data-dependent)
+    const cacheKey = `ai_tips:${user.id}`;
+    console.log("Looking for cached AI tips with key:", cacheKey);
+
+    // Debug: Check what AI tips keys exist in Redis
+    try {
+      const allKeys = await client.keys(`ai_tips:${user.id}*`);
+      console.log("Existing AI tips keys for user:", allKeys);
+    } catch (debugError) {
+      console.log(
+        "Could not check existing keys:",
+        debugError instanceof Error ? debugError.message : "Unknown error"
+      );
+    }
 
     // Try to get from cache first
     const cached = await client.get(cacheKey);
+    console.log("Cache lookup result:", {
+      found: !!cached,
+      type: typeof cached,
+    });
+
     if (cached) {
-      console.log("Returning cached AI tips");
-      return Response.json(JSON.parse(cached as string));
+      console.log("Found cached AI tips, returning them");
+      try {
+        // Handle different cache formats
+        let cachedData;
+        if (typeof cached === "string") {
+          console.log("Parsing cached string data");
+          cachedData = JSON.parse(cached);
+        } else {
+          console.log("Using cached object data directly");
+          cachedData = cached;
+        }
+
+        // Validate that cached data has expected structure
+        if (
+          cachedData &&
+          typeof cachedData === "object" &&
+          cachedData.tips &&
+          Array.isArray(cachedData.tips)
+        ) {
+          console.log(
+            "Valid cached data found with",
+            cachedData.tips.length,
+            "tips"
+          );
+          return Response.json(cachedData);
+        } else {
+          console.log("Cached data is invalid, regenerating");
+          await client.del(cacheKey);
+        }
+      } catch (parseError) {
+        console.error("Failed to parse cached data:", parseError);
+        // If cache is corrupted, delete it and continue to regenerate
+        await client.del(cacheKey);
+      }
+    } else {
+      console.log("No cached AI tips found, generating new ones");
     }
 
     // Generate AI tips using generateObject for structured output
@@ -107,7 +155,13 @@ Generate an overall health assessment and 5-8 specific, actionable tips to impro
     console.log("Tool used correctly - AI tips generated successfully");
 
     // Cache the result for 8 hours
-    await client.setex(cacheKey, CACHE_TTL, JSON.stringify(result.object));
+    try {
+      await client.setex(cacheKey, CACHE_TTL, JSON.stringify(result.object));
+      console.log("AI tips cached successfully");
+    } catch (cacheError) {
+      console.error("Failed to cache AI tips:", cacheError);
+      // Continue even if caching fails
+    }
 
     return Response.json(result.object);
   } catch (error) {
