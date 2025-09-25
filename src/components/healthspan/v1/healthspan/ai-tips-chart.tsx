@@ -15,8 +15,11 @@ import {
   Target,
   TrendingUp,
   CheckCircle,
+  ArrowLeft,
 } from "lucide-react";
 import { Logo } from "@/components/logo";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export interface AiTipsChartProps {
   data?: {
@@ -166,6 +169,15 @@ function AiTipsChart({ data, className }: AiTipsChartProps) {
         {/* Header */}
         <div className="flex items-center justify-between pb-6">
           <div className="flex items-center gap-3">
+            <Link href="/healthspan">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-10 w-10 text-[#085983] hover:bg-[#085983]/10"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            </Link>
             <Brain className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2 animate-pulse" />
             <div>
               <h1 className="text-2xl font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
@@ -205,6 +217,15 @@ function AiTipsChart({ data, className }: AiTipsChartProps) {
         {/* Header */}
         <div className="flex items-center justify-between pb-6">
           <div className="flex items-center gap-3">
+            <Link href="/healthspan">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-10 w-10 text-[#085983] hover:bg-[#085983]/10"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            </Link>
             <Brain className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
             <div>
               <h1 className="text-2xl font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
@@ -274,6 +295,15 @@ function AiTipsChart({ data, className }: AiTipsChartProps) {
       {/* Header */}
       <div className="flex items-center justify-between pb-6">
         <div className="flex items-center gap-3">
+          <Link href="/healthspan">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 text-[#085983] hover:bg-[#085983]/10"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          </Link>
           <Brain className="size-8 text-[#085983] bg-[#085983]/10 rounded-lg p-2" />
           <div>
             <h1 className="text-2xl font-medium text-[#085983] font-[family-name:var(--font-geist-sans)] tracking-wider">
