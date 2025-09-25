@@ -85,8 +85,8 @@ export function MarkerExplanation() {
         <div className="bg-blue-100/50 rounded-lg p-4 mb-4">
           <p className="text-sm text-[#085983]/80">
             These markers have U-shaped risk curves where both too little and
-            too much can be harmful. The optimal range represents the "sweet
-            spot" for health outcomes.
+            too much can be harmful. The optimal range represents the
+            &quot;sweet spot&quot; for health outcomes.
           </p>
         </div>
         <div className="text-sm text-[#085983]/60 space-y-2">
