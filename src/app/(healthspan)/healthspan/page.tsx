@@ -5,6 +5,7 @@ import { computeHealthScores } from "@/lib/health/score";
 import { markers } from "@/lib/health/markers";
 import { getHealthScoresServer } from "@/lib/health/server-actions";
 import { getWhoopSummaryServer } from "@/actions/whoop-data-action";
+import { getWearablesDataServer } from "@/actions/whoop";
 
 export const dynamic = "force-dynamic";
 
@@ -13,13 +14,14 @@ export default async function HealthspanPageRoute() {
   const user = await withAuth({ ensureSignedIn: true });
 
   try {
-    // 1. Get health scores (this handles database storage automatically)
-    const healthScoreResult = await getHealthScoresServer();
+    // 1. Get health scores and wearable data in parallel for better performance
+    const [healthScoreResult, whoopSummary, wearablesData] = await Promise.all([
+      getHealthScoresServer(),
+      getWhoopSummaryServer(7), // Last 7 days for summary
+      getWearablesDataServer(30, 100), // Last 30 days, 100 records per type for trends
+    ]);
 
-    // 2. Get WHOOP summary data for the dashboard
-    const whoopSummary = await getWhoopSummaryServer(7);
-
-    // 3. Transform WHOOP data to expected format
+    // 2. Transform WHOOP summary data to expected format
     const whoopData = whoopSummary
       ? {
           sleepPerformance:
@@ -32,6 +34,15 @@ export default async function HealthspanPageRoute() {
           recoveryScore: 72,
           strainScore: 14.2,
         };
+
+    // 3. Transform wearables data for the chart component
+    const wearableChartData = wearablesData
+      ? {
+          sleep: wearablesData.sleep || [],
+          recovery: wearablesData.recovery || [],
+          cycles: wearablesData.cycles || [],
+        }
+      : undefined;
 
     // 4. Use the calculated health scores
     const healthScores = healthScoreResult?.scoreDetails;
@@ -47,6 +58,7 @@ export default async function HealthspanPageRoute() {
       <HealthspanPage
         user={user.user}
         whoopData={whoopData}
+        wearableData={wearableChartData}
         healthScores={healthScores}
       />
     );
@@ -70,6 +82,7 @@ export default async function HealthspanPageRoute() {
       <HealthspanPage
         user={user.user}
         whoopData={fallbackWhoopData}
+        wearableData={undefined}
         healthScores={fallbackHealthScores}
       />
     );
