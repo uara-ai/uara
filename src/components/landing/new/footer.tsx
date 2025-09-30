@@ -126,6 +126,18 @@ export function Footer() {
                   2025 Uara.ai. All rights reserved
                 </p>
                 <div className="flex flex-col gap-1">
+                  <p className="text-white/80 font-geist-sans text-xs font-semibold">
+                    OSS Friends:
+                  </p>
+                  <Link
+                    href="https://lockedin.bio"
+                    target="_blank"
+                    className="hover:text-white/100 transition-colors font-geist-sans text-xs font-semibold"
+                  >
+                    Lockedin
+                  </Link>
+                </div>
+                <div className="flex flex-col gap-1">
                   <p className="text-white/80 font-[family-name:var(--font-geist-sans)] text-sm flex items-center gap-2 justify-center">
                     Built with{" "}
                     <Heart className="w-4 h-4 fill-red-400 text-red-400 inline-block" />{" "}
