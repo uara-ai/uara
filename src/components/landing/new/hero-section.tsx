@@ -79,7 +79,7 @@ export default function HeroSection() {
                 as="h1"
                 className="text-balance text-5xl font-medium md:text-6xl font-geist-sans text-[#085983]"
               >
-                Your Health OS
+                Connect Your Health Data
               </TextEffect>
               <TextEffect
                 preset="fade-in-blur"
