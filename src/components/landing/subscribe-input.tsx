@@ -5,84 +5,130 @@ import { Check, Loader2, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 
-function SubmitButton() {
+function SubmitButton({ isFormValid }: { isFormValid: boolean }) {
   const { pending } = useFormStatus();
 
-  if (pending) {
-    return (
-      <div className="absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 border-2 border-[#085983] rounded-full flex items-center justify-center backdrop-blur-sm">
-        <Loader2 className="w-5 h-5 text-white animate-spin" />
-      </div>
-    );
-  }
-
   return (
-    <button
-      type="submit"
-      className="absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 bg-gradient-to-br from-[#085983] to-[#1f88bd]/80 hover:from-[#085983]/90 hover:to-[#1f88bd]/60 rounded-full flex items-center justify-center transition-all duration-200 border-2 border-[#085983] shadow-lg group"
-    >
-      <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-0.5 transition-transform duration-200" />
-    </button>
+    <div className="p-1 sm:p-2">
+      <Button
+        type="submit"
+        disabled={!isFormValid || pending}
+        size="lg"
+        className={cn(
+          "size-9 rounded-xl border-0 shadow-lg transition-all duration-300",
+          "text-white font-semibold bg-primary",
+          "disabled:opacity-20 disabled:cursor-not-allowed disabled:shadow-none",
+          "hover:scale-105 active:scale-95",
+          isFormValid && "shadow-primary/25 hover:shadow-primary/40"
+        )}
+      >
+        {pending ? (
+          <Loader2 className="h-5 w-5 animate-spin" />
+        ) : (
+          <ArrowRight className="h-5 w-5" />
+        )}
+      </Button>
+    </div>
   );
 }
 
 export function SubscribeInput() {
   const [isSubmitted, setSubmitted] = useState(false);
+  const [email, setEmail] = useState("");
+
+  const isFormValid = email.length > 0 && email.includes("@");
 
   return (
-    <div className="flex flex-col items-center space-y-6 max-w-2xl mx-auto">
-      <div className="w-full">
-        {isSubmitted ? (
-          <div className="relative w-full">
-            <div className="w-full px-6 py-4 rounded-full bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-2 border-green-500/50 backdrop-blur-sm flex items-center justify-center space-x-3">
-              <Check className="w-5 h-5 text-green-400" />
-              <span className="font-[family-name:var(--font-geist-sans)] text-lg font-medium text-green-400 tracking-wider">
-                Successfully Subscribed
+    <div className="w-full max-w-xl mx-auto space-y-4 sm:space-y-6 px-4 sm:px-0">
+      {isSubmitted ? (
+        <div className="relative flex items-center bg-background border-2 border-green-500/50 rounded-2xl overflow-hidden shadow-lg">
+          <div className="flex items-center justify-center gap-3 px-4 sm:px-6 py-3 sm:py-4 w-full bg-gradient-to-r from-green-500/20 to-emerald-500/20">
+            <Check className="w-5 h-5 text-green-500" />
+            <span className="text-lg font-semibold text-green-600">
+              Successfully Subscribed!
+            </span>
+          </div>
+        </div>
+      ) : (
+        <form
+          action={async (formData) => {
+            const emailValue = formData.get("email") as string;
+            const result = await subscribeAction({ email: emailValue });
+
+            if (result?.data?.success) {
+              setSubmitted(true);
+              toast.success("Thanks for joining!");
+              setTimeout(() => {
+                setSubmitted(false);
+                setEmail("");
+              }, 5000);
+            } else {
+              toast.error("You're already on the list!");
+            }
+          }}
+          className="relative"
+        >
+          <div className="relative flex items-center bg-background border-2 border-border rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300">
+            {/* Brand prefix */}
+            <div className="flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4">
+              <Image
+                src="/logo.svg"
+                alt="Uara"
+                width={32}
+                height={32}
+                className="rounded-xl"
+              />
+              <span className="text-lg font-semibold text-primary">
+                uara.ai
               </span>
             </div>
-          </div>
-        ) : (
-          <form
-            action={async (formData) => {
-              const email = formData.get("email") as string;
-              const result = await subscribeAction({ email });
 
-              if (result?.data?.success) {
-                setSubmitted(true);
-                toast.success("Thanks for joining!");
-                setTimeout(() => {
-                  setSubmitted(false);
-                }, 5000);
-              } else {
-                toast.error("You're already on the list!");
-              }
-            }}
-          >
-            <div className="relative">
-              <input
-                placeholder="Enter your email to join the waitlist"
+            {/* Email input */}
+            <div className="flex-1 relative">
+              <Input
                 type="email"
                 name="email"
-                id="email"
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="border-0 rounded-xl focus-visible:ring-0 focus-visible:ring-offset-0 text-lg sm:text-xl py-2.5 px-4 sm:px-6 h-auto shadow-none bg-transparent"
                 autoComplete="email"
                 aria-label="Email address"
                 required
-                className="w-full px-6 py-4 pr-16 rounded-full bg-white/10 border-2 border-[#085983] text-white placeholder-white/70 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#085983] focus:bg-white/15 font-[family-name:var(--font-geist-sans)] text-lg tracking-wider transition-all duration-200"
               />
-              <SubmitButton />
             </div>
-          </form>
-        )}
-      </div>
 
-      <div className="text-center space-y-3">
-        <p className="font-[family-name:var(--font-geist-sans)] text-sm text-white/80 tracking-wide">
-          We&apos;ll send you an email when we&apos;re live with early access.
-        </p>
-        <p className="font-[family-name:var(--font-geist-sans)] text-sm text-white/70 font-medium">
-          If you want to support, you can choose one of the pricing plans 💙
-        </p>
+            {/* Submit button */}
+            <SubmitButton isFormValid={isFormValid} />
+          </div>
+        </form>
+      )}
+
+      {/* Status message or call to action */}
+      <div className="text-center px-2 sm:px-0">
+        {isSubmitted ? (
+          <p className="text-xs sm:text-sm font-medium text-green-600">
+            We&apos;ll send you early access when we&apos;re live!
+          </p>
+        ) : (
+          <div className="space-y-2">
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Join the waitlist to know when we&apos;re live!
+            </p>
+            <p className="text-xs sm:text-sm text-muted-foreground font-medium">
+              Or skip the queue and claim your spot now 💙
+            </p>
+
+            <div className="flex items-center justify-center">
+              <p>claim $99 lifetime access</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
