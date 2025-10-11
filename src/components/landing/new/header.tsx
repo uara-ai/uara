@@ -10,7 +10,7 @@ import { HeaderButton } from "../cta";
 const menuItems = [
   { name: "Features", href: "#features" },
   { name: "Pricing", href: "#pricing" },
-  { name: "FAQ", href: "#faq" },
+  { name: "Blog", href: "/blog" },
 ];
 
 export const HeroHeader = () => {
