@@ -44,7 +44,7 @@ export function SubscribeInput() {
   const isFormValid = email.length > 0 && email.includes("@");
 
   return (
-    <div className="w-full max-w-xl mx-auto space-y-4 sm:space-y-6 px-4 sm:px-0 mt-8">
+    <div className="w-full max-w-xl mx-auto space-y-4 sm:space-y-6 sm:px-0 mt-8">
       {isSubmitted ? (
         <div className="relative flex items-center bg-background border-2 border-green-500/50 rounded-2xl overflow-hidden shadow-lg">
           <div className="flex items-center justify-center gap-3 px-4 sm:px-6 py-3 sm:py-4 w-full bg-gradient-to-r from-green-500/20 to-emerald-500/20">
@@ -96,7 +96,7 @@ export function SubscribeInput() {
                 placeholder="your@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="border-0 rounded-xl focus-visible:ring-0 focus-visible:ring-offset-0 text-lg sm:text-xl py-2.5 px-4 sm:px-6 h-auto shadow-none bg-transparent"
+                className="border-0 rounded-xl focus-visible:ring-0 focus-visible:ring-offset-0 text-md sm:text-xl py-2.5 px-4 sm:px-6 h-auto shadow-none bg-transparent"
                 autoComplete="email"
                 aria-label="Email address"
                 required
