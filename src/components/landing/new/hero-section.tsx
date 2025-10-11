@@ -8,6 +8,7 @@ import CTAButton from "./cta-button";
 import { GithubStars } from "./github-stars";
 import { WearableStatsChart } from "@/components/healthspan/v1/healthspan/wearable-stats-chart";
 import { MiniDemo } from "./mini-demo";
+import { SubscribeInput } from "../subscribe-input";
 
 const transitionVariants = {
   item: {
@@ -71,7 +72,7 @@ export default function HeroSection() {
     <>
       <main className="overflow-hidden [--color-primary-foreground:var(--color-white)] [--color-primary:var(--color-green-600)]">
         <section>
-          <div className="relative mx-auto max-w-6xl px-6 sm:px-0 pb-20 pt-32 lg:pt-48 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+          <div className="relative mx-auto max-w-6xl px-6 sm:px-0 pb-20 pt-24 lg:pt-38 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             <div className="relative z-10 text-left">
               <TextEffect
                 preset="fade-in-blur"
@@ -79,7 +80,7 @@ export default function HeroSection() {
                 as="h1"
                 className="text-balance text-5xl font-medium md:text-6xl font-geist-sans text-[#085983]"
               >
-                Connect Your Health Data
+                Your Health, Finally in Sync
               </TextEffect>
               <TextEffect
                 preset="fade-in-blur"
@@ -97,9 +98,9 @@ export default function HeroSection() {
                 as="p"
                 className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground"
               >
-                Your health data is fragmented. Your potential is not. Uara
-                unifies your wearables, labs, and logs, translating raw data
-                into an actionable tips to improve your health.
+                We unify your wearables, blood tests, workouts, sleep, and
+                nutrition into one intelligent dashboard, turning your data into
+                daily guidance to optimize recovery, longevity, and performance.
               </TextEffect>
               <TextEffect
                 per="line"
@@ -109,9 +110,11 @@ export default function HeroSection() {
                 as="p"
                 className="mx-auto mt-6 max-w-2xl text-pretty text-md text-[#085983] font-medium"
               >
-                Built by founders for founders.
+                No more scattered apps. Just one place to understand, improve,
+                and extend your healthspan.
               </TextEffect>
-              <CTAButton />
+              {/* <CTAButton /> */}
+              <SubscribeInput />
 
               <SecondarySection />
 

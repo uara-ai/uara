@@ -44,7 +44,7 @@ export function SubscribeInput() {
   const isFormValid = email.length > 0 && email.includes("@");
 
   return (
-    <div className="w-full max-w-xl mx-auto space-y-4 sm:space-y-6 px-4 sm:px-0">
+    <div className="w-full max-w-xl mx-auto space-y-4 sm:space-y-6 px-4 sm:px-0 mt-8">
       {isSubmitted ? (
         <div className="relative flex items-center bg-background border-2 border-green-500/50 rounded-2xl overflow-hidden shadow-lg">
           <div className="flex items-center justify-center gap-3 px-4 sm:px-6 py-3 sm:py-4 w-full bg-gradient-to-r from-green-500/20 to-emerald-500/20">
@@ -120,13 +120,6 @@ export function SubscribeInput() {
             <p className="text-xs sm:text-sm text-muted-foreground">
               Join the waitlist to know when we&apos;re live!
             </p>
-            <p className="text-xs sm:text-sm text-muted-foreground font-medium">
-              Or skip the queue and claim your spot now 💙
-            </p>
-
-            <div className="flex items-center justify-center">
-              <p>claim $99 lifetime access</p>
-            </div>
           </div>
         )}
       </div>
