@@ -2,8 +2,6 @@
 
 import * as React from "react";
 import { User } from "@/lib/user.type";
-import { UserProfileDropdown } from "@/components/healthspan/v1/healthspan/user-profile-dropdown";
-import { getUserTierAction } from "@/actions/user-tier-action";
 import { useAction } from "next-safe-action/hooks";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -15,7 +13,6 @@ import {
   IconMail,
   IconShield,
 } from "@tabler/icons-react";
-import { TierBadge } from "@/components/healthspan/tiers";
 import { cn } from "@/lib/utils";
 import { ContributionChart } from "./contribution-chart";
 import { TwitterUsername } from "./twitter-username";
@@ -38,16 +35,16 @@ export function UserProfileCard({
     tierPurchasedAt: Date | null;
   } | null>(null);
 
-  const { execute: fetchUserTier } = useAction(getUserTierAction, {
-    onSuccess: (data) => {
-      if (data) {
-        setUserTier({
-          tierNumber: data?.data?.tierNumber || null,
-          tierPurchasedAt: data?.data?.tierPurchasedAt || null,
-        });
-      }
-    },
-  });
+  // Mock the fetchUserTier function to simulate fetching user tier data
+  const fetchUserTier = React.useCallback((_: any) => {
+    // Simulate async API call for demo/mock mode
+    setTimeout(() => {
+      setUserTier({
+        tierNumber: 3,
+        tierPurchasedAt: new Date(),
+      });
+    }, 300); // short delay to fake loading
+  }, []);
 
   useEffect(() => {
     if (user) {

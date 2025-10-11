@@ -16,7 +16,6 @@ import {
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { User } from "@/lib/user.type";
-import { UserMenu } from "@/components/auth/user-menu";
 import { Logo } from "../logo";
 import { routes } from "@/packages/config/routes";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
@@ -79,11 +78,6 @@ const Navbar = memo(() => {
                   {item.label}
                 </Link>
               ))}
-            </div>
-
-            {/* Desktop User Menu */}
-            <div className={cn("hidden md:flex items-center")}>
-              <UserMenu user={user.user} />
             </div>
 
             {/* Mobile Menu Button */}
