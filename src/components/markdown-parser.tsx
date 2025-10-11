@@ -18,7 +18,7 @@ const components = {
   h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h1
       className={cn(
-        "text-2xl font-[family-name:var(--font-instrument-serif)] font-medium text-[#085983] mt-6 mb-4 first:mt-0",
+        "text-2xl font-geist-sans font-medium text-[#085983] mt-6 mb-4 first:mt-0",
         className
       )}
       {...props}
@@ -27,7 +27,7 @@ const components = {
   h2: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h2
       className={cn(
-        "text-xl font-[family-name:var(--font-instrument-serif)] font-medium text-[#085983] mt-5 mb-3 first:mt-0",
+        "text-xl font-geist-sans font-medium text-[#085983] mt-5 mb-3 first:mt-0",
         className
       )}
       {...props}
