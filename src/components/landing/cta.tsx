@@ -1,5 +1,6 @@
 import { AnimatedGroup } from "@/components/motion-primitives/animated-group";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 const transitionVariants = {
@@ -120,16 +121,22 @@ export function GoodButtonNav(props: {
 
 export function HeaderButton(props: {
   href: string;
+  className?: string;
   children: React.ReactNode;
 }) {
-  const { href, children } = props;
+  const { href, children, className } = props;
 
   // For auth routes, use full page navigation instead of Next.js Link
   const isAuthRoute = href === "/login" || href === "/callback";
 
   return (
-    <div className="bg-foreground/10 rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5">
-      <Button asChild size="lg" className="rounded-xl px-5 text-base">
+    <div
+      className={cn(
+        "bg-foreground/10 rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5",
+        className
+      )}
+    >
+      <Button asChild size="lg" className="rounded-xl px-5 text-base w-full">
         {isAuthRoute ? (
           <a href={href}>
             <span className="text-nowrap flex items-center gap-2">

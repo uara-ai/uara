@@ -77,12 +77,20 @@ export const HeroHeader = () => {
                     </li>
                   ))}
                 </ul>
+                <div className="block sm:hidden mt-2">
+                  <HeaderButton href="/login" className="">
+                    <IconLeaf className="size-4" />
+                    Get Started
+                  </HeaderButton>
+                </div>
               </div>
             </div>
-            <HeaderButton href="/login">
-              <IconLeaf className="size-4" />
-              Get Started
-            </HeaderButton>
+            <div className="hidden sm:block">
+              <HeaderButton href="/login">
+                <IconLeaf className="size-4" />
+                Get Started
+              </HeaderButton>
+            </div>
           </div>
         </div>
       </nav>
