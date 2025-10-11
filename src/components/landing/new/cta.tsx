@@ -22,7 +22,7 @@ const transitionVariants = {
   },
 } as const;
 
-export default function GoodButton(props: {
+export default function SmallCTA(props: {
   href: string;
   children: React.ReactNode;
 }) {
