@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import WhyUara from "./why-uara";
 import { SubscribeInput } from "./subscribe-input";
 import { Check, Copy } from "lucide-react";
@@ -63,7 +63,34 @@ export default function Invite() {
 const checkoutLink =
   "https://buy.polar.sh/polar_cl_sJGZ221ESBGkwjFrdsQ9tUcS3rNWcHB3C7MHi0yaNFW";
 
+const MAX_BETA_SPOTS = 11;
+
 export function Checkout() {
+  const [spotsLeft, setSpotsLeft] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserCount = async () => {
+      try {
+        const response = await fetch("/api/users");
+        const data = await response.json();
+
+        if (data.success && typeof data.count === "number") {
+          const remaining = MAX_BETA_SPOTS - data.count;
+          setSpotsLeft(remaining > 0 ? remaining : 0);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user count:", error);
+        // Fallback to showing nothing or a default
+        setSpotsLeft(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserCount();
+  }, []);
+
   return (
     <div className="relative py-16 sm:py-8">
       <div className="mx-auto max-w-5xl px-6">
@@ -77,7 +104,7 @@ export function Checkout() {
                 <p className="mt-2 text-lg text-primary">
                   only{" "}
                   <span className="font-semibold bg-primary/10 px-2 py-1 rounded-md border border-primary/20">
-                    9
+                    {isLoading ? "..." : spotsLeft !== null ? spotsLeft : "–"}
                   </span>{" "}
                   spots left
                 </p>
