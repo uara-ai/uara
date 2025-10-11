@@ -82,14 +82,7 @@ export default function HeroSection() {
               >
                 Your Health, Finally in Sync
               </TextEffect>
-              <TextEffect
-                preset="fade-in-blur"
-                speedSegment={0.3}
-                as="h2"
-                className="text-balance text-xl font-medium md:text-4xl font-geist-sans text-[#085983]/80 mt-4"
-              >
-                Engineered for human optimization.
-              </TextEffect>
+
               <TextEffect
                 per="line"
                 preset="fade-in-blur"
