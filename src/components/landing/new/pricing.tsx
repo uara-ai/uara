@@ -5,6 +5,7 @@ import CardFlip from "@/components/kokonutui/card-flip";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { useCheckout } from "@/hooks/use-checkout";
+import { Checkout } from "../invite";
 
 interface TierInfo {
   currentTier: {
@@ -186,64 +187,16 @@ export default function Pricing() {
       <div className="flex items-center justify-center px-4">
         <div className="hidden sm:flex flex-1 h-px bg-gradient-to-r from-transparent to-[#085983]/30"></div>
         <h2 className="px-2 sm:px-6 font-geist-sans text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-normal text-[#085983] text-center">
-          Lifetime deal pricing
+          Private beta
         </h2>
         <div className="hidden sm:flex flex-1 h-px bg-gradient-to-l from-transparent to-[#085983]/30"></div>
       </div>
       <p className="text-center font-geist-sans text-sm sm:text-base md:text-lg lg:text-xl text-[#085983]/80 max-w-4xl mx-auto leading-relaxed px-4 mt-4 sm:mt-6">
-        Take your keys now, only <strong>100</strong> lifetime deal spots.
+        Take your keys now, only <strong>9</strong> beta tester spots.
       </p>
 
       {/* FOMO Section - Spots Remaining */}
-      <div className="text-center mt-8 sm:mt-12 mb-8 space-y-4">
-        <div className="flex flex-col sm:flex-row items-center gap-3 justify-center">
-          <span className="font-geist-sans text-lg sm:text-xl lg:text-2xl font-normal text-[#085983]">
-            Price increase when the first
-          </span>
-          <div className="bg-[#085983]/10 backdrop-blur-sm rounded-full px-4 py-2 border border-[#085983]/20">
-            <span className="font-geist-sans text-lg sm:text-xl lg:text-2xl font-semibold text-[#085983] tracking-wider">
-              {tierInfo ? (
-                tierInfo.spotsRemaining === Infinity ? (
-                  "∞"
-                ) : (
-                  tierInfo.spotsRemaining
-                )
-              ) : (
-                <div className="animate-pulse bg-[#085983]/20 rounded w-8 h-6"></div>
-              )}
-            </span>
-          </div>
-          <span className="font-geist-sans text-lg sm:text-xl lg:text-2xl font-normal text-[#085983]">
-            spots are gone
-          </span>
-        </div>
-
-        <div className="font-geist-sans text-base sm:text-lg text-[#085983]/80">
-          {tierInfo ? (
-            tierInfo.isLastTier ? (
-              "This is the final lifetime deal price. After that, subscription pricing will apply."
-            ) : (
-              <span>
-                Pricing will then be{" "}
-                <strong>{tierInfo.nextTier?.displayPrice}</strong> for next 50
-                spots.
-              </span>
-            )
-          ) : (
-            <div className="animate-pulse bg-[#085983]/10 rounded h-5 w-64 mx-auto"></div>
-          )}
-        </div>
-      </div>
-
-      <div className="mt-12 sm:mt-16 lg:mt-20 flex justify-center">
-        <div className="w-full max-w-sm relative">
-          <PricingCardFlip
-            tierInfo={tierInfo}
-            onGetStarted={handleGetStarted}
-            isLoading={checkoutLoading}
-          />
-        </div>
-      </div>
+      <Checkout />
     </div>
   );
 }

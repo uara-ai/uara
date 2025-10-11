@@ -46,6 +46,13 @@ export default function Invite() {
           <div className="mt-12">
             <SubscribeInput />
           </div>
+          <div className="mt-12">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="text-primary text-xl font-semibold sm:text-2xl">
+                or
+              </h2>
+            </div>
+          </div>
           <Checkout />
         </section>
       </main>
@@ -60,9 +67,6 @@ export function Checkout() {
   return (
     <div className="relative py-16 sm:py-8">
       <div className="mx-auto max-w-5xl px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-primary text-xl font-semibold sm:text-2xl">or</h2>
-        </div>
         <div className="mt-8 md:mt-8">
           <div className="bg-card relative rounded-3xl border shadow-2xl shadow-zinc-950/5">
             <div className="grid items-center gap-12 divide-y p-12 md:grid-cols-2 md:divide-x md:divide-y-0">

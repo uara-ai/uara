@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { Logo } from "@/components/logo";
-import { Button } from "@/components/ui/button";
 import React from "react";
 import { cn } from "@/lib/utils";
-import { IconMenu3, IconX } from "@tabler/icons-react";
-import { LoginButton } from "./login-button";
+import { IconLeaf, IconMenu3, IconX } from "@tabler/icons-react";
+import { HeaderButton } from "../cta";
 
 const menuItems = [
   { name: "Features", href: "#features" },
@@ -79,13 +78,16 @@ export const HeroHeader = () => {
                   ))}
                 </ul>
               </div>
-              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <LoginButton />
-              </div>
             </div>
+            <HeaderButton href="/login">
+              <IconLeaf className="size-4" />
+              Get Started
+            </HeaderButton>
           </div>
         </div>
       </nav>
     </header>
   );
 };
+
+// Cursor rules applied correctly.
