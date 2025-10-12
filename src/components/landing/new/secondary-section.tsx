@@ -60,7 +60,7 @@ export function SecondarySection() {
             avatarUrls={subscriberData.avatars}
           />
           <p className="font-geist-sans text-md font-normal text-[#085983]">
-            trusted by <strong>{displayCount}</strong> amazing founders
+            trusted by <strong>{displayCount}</strong> amazing humans
           </p>
         </div>
       </div>

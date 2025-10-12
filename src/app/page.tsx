@@ -1,6 +1,6 @@
 import { Footer } from "@/components/landing/new/footer";
 import { BottomCTA } from "@/components/landing/new/bottom-cta";
-import HeroSection from "@/components/landing/new/hero-section";
+import { NewHero } from "@/components/landing/new-hero";
 import { HeroHeader } from "@/components/landing/new/header";
 import Features from "@/components/landing/new/features";
 import Pricing from "@/components/landing/new/pricing";
@@ -12,7 +12,7 @@ export default function Home() {
       <HeroHeader />
 
       <div>
-        <HeroSection />
+        <NewHero />
 
         <Features />
         <Pricing />
